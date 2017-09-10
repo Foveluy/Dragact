@@ -19,14 +19,10 @@ export default class Drager extends React.Component {
         let deltaX = some.clientX - this.state.originX + elX
         let deltaY = some.clientY - this.state.originY + elY
 
-
-        
         this.setState({
             x: deltaX,
             y: deltaY
         })
-
-        console.log(some.target.offsetParent.clientHeight)
     }
     ondrag(some) {
         document.addEventListener('mousemove', this.move)
