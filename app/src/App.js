@@ -6,9 +6,9 @@ export default class Drager extends React.Component {
     constructor(...props) {
         super(...props)
         this.move = this.move.bind(this)
+        this.ondragend = this.ondragend.bind(this)
     }
     move(some) {
-        if (!this.state.isDrag) return
         let { elX, elY } = this.state
 
         // let fatherLeft = some.target.offsetParent.offsetLeft
@@ -22,7 +22,7 @@ export default class Drager extends React.Component {
         let deltaY = some.clientY - this.state.originY + elY
 
         deltaX = Math.max(deltaX, 0)
-        console.log(some.target.offsetLeft)
+
         this.setState({
             x: deltaX,
             y: deltaY
@@ -30,9 +30,9 @@ export default class Drager extends React.Component {
     }
     ondrag(some) {
         document.addEventListener('mousemove', this.move)
+        document.addEventListener('mouseup', this.ondragend)
 
         this.setState({
-            isDrag: true,
             originX: some.clientX,
             originY: some.clientY,
             elX: this.state.x,
@@ -40,14 +40,11 @@ export default class Drager extends React.Component {
         })
     }
     ondragend(some) {
+        console.log('脱离了')
         document.removeEventListener('mousemove', this.move)
-        this.setState({
-            isDrag: false
-        })
+        document.removeEventListener('mouseup', this.ondragend)
     }
-    onmouseout(some) {
-        console.log('out')
-    }
+
     state = {
         x: 20,
         y: 20,
@@ -64,10 +61,9 @@ export default class Drager extends React.Component {
             <div className='shitWrap' style={{ left: 100, height: 300, width: 300, border: '1px solid black', position: 'absolute' }}>
                 <div className='shit'
                     style={{ userSelect: 'none', touchAction: 'none', border: '2px solid black', padding: 10, transform: `translate(${x}px,${y}px)` }}
-                    onMouseMove={this.move.bind(this)}
                     onMouseDown={this.ondrag.bind(this)}
                     onMouseUp={this.ondragend.bind(this)}
-                    onMouseOut={this.onmouseout}>
+                    >
                     asdasdasd
                     </div>
             </div>
