@@ -10,15 +10,19 @@ export default class Drager extends React.Component {
     move(some) {
         if (!this.state.isDrag) return
         let { elX, elY } = this.state
-        
-        let fatherLeft = some.target.offsetParent.offsetLeft
-        let fatherRight = some.target.offsetParent.offsetLeft + some.target.offsetParent.clientWidth
-        let fatherTop = some.target.offsetParent.offsetTop
-        let fatherBot = some.target.offsetParent.offsetTop + some.target.offsetParent.clientHeight
+
+        // let fatherLeft = some.target.offsetParent.offsetLeft
+        // let fatherRight = some.target.offsetParent.offsetLeft + some.target.offsetParent.clientWidth
+        // let fatherTop = some.target.offsetParent.offsetTop
+        // let fatherBot = some.target.offsetParent.offsetTop + some.target.offsetParent.clientHeight
+
+        let thisLeft = this.state.x
 
         let deltaX = some.clientX - this.state.originX + elX
         let deltaY = some.clientY - this.state.originY + elY
 
+        deltaX = Math.max(deltaX, 0)
+        console.log(some.target.offsetLeft)
         this.setState({
             x: deltaX,
             y: deltaY
@@ -42,7 +46,7 @@ export default class Drager extends React.Component {
         })
     }
     onmouseout(some) {
-
+        console.log('out')
     }
     state = {
         x: 20,
