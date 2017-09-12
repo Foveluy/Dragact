@@ -9,6 +9,13 @@ const int = (number) => {
     }
     return parseInt(number, 10)
 }
+const innerWidth = (node) => {
+    let width = node.clientWidth;
+    const computedStyle = node.style
+    width -= int(computedStyle.paddingLeft);
+    width -= int(computedStyle.paddingRight);
+    return width;
+}
 
 const outerWidth = (node) => {
     let width = node.clientWidth;
@@ -34,6 +41,7 @@ const outerHeight = (node) => {
     return height;
 }
 
+const doc = document
 
 class Drager extends React.Component {
     constructor(...props) {
@@ -41,6 +49,7 @@ class Drager extends React.Component {
         this.move = this.move.bind(this)
         this.ondragend = this.ondragend.bind(this)
     }
+    
     static propTypes = {
         bounds: PropTypes.string
     }
@@ -57,41 +66,51 @@ class Drager extends React.Component {
     componentDidMount() {
     }
 
-    move(some) {
+    move(event) {
         let { elX, elY } = this.state
-
-        /*  some.client - this.state.origin 表示的是移动的距离,
+        /*  event.client - this.state.origin 表示的是移动的距离,
         *   elX表示的是原来已经有的位移
         */
-        let deltaX = some.clientX - this.state.originX + elX
-        let deltaY = some.clientY - this.state.originY + elY
+        let deltaX = event.clientX - this.state.originX + elX
+        let deltaY = event.clientY - this.state.originY + elY
 
         if (this.props.bounds === 'parent') {
             const bounds = {
                 left: int(this.parent.style.paddingLeft) + int(this.self.style.marginLeft) - this.self.offsetLeft,
                 top: int(this.parent.style.paddingTop) + int(this.self.style.marginTop) - this.self.offsetTop,
-                right: this.parent.clientWidth - outerWidth(this.self) - this.self.offsetLeft +
+                right: innerWidth(this.parent) - outerWidth(this.self) - this.self.offsetLeft +
                 int(this.parent.style.paddingRight) - int(this.self.style.marginRight),
                 bottom: innerHeight(this.parent) - outerHeight(this.self) - this.self.offsetTop +
                 int(this.parent.style.paddingBottom) - int(this.self.style.marginBottom)
             }
-            console.log(bounds.right)
+            
 
+            /**
+             * 保证不超出右边界和底部
+             * keep element right and bot can not cross the bounds
+             */
             deltaX = Math.min(deltaX, bounds.right)
             deltaY = Math.min(deltaY, bounds.bottom)
 
+            /**
+             * 保证不超出左边和上边
+             * keep element left and top can not cross the bounds
+             */
             deltaX = Math.max(deltaX, bounds.left)
             deltaY = Math.max(deltaY, bounds.top)
         }
-
         this.setState({
             x: deltaX,
             y: deltaY
         })
+
     }
-    ondrag(some) {
-        document.addEventListener('mousemove', this.move)
-        document.addEventListener('mouseup', this.ondragend)
+
+    ondrag(event) {
+        /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
+        doc.body.style.userSelect = 'none'
+        doc.addEventListener('mousemove', this.move)
+        doc.addEventListener('mouseup', this.ondragend)
 
 
         if (this.props.bounds === 'parent' &&
@@ -101,36 +120,42 @@ class Drager extends React.Component {
              * what we do here is 
              * making sure that we still can retrieve our parent when user's mouse left this node.
              */
-            this.parent = some.currentTarget.offsetParent
+            this.parent = event.currentTarget.offsetParent
             /**
              * 我们自己
              * ourself
              */
-            this.self = some.currentTarget
+            this.self = event.currentTarget
         }
 
         this.setState({
-            originX: some.clientX,
-            originY: some.clientY,
+            originX: event.clientX,
+            originY: event.clientY,
             elX: this.state.x,
             elY: this.state.y
         })
     }
-    ondragend(some) {
+
+    ondragend(event) {
+        /** 取消用户选择限制，用户可以重新选择 */
+        doc.body.style.userSelect = ''
         this.parent = null
         this.self = null
-        document.removeEventListener('mousemove', this.move)
-        document.removeEventListener('mouseup', this.ondragend)
-    }
+        doc.removeEventListener('mousemove', this.move)
+        doc.removeEventListener('mouseup', this.ondragend)
 
+    }
 
     render() {
         const { x, y } = this.state
+        const { bounds, style, className, others } = this.props
+        let fixedClassName = typeof className === 'undefined' ? '' : className + ' '
         return (
-            <div className='WrapDragger'
-                style={{ userSelect: 'none', margin: 10, touchAction: 'none', border: '2px solid black', padding: 10, transform: `translate(${x}px,${y}px)` }}
+            <div className={`${fixedClassName}WrapDragger`}
+                style={{ ...style, touchAction: 'none!important', transform: `translate(${x}px,${y}px)` }}
                 onMouseDown={this.ondrag.bind(this)}
                 onMouseUp={this.ondragend.bind(this)}
+                {...others}
             >
                 {/**
              *  React.cloneElement复制了所有的子元素，然后进行渲染，这样用户就可以使用
@@ -155,7 +180,8 @@ export default class tmpFather extends React.Component {
                 ref={(node) => this.node = node}
             >
                 <Drager
-                    bounds='parent'
+                    
+                    style={{ padding: 10, margin: 10, border: '1px solid black' }}
                 >
                     <div>
                         <p>asdasdad</p>
@@ -164,6 +190,7 @@ export default class tmpFather extends React.Component {
                 </Drager>
                 <Drager
                     bounds='parent'
+                    style={{ padding: 10, margin: 10, left: 150, border: '1px solid black' }}
                 >
                     <div>
                         <p>asdasdad</p>
