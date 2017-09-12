@@ -94,18 +94,19 @@ class Drager extends React.Component {
         document.addEventListener('mouseup', this.ondragend)
 
 
-        if (this.props.bounds === 'parent' && typeof this.parent === 'undefined') {
+        if (this.props.bounds === 'parent' &&
+            (typeof this.parent === 'undefined' || this.parent === null)) {
             /**
              * 在这里我们将父节点缓存下来，保证当用户鼠标离开拖拽区域时，我们仍然能获取到父节点
              * what we do here is 
              * making sure that we still can retrieve our parent when user's mouse left this node.
              */
-            this.parent = some.target.offsetParent
+            this.parent = some.currentTarget.offsetParent
             /**
              * 我们自己
              * ourself
              */
-            this.self = some.target
+            this.self = some.currentTarget
         }
 
         this.setState({
@@ -116,7 +117,8 @@ class Drager extends React.Component {
         })
     }
     ondragend(some) {
-        console.log('脱离了')
+        this.parent = null
+        this.self = null
         document.removeEventListener('mousemove', this.move)
         document.removeEventListener('mouseup', this.ondragend)
     }
@@ -125,11 +127,19 @@ class Drager extends React.Component {
     render() {
         const { x, y } = this.state
         return (
-            <div className='shit'
+            <div className='WrapDragger'
                 style={{ userSelect: 'none', margin: 10, touchAction: 'none', border: '2px solid black', padding: 10, transform: `translate(${x}px,${y}px)` }}
                 onMouseDown={this.ondrag.bind(this)}
                 onMouseUp={this.ondragend.bind(this)}
             >
+                {/**
+             *  React.cloneElement复制了所有的子元素，然后进行渲染，这样用户就可以使用
+             *  <drager>
+             *       something....
+             *  </drager>
+             *
+             *  React.Children.only 只允许子元素有一个根节点
+             */}
                 {React.cloneElement(React.Children.only(this.props.children), {})}
             </div>
         )
@@ -149,6 +159,13 @@ export default class tmpFather extends React.Component {
                 >
                     <div>
                         <p>asdasdad</p>
+                        <p>asdasdad</p>
+                    </div>
+                </Drager>
+                <Drager
+                    bounds='parent'
+                >
+                    <div>
                         <p>asdasdad</p>
                     </div>
                 </Drager>
