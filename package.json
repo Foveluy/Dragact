@@ -27,6 +27,7 @@
   "dependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
     "prismjs": "^1.6.0",
+    "prop-types": "^15.5.10",
     "raw-loader": "^0.5.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
