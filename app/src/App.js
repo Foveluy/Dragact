@@ -51,7 +51,11 @@ class Drager extends React.Component {
     }
 
     static propTypes = {
-        bounds: PropTypes.string
+        bounds: PropTypes.string,
+        grid: PropTypes.shape([
+            PropTypes.number,
+            PropTypes.number
+        ])
     }
 
     state = {
@@ -78,8 +82,8 @@ class Drager extends React.Component {
          * 移动范围设定，永远移动 n 的倍数
          * 注意:设定移动范围的时候，一定要在判断bounds之前，否则会造成bounds不对齐
          */
-        deltaX = Math.round(deltaX/25) * 25
-        deltaY = Math.round(deltaY/25) * 25
+        deltaX = Math.round(deltaX / 25) * 25
+        deltaY = Math.round(deltaY / 25) * 25
 
         if (this.props.bounds === 'parent') {
             const bounds = {
@@ -119,7 +123,7 @@ class Drager extends React.Component {
         doc.addEventListener('mouseup', this.ondragend)
 
         if (this.props.bounds === 'parent' &&
-        //为了让 这段代码不会重复执行
+            //为了让 这段代码不会重复执行
             (typeof this.parent === 'undefined' || this.parent === null)) {
             /**
              * 在这里我们将父节点缓存下来，保证当用户鼠标离开拖拽区域时，我们仍然能获取到父节点
