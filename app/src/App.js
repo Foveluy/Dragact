@@ -52,10 +52,7 @@ class Drager extends React.Component {
 
     static propTypes = {
         bounds: PropTypes.string,
-        grid: PropTypes.shape([
-            PropTypes.number,
-            PropTypes.number
-        ])
+        grid: PropTypes.arrayOf(PropTypes.number)
     }
 
     state = {
@@ -82,8 +79,11 @@ class Drager extends React.Component {
          * 移动范围设定，永远移动 n 的倍数
          * 注意:设定移动范围的时候，一定要在判断bounds之前，否则会造成bounds不对齐
          */
-        deltaX = Math.round(deltaX / 25) * 25
-        deltaY = Math.round(deltaY / 25) * 25
+        const { grid } = this.props
+        if (Array.isArray(grid) && grid.length === 2) {
+            deltaX = Math.round(deltaX / grid[0]) * grid[0]
+            deltaY = Math.round(deltaY / grid[1]) * grid[1]
+        }
 
         if (this.props.bounds === 'parent') {
             const bounds = {
@@ -192,6 +192,7 @@ export default class tmpFather extends React.Component {
                 <Drager
                     bounds='parent'
                     style={{ padding: 10, margin: 10, border: '1px solid black' }}
+                    grid={[30, 30]}
                 >
                     <div>
                         <p>asdasdad</p>
