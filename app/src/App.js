@@ -49,7 +49,7 @@ class Drager extends React.Component {
         this.move = this.move.bind(this)
         this.ondragend = this.ondragend.bind(this)
     }
-    
+
     static propTypes = {
         bounds: PropTypes.string
     }
@@ -58,21 +58,28 @@ class Drager extends React.Component {
         x: null,
         y: null,
         originX: 0,
-        elX: 0,
         originY: 0,
-        elY: 0
+        lastX: 0,
+        lastY: 0
     }
 
     componentDidMount() {
     }
 
     move(event) {
-        let { elX, elY } = this.state
+        let { lastX, lastY } = this.state
         /*  event.client - this.state.origin 表示的是移动的距离,
         *   elX表示的是原来已经有的位移
         */
-        let deltaX = event.clientX - this.state.originX + elX
-        let deltaY = event.clientY - this.state.originY + elY
+        let deltaX = event.clientX - this.state.originX + lastX
+        let deltaY = event.clientY - this.state.originY + lastY
+
+        /**
+         * 移动范围设定，永远移动 n 的倍数
+         * 注意:设定移动范围的时候，一定要在判断bounds之前，否则会造成bounds不对齐
+         */
+        deltaX = Math.round(deltaX/25) * 25
+        deltaY = Math.round(deltaY/25) * 25
 
         if (this.props.bounds === 'parent') {
             const bounds = {
@@ -83,7 +90,6 @@ class Drager extends React.Component {
                 bottom: innerHeight(this.parent) - outerHeight(this.self) - this.self.offsetTop +
                 int(this.parent.style.paddingBottom) - int(this.self.style.marginBottom)
             }
-            
 
             /**
              * 保证不超出右边界和底部
@@ -99,11 +105,11 @@ class Drager extends React.Component {
             deltaX = Math.max(deltaX, bounds.left)
             deltaY = Math.max(deltaY, bounds.top)
         }
+
         this.setState({
             x: deltaX,
             y: deltaY
         })
-
     }
 
     ondrag(event) {
@@ -112,8 +118,8 @@ class Drager extends React.Component {
         doc.addEventListener('mousemove', this.move)
         doc.addEventListener('mouseup', this.ondragend)
 
-
         if (this.props.bounds === 'parent' &&
+        //为了让 这段代码不会重复执行
             (typeof this.parent === 'undefined' || this.parent === null)) {
             /**
              * 在这里我们将父节点缓存下来，保证当用户鼠标离开拖拽区域时，我们仍然能获取到父节点
@@ -131,8 +137,8 @@ class Drager extends React.Component {
         this.setState({
             originX: event.clientX,
             originY: event.clientY,
-            elX: this.state.x,
-            elY: this.state.y
+            lastX: this.state.x,
+            lastY: this.state.y
         })
     }
 
@@ -180,7 +186,7 @@ export default class tmpFather extends React.Component {
                 ref={(node) => this.node = node}
             >
                 <Drager
-                    
+                    bounds='parent'
                     style={{ padding: 10, margin: 10, border: '1px solid black' }}
                 >
                     <div>
