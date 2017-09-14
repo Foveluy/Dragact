@@ -1,45 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { int, innerHeight, innerWidth, outerHeight, outerWidth } from './utils'
+
 import './style.css'
-
-const int = (number) => {
-    if (number === '') {
-        return 0
-    }
-    return parseInt(number, 10)
-}
-const innerWidth = (node) => {
-    let width = node.clientWidth;
-    const computedStyle = node.style
-    width -= int(computedStyle.paddingLeft);
-    width -= int(computedStyle.paddingRight);
-    return width;
-}
-
-const outerWidth = (node) => {
-    let width = node.clientWidth;
-    const computedStyle = node.style
-    width += int(computedStyle.borderLeftWidth);
-    width += int(computedStyle.borderRightWidth);
-    return width;
-}
-
-const innerHeight = (node) => {
-    let height = node.clientHeight;
-    const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-    height -= int(computedStyle.paddingTop);
-    height -= int(computedStyle.paddingBottom);
-    return height;
-}
-
-const outerHeight = (node) => {
-    let height = node.clientHeight;
-    const computedStyle = node.ownerDocument.defaultView.getComputedStyle(node);
-    height += int(computedStyle.borderTopWidth);
-    height += int(computedStyle.borderBottomWidth);
-    return height;
-}
 
 const doc = document
 
@@ -52,8 +16,17 @@ class Drager extends React.Component {
 
     static propTypes = {
         bounds: PropTypes.string,
-        grid: PropTypes.arrayOf(PropTypes.number)
+        grid: PropTypes.arrayOf(PropTypes.number),
+        allowX: PropTypes.bool,
+        allowY: PropTypes.bool,
+        hasDraggerHandle: PropTypes.bool
     }
+
+    static defaultProps = {
+        allowX: true,
+        allowY: true,
+        hasDraggerHandle: false
+    };
 
     state = {
         x: null,
@@ -110,6 +83,10 @@ class Drager extends React.Component {
             deltaY = Math.max(deltaY, bounds.top)
         }
 
+        /**如果设置了x,y限制 */
+        deltaX = this.props.allowX ? deltaX : 0
+        deltaY = this.props.allowY ? deltaY : 0
+
         this.setState({
             x: deltaX,
             y: deltaY
@@ -119,6 +96,11 @@ class Drager extends React.Component {
     ondrag(event) {
         /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
         doc.body.style.userSelect = 'none'
+
+        if (this.props.hasDraggerHandle) {
+            if (event.target.className !== 'handle') return
+        }
+
         doc.addEventListener('mousemove', this.move)
         doc.addEventListener('mouseup', this.ondragend)
 
@@ -159,6 +141,8 @@ class Drager extends React.Component {
     render() {
         const { x, y } = this.state
         const { bounds, style, className, others } = this.props
+
+        /**主要是为了让用户定义自己的className去修改css */
         let fixedClassName = typeof className === 'undefined' ? '' : className + ' '
         return (
             <div className={`${fixedClassName}WrapDragger`}
@@ -201,10 +185,11 @@ export default class tmpFather extends React.Component {
                 </Drager>
                 <Drager
                     bounds='parent'
-                    style={{ padding: 10, margin: 10, left: 150, border: '1px solid black' }}
+                    style={{ padding: 10, margin: 10, border: '1px solid black' }}
+                    hasDraggerHandle={true}
                 >
                     <div>
-                        <p>asdasdad</p>
+                        <p className='handle' >asdasdad</p>
                     </div>
                 </Drager>
 
