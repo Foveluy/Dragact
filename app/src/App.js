@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { int, innerHeight, innerWidth, outerHeight, outerWidth } from './utils'
+import { int, innerHeight, innerWidth, outerHeight, outerWidth, parseBounds, isNumber } from './utils'
 
 import './style.css'
 
@@ -15,7 +15,15 @@ class Drager extends React.Component {
     }
 
     static propTypes = {
-        bounds: PropTypes.string,
+        bounds: PropTypes.oneOfType([
+            PropTypes.shape({
+                left: PropTypes.number,
+                right: PropTypes.number,
+                top: PropTypes.number,
+                bottom: PropTypes.number
+            }),
+            PropTypes.string
+        ]),
         grid: PropTypes.arrayOf(PropTypes.number),
         allowX: PropTypes.bool,
         allowY: PropTypes.bool,
@@ -48,44 +56,54 @@ class Drager extends React.Component {
         let deltaX = event.clientX - this.state.originX + lastX
         let deltaY = event.clientY - this.state.originY + lastY
 
-        /**
-         * 移动范围设定，永远移动 n 的倍数
-         * 注意:设定移动范围的时候，一定要在判断bounds之前，否则会造成bounds不对齐
-         */
-        const { grid } = this.props
-        if (Array.isArray(grid) && grid.length === 2) {
-            deltaX = Math.round(deltaX / grid[0]) * grid[0]
-            deltaY = Math.round(deltaY / grid[1]) * grid[1]
-        }
+        const { bounds } = this.props
+        if (bounds) {
+            /**
+            * 如果用户指定一个边界，那么在这里处理
+            */
+            let NewBounds = typeof bounds !== 'string' ? bounds : parseBounds(bounds)
 
-        if (this.props.bounds === 'parent') {
-            const bounds = {
-                left: int(this.parent.style.paddingLeft) + int(this.self.style.marginLeft) - this.self.offsetLeft,
-                top: int(this.parent.style.paddingTop) + int(this.self.style.marginTop) - this.self.offsetTop,
-                right: innerWidth(this.parent) - outerWidth(this.self) - this.self.offsetLeft +
-                int(this.parent.style.paddingRight) - int(this.self.style.marginRight),
-                bottom: innerHeight(this.parent) - outerHeight(this.self) - this.self.offsetTop +
-                int(this.parent.style.paddingBottom) - int(this.self.style.marginBottom)
+            /**
+             * 移动范围设定，永远移动 n 的倍数
+             * 注意:设定移动范围的时候，一定要在判断bounds之前，否则会造成bounds不对齐
+             */
+            const { grid } = this.props
+            if (Array.isArray(grid) && grid.length === 2) {
+                deltaX = Math.round(deltaX / grid[0]) * grid[0]
+                deltaY = Math.round(deltaY / grid[1]) * grid[1]
+            }
+
+            if (this.props.bounds === 'parent') {
+                NewBounds = {
+                    left: int(this.parent.style.paddingLeft) + int(this.self.style.marginLeft) - this.self.offsetLeft,
+                    top: int(this.parent.style.paddingTop) + int(this.self.style.marginTop) - this.self.offsetTop,
+                    right: innerWidth(this.parent) - outerWidth(this.self) - this.self.offsetLeft +
+                    int(this.parent.style.paddingRight) - int(this.self.style.marginRight),
+                    bottom: innerHeight(this.parent) - outerHeight(this.self) - this.self.offsetTop +
+                    int(this.parent.style.paddingBottom) - int(this.self.style.marginBottom)
+                }
             }
 
             /**
              * 保证不超出右边界和底部
              * keep element right and bot can not cross the bounds
              */
-            deltaX = Math.min(deltaX, bounds.right)
-            deltaY = Math.min(deltaY, bounds.bottom)
+            if (isNumber(NewBounds.right)) deltaX = Math.min(deltaX, NewBounds.right)
+            if (isNumber(NewBounds.bottom)) deltaY = Math.min(deltaY, NewBounds.bottom)
 
             /**
              * 保证不超出左边和上边
              * keep element left and top can not cross the bounds
              */
-            deltaX = Math.max(deltaX, bounds.left)
-            deltaY = Math.max(deltaY, bounds.top)
+            if (isNumber(NewBounds.left)) deltaX = Math.max(deltaX, NewBounds.left)
+            if (isNumber(NewBounds.top)) deltaY = Math.max(deltaY, NewBounds.top)
         }
+
 
         /**如果设置了x,y限制 */
         deltaX = this.props.allowX ? deltaX : 0
         deltaY = this.props.allowY ? deltaY : 0
+
 
         this.setState({
             x: deltaX,
@@ -165,17 +183,18 @@ class Drager extends React.Component {
     }
 }
 
+
 export default class tmpFather extends React.Component {
     render() {
         return (
             <div
                 className='shitWrap'
-                style={{ left: 100, height: 300, width: 300, border: '1px solid black', position: 'absolute' }}
+                style={{ display: 'flex', left: 100, height: 300, width: 300, border: '1px solid black', position: 'absolute' }}
                 ref={(node) => this.node = node}
             >
                 <Drager
                     bounds='parent'
-                    style={{ padding: 10, margin: 10, border: '1px solid black' }}
+                    style={{ height: 50, width: 50, padding: 10, margin: 10, border: '1px solid black' }}
                     grid={[30, 30]}
                 >
                     <div>
@@ -184,8 +203,7 @@ export default class tmpFather extends React.Component {
                     </div>
                 </Drager>
                 <Drager
-                    bounds='parent'
-                    style={{ padding: 10, margin: 10, border: '1px solid black' }}
+                    style={{ height: 50, width: 50, padding: 10, margin: 10, border: '1px solid black' }}
                     hasDraggerHandle={true}
                 >
                     <div>

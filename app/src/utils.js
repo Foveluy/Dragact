@@ -35,3 +35,15 @@ export const outerHeight = (node) => {
     height += int(computedStyle.borderBottomWidth);
     return height;
 }
+export const parseBounds = (bounds) => {
+    return {
+        left: bounds.left,
+        top: bounds.top,
+        right: bounds.right,
+        bottom: bounds.bottom
+    }
+}
+
+export const isNumber = (things) => {
+    return typeof things === 'number' ? true : false
+}
