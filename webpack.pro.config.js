@@ -5,11 +5,11 @@ module.exports = {
     entry: [
         // 'react-hot-loader/patch',
         // 'webpack/hot/only-dev-server',
-        './app/src/index.js'
+        './app/src/App.js'
     ],
     output: {
         path: resolve(__dirname, 'build'),//打包后的文件存放的地方
-        filename: "bundle.js",//打包后输出文件的文件名
+        filename: "react-dragger-layout.js",//打包后输出文件的文件名
         publicPath: "/"
     },
     devServer: {
@@ -36,8 +36,8 @@ module.exports = {
         ],
     },
     plugins: [
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin(),
+        // new webpack.HotModuleReplacementPlugin(),
+        // new webpack.NamedModulesPlugin(),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
                 warnings: false

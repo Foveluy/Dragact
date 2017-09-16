@@ -11,7 +11,7 @@ class Drager extends React.Component {
     constructor(...props) {
         super(...props)
         this.move = this.move.bind(this)
-        this.ondragend = this.ondragend.bind(this)
+        this.onDragEnd = this.onDragEnd.bind(this)
     }
 
     static propTypes = {
@@ -111,7 +111,7 @@ class Drager extends React.Component {
         })
     }
 
-    ondrag(event) {
+    onDragStart(event) {
         /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
         doc.body.style.userSelect = 'none'
 
@@ -120,7 +120,7 @@ class Drager extends React.Component {
         }
 
         doc.addEventListener('mousemove', this.move)
-        doc.addEventListener('mouseup', this.ondragend)
+        doc.addEventListener('mouseup', this.onDragEnd)
 
         if (this.props.bounds === 'parent' &&
             //为了让 这段代码不会重复执行
@@ -146,13 +146,13 @@ class Drager extends React.Component {
         })
     }
 
-    ondragend(event) {
+    onDragEnd(event) {
         /** 取消用户选择限制，用户可以重新选择 */
         doc.body.style.userSelect = ''
         this.parent = null
         this.self = null
         doc.removeEventListener('mousemove', this.move)
-        doc.removeEventListener('mouseup', this.ondragend)
+        doc.removeEventListener('mouseup', this.onDragEnd)
 
     }
 
@@ -165,8 +165,8 @@ class Drager extends React.Component {
         return (
             <div className={`${fixedClassName}WrapDragger`}
                 style={{ ...style, touchAction: 'none!important', transform: `translate(${x}px,${y}px)` }}
-                onMouseDown={this.ondrag.bind(this)}
-                onMouseUp={this.ondragend.bind(this)}
+                onMouseDown={this.onDragStart.bind(this)}
+                onMouseUp={this.onDragEnd.bind(this)}
                 {...others}
             >
                 {/**

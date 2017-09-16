@@ -1,6 +1,6 @@
 {
-  "name": "fangzheng",
-  "version": "1.0.0",
+  "name": "react-dragger-layout",
+  "version": "0.0.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -8,8 +8,8 @@
     "build": "NODE_ENV=production webpack -p --config webpack.pro.config.js ",
     "dev": "webpack-dev-server --devtool eval-source-map --progress --host 127.0.0.1 --colors --content-base ./build --history-api-fallback"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Fangzheng",
+  "license": "MIT",
   "devDependencies": {
     "babel-core": "^6.25.0",
     "babel-loader": "^7.0.0",
@@ -19,16 +19,15 @@
     "css-loader": "^0.28.4",
     "extract-text-webpack-plugin": "^3.0.0",
     "react-hot-loader": "^3.0.0-beta.6",
-    "showdown": "^1.7.1",
     "style-loader": "^0.18.2",
     "webpack": "^3.0.0",
     "webpack-dev-server": "^2.4.5"
   },
   "dependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
-    "prismjs": "^1.6.0",
     "prop-types": "^15.5.10",
-    "raw-loader": "^0.5.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
   }

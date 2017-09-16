@@ -13,6 +13,8 @@
   "plugins": [
     "transform-runtime",
     "react-hot-loader/babel"
+    // "transform-object-rest-spread",
+    // "transform-react-jsx"
       // 开启react代码的模块热替换（HMR）
   ]
 }
