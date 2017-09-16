@@ -1,4 +1,4 @@
-var Draggable = require('./build/react-dragger-layout').default;
+var Draggable = require('./build/Dragger').default;
 
 // Previous versions of this lib exported <Draggable> as the root export. As to not break
 // them, or TypeScript, we export *both* as the root and as 'default'.

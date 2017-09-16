@@ -1,11 +1,11 @@
 {
   "name": "react-dragger-layout",
-  "version": "0.0.5",
+  "version": "0.0.7",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "webpack-dev-server --devtool eval-source-map --progress --host 127.0.0.1 --colors --hot --content-base ./build --history-api-fallback",
-    "build": "NODE_ENV=production webpack -p --config webpack.pro.config.js ",
+    "build": "./node_modules/.bin/babel --out-dir ./build ./app/src/",
     "dev": "webpack-dev-server --devtool eval-source-map --progress --host 127.0.0.1 --colors --content-base ./build --history-api-fallback"
   },
   "author": "Fangzheng",
