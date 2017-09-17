@@ -3,13 +3,24 @@ import PropTypes from 'prop-types'
 import Dragger from './Dragger.js'
 import { int, innerHeight, innerWidth, outerHeight, outerWidth, parseBounds, isNumber } from './utils'
 
+import './style.css'
 
 export default class CtmpFather extends React.Component {
+
+    onWindowResize(e){
+        console.log(this.node.clientWidth)
+    }
+    componentDidMount(){
+        console.log(this.node)
+        window.addEventListener('resize', this.onWindowResize.bind(this))
+        
+    }
+
     render() {
         return (
             <div
                 className='shitWrap'
-                style={{ display: 'flex', left: 100, height: 300, width: 300, border: '1px solid black', position: 'absolute' }}
+                style={{ display: 'flex', left: 100, height: 300, border: '1px solid black' }}
                 ref={(node) => this.node = node}
             >
                 <Dragger

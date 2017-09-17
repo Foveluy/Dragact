@@ -12,6 +12,12 @@ export default class Dragger extends React.Component {
     }
 
     static propTypes = {
+        /**
+         * 拖动范围限制
+         * 如果不规定范围，那么子元素就可以随意拖动不受限制
+         * 1.可以提供自定义的范围限制
+         * 2.也可以提供父类为边框的范围限制(string === parent)
+         */
         bounds: PropTypes.oneOfType([
             PropTypes.shape({
                 left: PropTypes.number,
@@ -21,12 +27,31 @@ export default class Dragger extends React.Component {
             }),
             PropTypes.string
         ]),
+        /**
+         * 以网格的方式移动，每次移动并不是平滑的移动
+         * [20,30]，鼠标x轴方向移动了20 px ，y方向移动了30 px，整个子元素才会移动
+         */
         grid: PropTypes.arrayOf(PropTypes.number),
+
+        /**只允许移动x轴 */
         allowX: PropTypes.bool,
+
+        /**只允许移动y轴 */
         allowY: PropTypes.bool,
+
+        /**
+         * 内部的移动拖拽把手
+         * 拖拽把手className一定要设置成handle并且这个属性设置成true
+         * <Dragger hasDraggerHandle={true}>
+         *      <div className={handle} >点击我拖动</div>
+         * </Dragger>
+         */
         hasDraggerHandle: PropTypes.bool
     }
 
+    /**
+     * 初始变量设置
+     */
     static defaultProps = {
         allowX: true,
         allowY: true,
@@ -34,15 +59,19 @@ export default class Dragger extends React.Component {
     };
 
     state = {
+        /** x轴位移，单位是px */
         x: null,
+
+        /** y轴位移，单位是px */
         y: null,
+
+        /**鼠标点击元素的原始位置，单位是px */
         originX: 0,
         originY: 0,
+
+        /**已经移动的位移，单位是px */
         lastX: 0,
         lastY: 0
-    }
-
-    componentDidMount() {
     }
 
     move(event) {
@@ -116,11 +145,17 @@ export default class Dragger extends React.Component {
             if (event.target.className !== 'handle') return
         }
 
+        /**
+         * 把监听事件的回掉函数，绑定在document上
+         * 当设置边界的时候，用户鼠标会离开元素的范围
+         * 绑定在document上可以使得其依旧能够监听
+         * 如果绑定在元素上，则鼠标离开元素，就不会再被监听了
+         */
         doc.addEventListener('mousemove', this.move)
         doc.addEventListener('mouseup', this.onDragEnd)
 
         if (this.props.bounds === 'parent' &&
-            //为了让 这段代码不会重复执行
+            /**为了让 这段代码不会重复执行 */
             (typeof this.parent === 'undefined' || this.parent === null)) {
             /**
              * 在这里我们将父节点缓存下来，保证当用户鼠标离开拖拽区域时，我们仍然能获取到父节点
