@@ -1,12 +1,12 @@
 'use strict'
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import {LayoutDemo} from './App';
 
 
 ReactDOM.render(
     <div>
-        <App />
+        <LayoutDemo />
     </div>,
     document.getElementById('root')
 );

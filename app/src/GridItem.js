@@ -13,10 +13,13 @@ export default class GridItem extends Component {
 
 
     static PropTypes = {
+        /**外部容器属性 */
         col: PropTypes.number,
-        margin: PropTypes.number,
         containerWidth: PropTypes.number,
         containerPadding: PropTypes.number,
+
+        /**子元素的属性 */
+        margin: PropTypes.number,
     }
 
     static defaultProps = {
@@ -47,7 +50,9 @@ export default class GridItem extends Component {
                 style={{ position: 'absolute', border: '1px solid black' }}
                 onMove={this.onDrag}
             >
-                <p>asdasdas</p>
+                <div>
+                    {React.Children.map(this.props.children, (child) => child)}
+                </div>
             </Dragger>
         )
     }
