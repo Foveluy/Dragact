@@ -46,8 +46,16 @@ export default class Dragger extends React.Component {
          *      <div className={handle} >点击我拖动</div>
          * </Dragger>
          */
-        hasDraggerHandle: PropTypes.bool
+        hasDraggerHandle: PropTypes.bool,
+
+        /**
+         * 生命周期回掉
+         */
+        onDragStart:PropTypes.func,
+        onMove:PropTypes.func,
+        onDragEnd:PropTypes.func
     }
+    /** props end */
 
     /**
      * 初始变量设置
@@ -130,6 +138,8 @@ export default class Dragger extends React.Component {
         deltaX = this.props.allowX ? deltaX : 0
         deltaY = this.props.allowY ? deltaY : 0
 
+        /**移动时回掉 */
+        if(this.props.onMove)this.props.onMove(event,deltaX,deltaY)
 
         this.setState({
             x: deltaX,
