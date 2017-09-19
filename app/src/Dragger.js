@@ -13,6 +13,12 @@ export default class Dragger extends React.Component {
 
     static propTypes = {
         /**
+         * 给予元素一个x,y的初始位置，单位是px
+         */
+        x: PropTypes.number,
+        y: PropTypes.number,
+
+        /**
          * 拖动范围限制
          * 如果不规定范围，那么子元素就可以随意拖动不受限制
          * 1.可以提供自定义的范围限制
@@ -49,11 +55,17 @@ export default class Dragger extends React.Component {
         hasDraggerHandle: PropTypes.bool,
 
         /**
+         * 是否由用户移动
+         * 可能是系统移动
+         */
+        isUserMove: PropTypes.bool,
+
+        /**
          * 生命周期回掉
          */
-        onDragStart:PropTypes.func,
-        onMove:PropTypes.func,
-        onDragEnd:PropTypes.func
+        onDragStart: PropTypes.func,
+        onMove: PropTypes.func,
+        onDragEnd: PropTypes.func
     }
     /** props end */
 
@@ -63,8 +75,9 @@ export default class Dragger extends React.Component {
     static defaultProps = {
         allowX: true,
         allowY: true,
-        hasDraggerHandle: false
-    };
+        hasDraggerHandle: false,
+        isUserMove: true
+    }
 
     state = {
         /** x轴位移，单位是px */
@@ -139,7 +152,7 @@ export default class Dragger extends React.Component {
         deltaY = this.props.allowY ? deltaY : 0
 
         /**移动时回掉 */
-        if(this.props.onMove)this.props.onMove(event,deltaX,deltaY)
+        if (this.props.onMove) this.props.onMove(event, deltaX, deltaY)
 
         this.setState({
             x: deltaX,
@@ -180,6 +193,8 @@ export default class Dragger extends React.Component {
             this.self = event.currentTarget
         }
 
+        this.props.onDragStart(this.state.x,this.state.y)
+
         this.setState({
             originX: event.clientX,
             originY: event.clientY,
@@ -196,11 +211,32 @@ export default class Dragger extends React.Component {
         doc.removeEventListener('mousemove', this.move)
         doc.removeEventListener('mouseup', this.onDragEnd)
 
+        this.props.onDragEnd()
+    }
+
+    componentDidMount() {
+        /** 
+         * 这个函数只会调用一次 
+         * 这个只是一个临时的解决方案，因为这样会使得元素进行两次刷新
+        */
+        if (typeof this.props.x === 'number' &&
+            typeof this.props.y === 'number') {
+            this.setState({
+                x: this.props.x,
+                y: this.props.y
+            })
+        }
     }
 
     render() {
-        const { x, y } = this.state
+        let { x, y } = this.state
         const { bounds, style, className, others } = this.props
+
+        if (!this.props.isUserMove) {
+            /**当外部设置其x,y初始属性的时候，我们在这里设置元素的初始位移 */
+            x = this.props.x
+            y = this.props.y
+        }
 
         /**主要是为了让用户定义自己的className去修改css */
         let fixedClassName = typeof className === 'undefined' ? '' : className + ' '
