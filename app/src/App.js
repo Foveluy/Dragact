@@ -21,7 +21,42 @@ const syncLayout = (layout, childIndex, { GridX, GridY }, isUserMove) => {
             newlayout[i].isUserMove = isUserMove
         }
     }
+    return newlayout
+}
 
+const collision = (a, b) => {
+    if (a.GridX === b.GridX && a.GridY === b.GridY &&
+        a.w === b.w && a.h === b.h) {
+            return false
+    }
+
+    if (a.GridX + a.w <= b.GridX) return false
+    if (a.GridX >= b.GridX + b.w) return false
+    if (a.GridY + a.h <= b.GridY) return false
+    if (a.GridY >= b.GridY + b.h) return false
+
+    return true
+}
+
+const layoutCheck = (layout, layoutItem, index, movingY) => {
+    let i, movedItem
+    let newlayout = layout.map((item, idx) => {
+        if (idx !== index) {
+            if (collision(item, layoutItem)) {
+                i = idx
+                let offsetY = layoutItem.GridY + layoutItem.h
+                // if (movingY > 0) offsetY = layoutItem.GridY + layoutItem.h
+                // if (movingY < 0) offsetY = layoutItem.GridY
+                movedItem = { ...item, GridY: offsetY, isUserMove: false }
+                return movedItem
+            }
+        }
+        return item
+    })
+    /** 递归调用,将layout中的所有重叠元素全部移动 */
+    if (typeof i === 'number' && typeof movedItem === 'object') {
+        newlayout = layoutCheck(newlayout, movedItem, i, 0)
+    }
     return newlayout
 }
 
@@ -51,8 +86,7 @@ class DraggerLayout extends React.Component {
         hMoving: 0,
         placeholderShow: false,
         placeholderMoving: false,
-        layout: MapLayoutTostate(this.props.layout),
-        transitionStyle: ''
+        layout: MapLayoutTostate(this.props.layout)
     }
 
     onDragStart(bundles) {
@@ -71,16 +105,21 @@ class DraggerLayout extends React.Component {
             placeholderShow: true,
             placeholderMoving: true,
             layout: newlayout,
-            transitionStyle: ''
         })
     }
 
-    onDrag(cor) {
+    onDrag(layoutItem, index) {
 
+        const subTmp = this.state.GridYMoving - layoutItem.GridY
+
+        const newLayout = layoutCheck(this.state.layout, layoutItem, index, subTmp)
         this.setState({
-            GridXMoving: cor.GridX,
-            GridYMoving: cor.GridY,
+            GridXMoving: layoutItem.GridX,
+            GridYMoving: layoutItem.GridY,
+            layout: newLayout
         })
+
+
     }
 
     onDragEnd(childIndex) {
@@ -90,8 +129,7 @@ class DraggerLayout extends React.Component {
         }, false)
         this.setState({
             placeholderShow: false,
-            layout: Newlayout,
-            transitionStyle: '.WrapDragger{-webkit-transition: all .3s;transition: all .3s;}'
+            layout: Newlayout
         })
     }
     placeholder() {
@@ -146,12 +184,12 @@ class DraggerLayout extends React.Component {
 
     render() {
         const { layout, col, width, padding, rowHeight } = this.props
+
         return (
             <div
                 className='DraggerLayout'
                 style={{ position: 'absolute', left: 100, width: this.props.width, height: 500, border: '1px solid black' }}
             >
-                <style dangerouslySetInnerHTML={{ __html: this.state.transitionStyle }}></style>
                 {React.Children.map(this.props.children,
                     (child, index) => this.getGridItem(child, index)
                 )}
@@ -163,20 +201,20 @@ class DraggerLayout extends React.Component {
 
 export const LayoutDemo = () => {
     const layout = [{
-        GridX: 3, GridY: 4, w: 1, h: 3
+        GridX: 3, GridY: 2, w: 2, h: 2
     }, {
-        GridX: 3, GridY: 5, w: 2, h: 2
+        GridX: 0, GridY: 1, w: 2, h: 2
     }, {
-        GridX: 4, GridY: 5, w: 1, h: 3
+        GridX: 3, GridY: 6, w: 2, h: 2
     }, {
-        GridX: 4, GridY: 5, w: 3, h: 3
+        GridX: 3, GridY: 8, w: 2, h: 2
     }]
     return (
         <DraggerLayout layout={layout} width={500}>
             <p key='a'>absolute</p>
             <p key='b'>black</p>
             <p key='c'>children</p>
-            <p key='d'>children</p>
+            <p key='d'>fuck</p>
         </DraggerLayout>
     )
 }
