@@ -6,9 +6,25 @@ import './style.css'
 
 
 const MapLayoutTostate = (layout) => {
-    console.log('进来了', layout)
-    return layout
+    return layout.map((child) => {
+        let newChild = { ...child, isUserMove: true }
+        return newChild
+    })
 }
+
+const syncLayout = (layout, childIndex, { GridX, GridY }, isUserMove) => {
+    let newlayout = Object.assign([], layout)
+    for (let i = 0, length = newlayout.length; i < length; i++) {
+        if (i === childIndex) {
+            newlayout[i].GridX = GridX
+            newlayout[i].GridY = GridY
+            newlayout[i].isUserMove = isUserMove
+        }
+    }
+
+    return newlayout
+}
+
 
 class DraggerLayout extends React.Component {
     constructor(props) {
@@ -35,33 +51,47 @@ class DraggerLayout extends React.Component {
         hMoving: 0,
         placeholderShow: false,
         placeholderMoving: false,
-        layout: MapLayoutTostate(this.props.layout)
+        layout: MapLayoutTostate(this.props.layout),
+        transitionStyle: ''
     }
 
     onDragStart(bundles) {
-        const { GridX, GridY, w, h } = bundles
-        console.log(bundles)
+        const { GridX, GridY, w, h, index } = bundles
+        const newlayout = syncLayout(this.state.layout, index, {
+            GridX: GridX,
+            GridY: GridY
+        }, true)
+
+        console.log('placeholder', GridX, GridY)
         this.setState({
             GridXMoving: GridX,
             GridYMoving: GridY,
             wMoving: w,
             hMoving: h,
             placeholderShow: true,
-            placeholderMoving: true
+            placeholderMoving: true,
+            layout: newlayout,
+            transitionStyle:''
         })
     }
 
     onDrag(cor) {
+
         this.setState({
             GridXMoving: cor.GridX,
             GridYMoving: cor.GridY,
         })
     }
 
-    onDragEnd() {
-        console.log(this.state)
+    onDragEnd(childIndex) {
+        let Newlayout = syncLayout(this.state.layout, childIndex, {
+            GridX: this.state.GridXMoving,
+            GridY: this.state.GridYMoving
+        }, false)
         this.setState({
-            placeholderShow: false
+            placeholderShow: false,
+            layout: Newlayout,
+            transitionStyle:'.WrapDragger{-webkit-transition: all .3s;transition: all .3s;}'
         })
     }
     placeholder() {
@@ -79,7 +109,7 @@ class DraggerLayout extends React.Component {
                 GridY={GridYMoving}
                 w={wMoving}
                 h={hMoving}
-                style={{ background: '#a31' }}
+                style={{ background: '#a31', zIndex: -1,transition:' all .15s' }}
                 isUserMove={!placeholderMoving}
             >
             </GridItem >
@@ -105,6 +135,9 @@ class DraggerLayout extends React.Component {
                 onDrag={this.onDrag}
                 onDragStart={this.onDragStart}
                 onDragEnd={this.onDragEnd}
+                index={index}
+                isUserMove={layout[index].isUserMove}
+                style={{ background: '#329'}}
             >
                 {child}
             </GridItem >
@@ -118,6 +151,7 @@ class DraggerLayout extends React.Component {
                 className='DraggerLayout'
                 style={{ position: 'absolute', left: 100, width: 500, height: 500, border: '1px solid black' }}
             >
+                <style dangerouslySetInnerHTML={{ __html: this.state.transitionStyle }}></style>
                 {React.Children.map(this.props.children,
                     (child, index) => this.getGridItem(child, index)
                 )}
@@ -129,17 +163,20 @@ class DraggerLayout extends React.Component {
 
 export const LayoutDemo = () => {
     const layout = [{
-        GridX: 3, GridY: 4, w: 3, h: 2
+        GridX: 3, GridY: 4, w: 1, h: 3
     }, {
-        GridX: 1, GridY: 3, w: 3, h: 3
+        GridX: 3, GridY: 5, w: 1, h: 3
     }, {
-        GridX: 2, GridY: 5, w: 3, h: 3
+        GridX: 4, GridY: 5, w: 1, h: 3
+    }, {
+        GridX: 4, GridY: 5, w: 1, h: 3
     }]
     return (
         <DraggerLayout layout={layout}>
-            <p>absolute</p>
-            <p>black</p>
-            <p>children</p>
+            <p key='a'>absolute</p>
+            <p key='b'>black</p>
+            <p key='c'>children</p>
+            <p key='d'>children</p>
         </DraggerLayout>
     )
 }

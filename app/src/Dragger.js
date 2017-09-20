@@ -90,6 +90,8 @@ export default class Dragger extends React.Component {
         originX: 0,
         originY: 0,
 
+        isUserMove: true,
+
         /**已经移动的位移，单位是px */
         lastX: 0,
         lastY: 0
@@ -193,7 +195,7 @@ export default class Dragger extends React.Component {
             this.self = event.currentTarget
         }
 
-        this.props.onDragStart(this.state.x,this.state.y)
+        this.props.onDragStart(this.state.x, this.state.y)
 
         this.setState({
             originX: event.clientX,
@@ -226,6 +228,23 @@ export default class Dragger extends React.Component {
                 y: this.props.y
             })
         }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        // console.log(nextProps)
+        const { isUserMove } = this.props
+        if (!isUserMove) {
+            if (typeof this.props.x === 'number' &&
+                typeof this.props.y === 'number') {
+                this.setState({
+                    x: this.props.x,
+                    y: this.props.y,
+                    lastX:this.props.x,
+                    lastY:this.props.y
+                })
+            }
+        }
+
     }
 
     render() {
