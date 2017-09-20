@@ -71,9 +71,6 @@ export default class GridItem extends Component {
     /**给予一个grid的位置，算出元素具体的在容器中位置在哪里，单位是px */
     calGridItemPosition(GridX, GridY) {
         const { w, margin, col, containerWidth } = this.props
-
-
-
         let x = Math.round(GridX * (containerWidth - margin[0] * (col + 1)) / col + (GridX + 1) * margin[0])
         let y = Math.round(GridY * this.props.rowHeight + margin[1] * (GridY + 1))
         return {

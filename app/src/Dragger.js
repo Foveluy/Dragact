@@ -234,7 +234,6 @@ export default class Dragger extends React.Component {
         // console.log(nextProps)
         const { isUserMove } = this.props
         if (!isUserMove) {
-            console.log()
             if (typeof nextProps.x === 'number' &&
                 typeof nextProps.y === 'number') {
                 this.setState({

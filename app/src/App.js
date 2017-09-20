@@ -27,7 +27,7 @@ const syncLayout = (layout, childIndex, { GridX, GridY }, isUserMove) => {
 const collision = (a, b) => {
     if (a.GridX === b.GridX && a.GridY === b.GridY &&
         a.w === b.w && a.h === b.h) {
-            return false
+        return true
     }
 
     if (a.GridX + a.w <= b.GridX) return false
@@ -38,25 +38,28 @@ const collision = (a, b) => {
     return true
 }
 
-const layoutCheck = (layout, layoutItem, index, movingY) => {
+const layoutCheck = (layout, layoutItem, index, fristItemIndex) => {
     let i, movedItem
     let newlayout = layout.map((item, idx) => {
         if (idx !== index) {
             if (collision(item, layoutItem)) {
                 i = idx
                 let offsetY = layoutItem.GridY + layoutItem.h
-                // if (movingY > 0) offsetY = layoutItem.GridY + layoutItem.h
-                // if (movingY < 0) offsetY = layoutItem.GridY
                 movedItem = { ...item, GridY: offsetY, isUserMove: false }
                 return movedItem
             }
+        } else if (fristItemIndex === idx) {
+            return { ...item, GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true }
         }
         return item
     })
     /** 递归调用,将layout中的所有重叠元素全部移动 */
     if (typeof i === 'number' && typeof movedItem === 'object') {
-        newlayout = layoutCheck(newlayout, movedItem, i, 0)
+        
+        newlayout = layoutCheck(newlayout, movedItem, i, fristItemIndex)
+        console.log('检查这个layout:',newlayout)
     }
+
     return newlayout
 }
 
@@ -96,7 +99,7 @@ class DraggerLayout extends React.Component {
             GridY: GridY
         }, true)
 
-        console.log('placeholder', GridX, GridY)
+        console.log('placeholder', newlayout)
         this.setState({
             GridXMoving: GridX,
             GridYMoving: GridY,
@@ -112,14 +115,12 @@ class DraggerLayout extends React.Component {
 
         const subTmp = this.state.GridYMoving - layoutItem.GridY
 
-        const newLayout = layoutCheck(this.state.layout, layoutItem, index, subTmp)
+        const newLayout = layoutCheck(this.state.layout, layoutItem, index, index/*第一个物品的参数 */)
         this.setState({
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
             layout: newLayout
         })
-
-
     }
 
     onDragEnd(childIndex) {
