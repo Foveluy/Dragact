@@ -71,7 +71,7 @@ class DraggerLayout extends React.Component {
             placeholderShow: true,
             placeholderMoving: true,
             layout: newlayout,
-            transitionStyle:''
+            transitionStyle: ''
         })
     }
 
@@ -91,7 +91,7 @@ class DraggerLayout extends React.Component {
         this.setState({
             placeholderShow: false,
             layout: Newlayout,
-            transitionStyle:'.WrapDragger{-webkit-transition: all .3s;transition: all .3s;}'
+            transitionStyle: '.WrapDragger{-webkit-transition: all .3s;transition: all .3s;}'
         })
     }
     placeholder() {
@@ -109,7 +109,7 @@ class DraggerLayout extends React.Component {
                 GridY={GridYMoving}
                 w={wMoving}
                 h={hMoving}
-                style={{ background: '#a31', zIndex: -1,transition:' all .15s' }}
+                style={{ background: '#a31', zIndex: -1, transition: ' all .15s' }}
                 isUserMove={!placeholderMoving}
             >
             </GridItem >
@@ -137,7 +137,7 @@ class DraggerLayout extends React.Component {
                 onDragEnd={this.onDragEnd}
                 index={index}
                 isUserMove={layout[index].isUserMove}
-                style={{ background: '#329'}}
+                style={{ background: '#329' }}
             >
                 {child}
             </GridItem >
@@ -149,7 +149,7 @@ class DraggerLayout extends React.Component {
         return (
             <div
                 className='DraggerLayout'
-                style={{ position: 'absolute', left: 100, width: 500, height: 500, border: '1px solid black' }}
+                style={{ position: 'absolute', left: 100, width: this.props.width, height: 500, border: '1px solid black' }}
             >
                 <style dangerouslySetInnerHTML={{ __html: this.state.transitionStyle }}></style>
                 {React.Children.map(this.props.children,
@@ -165,14 +165,14 @@ export const LayoutDemo = () => {
     const layout = [{
         GridX: 3, GridY: 4, w: 1, h: 3
     }, {
-        GridX: 3, GridY: 5, w: 1, h: 3
+        GridX: 3, GridY: 5, w: 2, h: 2
     }, {
         GridX: 4, GridY: 5, w: 1, h: 3
     }, {
-        GridX: 4, GridY: 5, w: 1, h: 3
+        GridX: 4, GridY: 5, w: 3, h: 3
     }]
     return (
-        <DraggerLayout layout={layout}>
+        <DraggerLayout layout={layout} width={500}>
             <p key='a'>absolute</p>
             <p key='b'>black</p>
             <p key='c'>children</p>

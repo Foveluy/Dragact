@@ -42,8 +42,8 @@ export default class GridItem extends Component {
         containerPadding: [0, 0],
         margin: [10, 10],
         rowHeight: 30,
-        w: 100,
-        h: 100
+        w: 1,
+        h: 1
     }
 
     /** 计算容器的每一个格子多大 */
@@ -55,20 +55,22 @@ export default class GridItem extends Component {
     /**转化，计算网格的GridX,GridY值 */
     calGridXY(x, y) {
         const { margin, containerWidth, col } = this.props
-        let GridX = Math.round(x / (containerWidth - margin[0] * (col + 1)) * col)
-        // let GridX = Math.round(x / (this.calColWidth() + margin[0]))
+
+        /**坐标转换成格子的时候，无须计算margin */
+        let GridX = Math.round(x / containerWidth * col)
         let GridY = Math.round(y / (this.props.rowHeight + margin[1]))
         return { GridX, GridY }
     }
 
     /**给予一个grid的位置，算出元素具体的在容器中位置在哪里，单位是px */
     calGridItemPosition(GridX, GridY) {
-        const { w,margin, col, containerWidth } = this.props
-        if (GridX + w > col - 1) GridX = col - w 
+        const { w, margin, col, containerWidth } = this.props
+        if (GridX + w > col - 1) GridX = col - w
         if (GridX < 0) GridX = 0
+        if (GridY < 0) GridY = 0
 
         let x = Math.round(GridX * (containerWidth - margin[0] * (col + 1)) / col + (GridX + 1) * margin[0])
-        let y = Math.round(GridY * this.props.rowHeight + margin[1] * GridY)
+        let y = Math.round(GridY * this.props.rowHeight + margin[1] * (GridY + 1))
         return {
             x: x,
             y: y
@@ -79,11 +81,8 @@ export default class GridItem extends Component {
     calWHtoPx(w, h) {
         const { margin, containerPadding, containerWidth, col } = this.props
 
-        const one = (containerPadding[0] * 2 + containerWidth - margin[0] * (col + 1)) / col
-        console.log((containerWidth - margin[0] * (col + 1)) / col)
-
-        const wPx = Math.round(w * (containerWidth - margin[0] * (col + 1)) / col)
-        const hPx = Math.round(h * this.props.rowHeight)
+        const wPx = Math.round(w * this.calColWidth() + (w - 1) * margin[0])
+        const hPx = Math.round(h * this.props.rowHeight + (h - 1) * margin[1])
 
         return { wPx, hPx }
     }
