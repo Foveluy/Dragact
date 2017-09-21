@@ -90,29 +90,31 @@ export default class GridItem extends Component {
     }
 
     onDragStart(x, y) {
-        const { w, h, index } = this.props
+        const { w, h, UniqueKey } = this.props
         const { GridX, GridY } = this.calGridXY(x, y)
 
         this.props.onDragStart({
-            event, GridX, GridY, w, h, index
+            event, GridX, GridY, w, h, UniqueKey
         })
     }
     onDrag(event, x, y) {
         let { GridX, GridY } = this.calGridXY(x, y)
-        const { w, h, col } = this.props
-
-        this.props.onDrag({ GridX, GridY, w, h }, this.props.index)
+        const { w, h, col, UniqueKey } = this.props
+        this.props.onDrag({ GridX, GridY, w, h }, UniqueKey)
     }
 
     onDragEnd() {
-        if (this.props.onDragEnd) this.props.onDragEnd(this.props.index)
+        if (this.props.onDragEnd) this.props.onDragEnd(this.props.UniqueKey)
+    }
+
+    componentWillReceiveProps(nextProps) {
+        // console.log(nextProps.isUserMove,nextProps.GridX,nextProps.GridY)
     }
 
     render() {
         const { x, y } = this.calGridItemPosition(this.props.GridX, this.props.GridY)
         const { w, h, margin, style, bounds } = this.props
         const { wPx, hPx } = this.calWHtoPx(w, h)
-
         return (
             <Dragger
                 style={{

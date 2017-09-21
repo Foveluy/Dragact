@@ -5,28 +5,40 @@ import GridItem from './GridItem'
 import './style.css'
 
 
-const MapLayoutTostate = (layout) => {
-    return layout.map((child) => {
-        let newChild = { ...child, isUserMove: true }
+const layoutItemForkey = (layout, key) => {
+    for (let i = 0, length = layout.length; i < length; i++) {
+        if (key === layout[i].key) {
+            return layout[i]
+        }
+    }
+}
+
+const MapLayoutTostate = (layout, children) => {
+    return layout.map((child, index) => {
+        let newChild = { ...child, isUserMove: true, key: children[index].key }
         return newChild
     })
 }
 
-const syncLayout = (layout, childIndex, { GridX, GridY }, isUserMove) => {
-    let newlayout = Object.assign([], layout)
-    for (let i = 0, length = newlayout.length; i < length; i++) {
-        if (i === childIndex) {
-            newlayout[i].GridX = GridX
-            newlayout[i].GridY = GridY
-            newlayout[i].isUserMove = isUserMove
+const syncLayout = (layout, key, GridX, GridY, isUserMove) => {
+    const newlayout = layout.map((item) => {
+        if (item.key === key) {
+            return {
+                ...item,
+                GridX: GridX,
+                GridY: GridY,
+                isUserMove: isUserMove
+            }
         }
-    }
+        return item
+    })
     return newlayout
 }
 
 const collision = (a, b) => {
     if (a.GridX === b.GridX && a.GridY === b.GridY &&
         a.w === b.w && a.h === b.h) {
+
         return true
     }
 
@@ -34,30 +46,121 @@ const collision = (a, b) => {
     if (a.GridX >= b.GridX + b.w) return false
     if (a.GridY + a.h <= b.GridY) return false
     if (a.GridY >= b.GridY + b.h) return false
-
     return true
 }
 
-const layoutCheck = (layout, layoutItem, index, fristItemIndex) => {
+const sortLayout = (layout) => {
+    return [].concat(layout).sort((a, b) => {
+        // console.log('排序中：', a, b)
+        if (a.GridY > b.GridY || (a.GridY === b.GridY && a.GridX > b.GridX)) {
+            return 1
+        } else if (a.GridY === b.GridY && a.GridX === b.GridX) {
+            return 0
+        }
+        return -1
+    })
+}
+
+/**获取layout中，item第一个碰撞到的物体 */
+const getFirstCollison = (layout, item) => {
+    for (let i = 0, length = layout.length; i < length; i++) {
+        if (collision(layout[i], item)) {
+            return layout[i]
+        }
+    }
+    return null
+}
+
+const compactItem = (finishedLayout, item) => {
+    let newItem = { ...item }
+    if (finishedLayout.length === 0) {
+        return { ...newItem, GridY: 0 }
+    }
+
+    while (true) {
+        console.log('现在操作:',item.key)
+        
+        let FirstCollison = getFirstCollison(finishedLayout, newItem)
+        console.log('碰撞信息:',FirstCollison)
+        if (FirstCollison) {
+            newItem.GridY = FirstCollison.GridY + FirstCollison.h
+            console.log('碰撞的', FirstCollison.key, '移动的是', newItem.key,'移动到',newItem.GridY)
+            return newItem
+        }else{
+            if (newItem.GridY <= 0) return {...newItem,GridY:0}
+        }
+        newItem.GridY--
+
+    }
+
+
+
+
+    // for (let i = 0, length = finishedLayout.length; i < length; i++) {
+    //     let layoutItem = finishedLayout[i]
+    //     console.log('现在的队列:', layoutItem.key, '移动的是', item.key)
+    //     while (!collision(layoutItem, newItem)) {
+    //         if (newItem.GridY > 0) {
+    //             console.log('--')
+    //             newItem.GridY--
+    //         } else {
+    //             // console.log('重合', layoutItem.key)
+    //             break
+    //         }
+    //     }
+    //     while (collision(layoutItem, newItem)) {
+    //         newItem.GridY = layoutItem.GridY + layoutItem.h
+    //         finishedLayout.forEach((item) => {
+    //             console.log('此时队列里有:', item.key, 'x', item.GridX, 'y', item.GridY)
+    //         })
+    //         // if (typeof newItem === 'object' && item.GridY < newItem.GridY) break
+    //         // newItem = { ...item }
+    //         console.log('对应item', layoutItem.key, '编号', newItem.key, '移动', newItem.GridY, '高度', layoutItem.GridY + layoutItem.h)
+    //         return newItem
+    //     }
+    // }
+
+
+
+    return newItem
+}
+
+const compactLayout = (layout) => {
+    // console.log('排序前', layout)
+    let sorted = sortLayout(layout)
+    // console.log('排序后', sorted)
+    const needCompact = Array(layout.length)
+    const compareList = []
+    for (let i = 0, length = sorted.length; i < length; i++) {
+        let finished = compactItem(compareList, sorted[i])
+
+        finished.isUserMove = false
+        compareList.push(finished)
+        needCompact[layout.indexOf(sorted[i])] = finished
+    }
+
+    return needCompact
+}
+
+const layoutCheck = (layout, layoutItem, key, fristItemkey) => {
     let i, movedItem
     let newlayout = layout.map((item, idx) => {
-        if (idx !== index) {
+        if (item.key !== key) {
             if (collision(item, layoutItem)) {
-                i = idx
+                i = item.key
                 let offsetY = layoutItem.GridY + layoutItem.h
                 movedItem = { ...item, GridY: offsetY, isUserMove: false }
                 return movedItem
             }
-        } else if (fristItemIndex === idx) {
+        } else if (fristItemkey === key) {
             return { ...item, GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true }
         }
         return item
     })
     /** 递归调用,将layout中的所有重叠元素全部移动 */
-    if (typeof i === 'number' && typeof movedItem === 'object') {
-        
-        newlayout = layoutCheck(newlayout, movedItem, i, fristItemIndex)
-        console.log('检查这个layout:',newlayout)
+
+    if (typeof i === 'string' && typeof movedItem === 'object') {
+        newlayout = layoutCheck(newlayout, movedItem, i, fristItemkey)
     }
 
     return newlayout
@@ -89,17 +192,14 @@ class DraggerLayout extends React.Component {
         hMoving: 0,
         placeholderShow: false,
         placeholderMoving: false,
-        layout: MapLayoutTostate(this.props.layout)
+        layout: MapLayoutTostate(this.props.layout, this.props.children)
     }
 
     onDragStart(bundles) {
-        const { GridX, GridY, w, h, index } = bundles
-        const newlayout = syncLayout(this.state.layout, index, {
-            GridX: GridX,
-            GridY: GridY
-        }, true)
+        const { GridX, GridY, w, h, UniqueKey } = bundles
 
-        console.log('placeholder', newlayout)
+        const newlayout = syncLayout(this.state.layout, UniqueKey, GridX, GridY, true)
+
         this.setState({
             GridXMoving: GridX,
             GridYMoving: GridY,
@@ -111,11 +211,15 @@ class DraggerLayout extends React.Component {
         })
     }
 
-    onDrag(layoutItem, index) {
+    onDrag(layoutItem, key) {
+        const { GridX, GridY } = layoutItem
+        const newLayout = layoutCheck(this.state.layout, layoutItem, key, key/*用户移动方块的key */)
 
-        const subTmp = this.state.GridYMoving - layoutItem.GridY
+        // const synclayout = syncLayout(newLayout, key, {
+        //     GridX: GridX,
+        //     GridY: GridY
+        // }, true)
 
-        const newLayout = layoutCheck(this.state.layout, layoutItem, index, index/*第一个物品的参数 */)
         this.setState({
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
@@ -123,14 +227,14 @@ class DraggerLayout extends React.Component {
         })
     }
 
-    onDragEnd(childIndex) {
-        let Newlayout = syncLayout(this.state.layout, childIndex, {
-            GridX: this.state.GridXMoving,
-            GridY: this.state.GridYMoving
-        }, false)
+    onDragEnd(key) {
+        let Newlayout = syncLayout(this.state.layout, key, this.state.GridXMoving, this.state.GridYMoving, false)
+
+        const compactedLayout = compactLayout(Newlayout)
+
         this.setState({
             placeholderShow: false,
-            layout: Newlayout
+            layout: compactedLayout
         })
     }
     placeholder() {
@@ -155,28 +259,33 @@ class DraggerLayout extends React.Component {
         )
     }
     componentDidMount() {
-
+        // this.setState({
+        //     layout: compactLayout(this.state.layout)
+        // })
     }
 
     getGridItem(child, index) {
         const { layout } = this.state
         const { col, width, padding, rowHeight } = this.props
+        const renderItem = layoutItemForkey(layout, child.key)
+
         return (
             <GridItem
                 col={col}
                 containerWidth={width}
                 containerPadding={padding}
                 rowHeight={rowHeight}
-                GridX={layout[index].GridX}
-                GridY={layout[index].GridY}
-                w={layout[index].w}
-                h={layout[index].h}
+                GridX={renderItem.GridX}
+                GridY={renderItem.GridY}
+                w={renderItem.w}
+                h={renderItem.h}
                 onDrag={this.onDrag}
                 onDragStart={this.onDragStart}
                 onDragEnd={this.onDragEnd}
                 index={index}
-                isUserMove={layout[index].isUserMove}
+                isUserMove={renderItem.isUserMove}
                 style={{ background: '#329' }}
+                UniqueKey={child.key}
             >
                 {child}
             </GridItem >
@@ -202,20 +311,20 @@ class DraggerLayout extends React.Component {
 
 export const LayoutDemo = () => {
     const layout = [{
-        GridX: 3, GridY: 2, w: 2, h: 2
+        GridX: 3, GridY: 2, w: 1, h: 1
     }, {
-        GridX: 0, GridY: 1, w: 2, h: 2
+        GridX: 0, GridY: 1, w: 1, h: 3
     }, {
-        GridX: 3, GridY: 6, w: 2, h: 2
+        GridX: 3, GridY: 6, w: 2, h: 1
     }, {
-        GridX: 3, GridY: 8, w: 2, h: 2
+        GridX: 3, GridY: 8, w: 1, h: 4
     }]
     return (
         <DraggerLayout layout={layout} width={500}>
-            <p key='a'>absolute</p>
-            <p key='b'>black</p>
-            <p key='c'>children</p>
-            <p key='d'>fuck</p>
+            <p key='a'>a</p>
+            <p key='b'>b</p>
+            <p key='c'>c</p>
+            <p key='d'>d</p>
         </DraggerLayout>
     )
 }

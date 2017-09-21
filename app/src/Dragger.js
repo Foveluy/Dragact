@@ -232,7 +232,7 @@ export default class Dragger extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         // console.log(nextProps)
-        const { isUserMove } = this.props
+        const { isUserMove } = nextProps
         if (!isUserMove) {
             if (typeof nextProps.x === 'number' &&
                 typeof nextProps.y === 'number') {
@@ -244,7 +244,6 @@ export default class Dragger extends React.Component {
                 })
             }
         }
-
     }
 
     render() {
