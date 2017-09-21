@@ -23,12 +23,16 @@ const MapLayoutTostate = (layout, children) => {
 const syncLayout = (layout, key, GridX, GridY, isUserMove) => {
     const newlayout = layout.map((item) => {
         if (item.key === key) {
-            return {
-                ...item,
-                GridX: GridX,
-                GridY: GridY,
-                isUserMove: isUserMove
-            }
+            item.GridX = GridX
+            item.GridY = GridY
+            item.isUserMove = isUserMove
+            return item
+            // return {
+            //     ...item,
+            //     GridX: GridX,
+            //     GridY: GridY,
+            //     isUserMove: isUserMove
+            // }
         }
         return item
     })
@@ -38,7 +42,6 @@ const syncLayout = (layout, key, GridX, GridY, isUserMove) => {
 const collision = (a, b) => {
     if (a.GridX === b.GridX && a.GridY === b.GridY &&
         a.w === b.w && a.h === b.h) {
-
         return true
     }
 
@@ -78,18 +81,14 @@ const compactItem = (finishedLayout, item) => {
     }
 
     while (true) {
-        console.log('现在操作:',item.key)
         let FirstCollison = getFirstCollison(finishedLayout, newItem)
-        console.log('碰撞信息:',FirstCollison)
         if (FirstCollison) {
             newItem.GridY = FirstCollison.GridY + FirstCollison.h
-            console.log('碰撞的', FirstCollison.key, '移动的是', newItem.key,'移动到',newItem.GridY)
             return newItem
         }else{
             if (newItem.GridY <= 0) return {...newItem,GridY:0}
         }
         newItem.GridY--
-
     }
     return newItem
 }
@@ -127,7 +126,6 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey) => {
         return item
     })
     /** 递归调用,将layout中的所有重叠元素全部移动 */
-
     if (typeof i === 'string' && typeof movedItem === 'object') {
         newlayout = layoutCheck(newlayout, movedItem, i, fristItemkey)
     }
@@ -183,11 +181,8 @@ class DraggerLayout extends React.Component {
     onDrag(layoutItem, key) {
         const { GridX, GridY } = layoutItem
         const newLayout = layoutCheck(this.state.layout, layoutItem, key, key/*用户移动方块的key */)
-
-        // const synclayout = syncLayout(newLayout, key, {
-        //     GridX: GridX,
-        //     GridY: GridY
-        // }, true)
+        // const compactedLayout = compactLayout(newLayout)
+        // const sy = syncLayout(compactedLayout, key, layoutItem.GridX, layoutItem.GridY, true)
 
         this.setState({
             GridXMoving: layoutItem.GridX,
@@ -197,10 +192,7 @@ class DraggerLayout extends React.Component {
     }
 
     onDragEnd(key) {
-        let Newlayout = syncLayout(this.state.layout, key, this.state.GridXMoving, this.state.GridYMoving, false)
-
-        const compactedLayout = compactLayout(Newlayout)
-
+        const compactedLayout = compactLayout(this.state.layout)
         this.setState({
             placeholderShow: false,
             layout: compactedLayout
@@ -228,9 +220,13 @@ class DraggerLayout extends React.Component {
         )
     }
     componentDidMount() {
-        // this.setState({
-        //     layout: compactLayout(this.state.layout)
-        // })
+        let that = this
+        setTimeout(function() {
+            that.setState({
+                layout: compactLayout(that.state.layout)
+            })
+        }, 1);
+
     }
 
     getGridItem(child, index) {
@@ -280,9 +276,9 @@ class DraggerLayout extends React.Component {
 
 export const LayoutDemo = () => {
     const layout = [{
-        GridX: 3, GridY: 2, w: 1, h: 1
+        GridX: 3, GridY: 2, w: 4, h: 4
     }, {
-        GridX: 0, GridY: 1, w: 1, h: 3
+        GridX: 0, GridY: 2, w: 1, h: 3
     }, {
         GridX: 3, GridY: 6, w: 2, h: 1
     }, {

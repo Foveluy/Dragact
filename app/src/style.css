@@ -7,7 +7,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-
 }
 .DraggerLayout{
     -webkit-transition: all 3.3s;
