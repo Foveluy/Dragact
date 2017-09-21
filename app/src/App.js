@@ -79,7 +79,6 @@ const compactItem = (finishedLayout, item) => {
 
     while (true) {
         console.log('现在操作:',item.key)
-        
         let FirstCollison = getFirstCollison(finishedLayout, newItem)
         console.log('碰撞信息:',FirstCollison)
         if (FirstCollison) {
@@ -92,36 +91,6 @@ const compactItem = (finishedLayout, item) => {
         newItem.GridY--
 
     }
-
-
-
-
-    // for (let i = 0, length = finishedLayout.length; i < length; i++) {
-    //     let layoutItem = finishedLayout[i]
-    //     console.log('现在的队列:', layoutItem.key, '移动的是', item.key)
-    //     while (!collision(layoutItem, newItem)) {
-    //         if (newItem.GridY > 0) {
-    //             console.log('--')
-    //             newItem.GridY--
-    //         } else {
-    //             // console.log('重合', layoutItem.key)
-    //             break
-    //         }
-    //     }
-    //     while (collision(layoutItem, newItem)) {
-    //         newItem.GridY = layoutItem.GridY + layoutItem.h
-    //         finishedLayout.forEach((item) => {
-    //             console.log('此时队列里有:', item.key, 'x', item.GridX, 'y', item.GridY)
-    //         })
-    //         // if (typeof newItem === 'object' && item.GridY < newItem.GridY) break
-    //         // newItem = { ...item }
-    //         console.log('对应item', layoutItem.key, '编号', newItem.key, '移动', newItem.GridY, '高度', layoutItem.GridY + layoutItem.h)
-    //         return newItem
-    //     }
-    // }
-
-
-
     return newItem
 }
 
