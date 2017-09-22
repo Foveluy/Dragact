@@ -122,11 +122,15 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
         if (item.key !== key) {
             if (collision(item, layoutItem)) {
                 i.push(item.key)
-
+                /**
+                 * 这里就是奇迹发生的地方，如果向上移动，那么必须注意的是
+                 * 一格一格的移动，而不是一次性移动
+                 */
                 let offsetY = item.GridY + 1
-                if (moving < 0) {
-                    offsetY = item.GridY
-                }
+
+                /**这一行也非常关键，当向上移动的时候，碰撞的元素必须固定 */
+                if (moving < 0 && layoutItem.GridY > 0) offsetY = item.GridY
+
                 if (layoutItem.GridY > item.GridY && layoutItem.GridY < item.GridY + item.h) {
                     /**
                      * 元素向上移动时，元素的上面空间不足,则不移动这个元素
@@ -134,6 +138,7 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                      * 
                      */
                     offsetY = item.GridY
+                    console.log('移动到', offsetY, '操纵的物体key', layoutItem.key, '移动的key', item.key)
                 }
                 if (moving > 0) {
                     /**
@@ -143,7 +148,7 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                      * 建议取值范围在1/2 ~ 3/4之间
                      */
 
-                    if (layoutItem.GridY < item.GridY) {
+                    if (layoutItem.GridY + layoutItem.h < item.GridY) {
                         let collision;
                         let copy = { ...item }
                         while (true) {
@@ -155,13 +160,13 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                             collision = getFirstCollison(newLayout, copy)
                             if (collision) {
                                 offsetY = collision.GridY + collision.h
-                                // console.log('移动到', offsetY, '操纵的物体底部', copy.key, '碰撞顶部', copy.GridY,'key',collision.key)
+                                console.log('移动到', offsetY, '操纵的物体底部', copy.key, '碰撞顶部', copy.GridY, 'key', collision.key)
                                 break
                             } else {
                                 copy.GridY--
                             }
                             if (copy.GridY < 0) {
-                                // console.log('移动到', offsetY, '操纵的物体底部', copy.key, '碰撞顶部', copy.GridY,)
+                                console.log('移动到', offsetY, '操纵的物体底部', copy.key, '碰撞顶部', copy.GridY, )
                                 offsetY = 0
                                 break
                             }
@@ -332,7 +337,7 @@ class DraggerLayout extends React.Component {
         return (
             <div
                 className='DraggerLayout'
-                style={{ position: 'absolute', left: 100, width: this.props.width, height: 500, border: '1px solid black' }}
+                style={{ position: 'absolute', left: 100, width: this.props.width, height: 1000, border: '1px solid black' }}
             >
                 {React.Children.map(this.props.children,
                     (child, index) => this.getGridItem(child, index)
@@ -345,24 +350,24 @@ class DraggerLayout extends React.Component {
 
 export const LayoutDemo = () => {
     const layout = [{
-        GridX: 3, GridY: 2, w: 4, h: 4
+        GridX: 3, GridY: 2, w: 3, h: 3
     }, {
-        GridX: 0, GridY: 2, w: 1, h: 3
+        GridX: 0, GridY: 2, w: 3, h: 3
     }, {
-        GridX: 3, GridY: 6, w: 2, h: 1
+        GridX: 3, GridY: 6, w: 3, h: 3
     }, {
-        GridX: 3, GridY: 8, w: 1, h: 4
+        GridX: 3, GridY: 8, w: 3, h: 3
     }, {
-        GridX: 3, GridY: 8, w: 3, h: 4
+        GridX: 3, GridY: 8, w: 3, h: 3
     }, {
-        GridX: 3, GridY: 8, w: 6, h: 2
+        GridX: 3, GridY: 8, w: 3, h: 3
     }, {
-        GridX: 3, GridY: 8, w: 2, h: 1
+        GridX: 3, GridY: 8, w: 3, h: 3
     }, {
-        GridX: 3, GridY: 8, w: 7, h: 4
+        GridX: 3, GridY: 8, w: 3, h: 3
     }]
     return (
-        <DraggerLayout layout={layout} width={1000}>
+        <DraggerLayout layout={layout} width={1000} col={12}>
             <p key='a'>a</p>
             <p key='b'>b</p>
             <p key='c'>c</p>
