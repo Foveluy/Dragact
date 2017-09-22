@@ -37,7 +37,7 @@ export default class GridItem extends Component {
     }
 
     static defaultProps = {
-        col: 6,
+        col: 12,
         containerWidth: 500,
         containerPadding: [0, 0],
         margin: [10, 10],
