@@ -36,7 +36,7 @@ const syncLayout = (layout, key, GridX, GridY, isUserMove) => {
 const collision = (a, b) => {
     if (a.GridX === b.GridX && a.GridY === b.GridY &&
         a.w === b.w && a.h === b.h) {
-            
+
         return true
 
     }
@@ -61,23 +61,23 @@ const sortLayout = (layout) => {
 
 /**获取layout中，item第一个碰撞到的物体 */
 const getFirstCollison = (layout, item) => {
-    
+
     for (let i = 0, length = layout.length; i < length; i++) {
-        
+
         if (collision(layout[i], item)) {
-            
+
             return layout[i]
         }
-        
+
     }
     return null
 }
 
 const compactItem = (finishedLayout, item) => {
     const newItem = { ...item }
-    
+
     if (finishedLayout.length === 0) {
-        
+
         return { ...newItem, GridY: 0 }
     }
     /**
@@ -85,17 +85,17 @@ const compactItem = (finishedLayout, item) => {
      * 
      */
     while (true) {
-        
+
         let FirstCollison = getFirstCollison(finishedLayout, newItem)
-        
+
         if (FirstCollison) {
             newItem.GridY = FirstCollison.GridY + FirstCollison.h
             return newItem
         }
         newItem.GridY--
-        
+
         if (newItem.GridY < 0) {
-            
+
             return { ...newItem, GridY: 0 }
         }
     }
@@ -122,7 +122,11 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
         if (item.key !== key) {
             if (collision(item, layoutItem)) {
                 i.push(item.key)
-                let offsetY = layoutItem.GridY
+
+                let offsetY = item.GridY + 1
+                if (moving < 0) {
+                    offsetY = item.GridY
+                }
                 if (layoutItem.GridY > item.GridY && layoutItem.GridY < item.GridY + item.h) {
                     /**
                      * 元素向上移动时，元素的上面空间不足,则不移动这个元素
@@ -144,7 +148,7 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                         let copy = { ...item }
                         while (true) {
                             let newLayout = layout.filter((item) => {
-                                if (item.key !== key && (item.key !== copy.key) ) {
+                                if (item.key !== key && (item.key !== copy.key)) {
                                     return item
                                 }
                             })
@@ -156,16 +160,16 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                             } else {
                                 copy.GridY--
                             }
-                            if(copy.GridY < 0){
+                            if (copy.GridY < 0) {
                                 // console.log('移动到', offsetY, '操纵的物体底部', copy.key, '碰撞顶部', copy.GridY,)
                                 offsetY = 0
                                 break
                             }
                         }
                     }
-                    
+
                 }
-                
+
                 movedItem.push({ ...item, GridY: offsetY, isUserMove: false })
                 return { ...item, GridY: offsetY, isUserMove: false }
             }
@@ -233,26 +237,26 @@ class DraggerLayout extends React.Component {
         const moving = GridY - this.state.GridYMoving
 
         const newLayout = layoutCheck(this.state.layout, layoutItem, key, key/*用户移动方块的key */, moving)
-        // const compactedLayout = compactLayout(newLayout)
-        // for (let i = 0; i < compactedLayout.length; i++) {
-        //     if (key === compactedLayout[i].key) {
-        //         /**
-        //          * 特殊点：当我们移动元素的时候，元素在layout中的位置不断改变
-        //          * 但是当isUserMove=true的时候，鼠标拖拽的元素不会随着位图变化而变化
-        //          * 但是实际layout中的位置还是会改变
-        //          * (isUserMove=true用于接触placeholder和元素的绑定)
-        //          */
-        //         compactedLayout[i].isUserMove = true
-        //         layoutItem.GridX = compactedLayout[i].GridX
-        //         layoutItem.GridY = compactedLayout[i].GridY
-        //         break
-        //     }
-        // }
+        const compactedLayout = compactLayout(newLayout)
+        for (let i = 0; i < compactedLayout.length; i++) {
+            if (key === compactedLayout[i].key) {
+                /**
+                 * 特殊点：当我们移动元素的时候，元素在layout中的位置不断改变
+                 * 但是当isUserMove=true的时候，鼠标拖拽的元素不会随着位图变化而变化
+                 * 但是实际layout中的位置还是会改变
+                 * (isUserMove=true用于接触placeholder和元素的绑定)
+                 */
+                compactedLayout[i].isUserMove = true
+                layoutItem.GridX = compactedLayout[i].GridX
+                layoutItem.GridY = compactedLayout[i].GridY
+                break
+            }
+        }
 
         this.setState({
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
-            layout: newLayout
+            layout: compactedLayout
         })
     }
 
