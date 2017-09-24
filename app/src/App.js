@@ -4,6 +4,13 @@ import GridItem from './GridItem'
 
 import './style.css'
 
+const correctLayout = (layout) => {
+    for (let i = 0; i < layout.length; i++) {
+        if (collision(layout[i], layout[i + 1])) {
+            return layoutCheck(layout, layout[i], layout[i].key, layout[i].key, -1)
+        }
+    }
+}
 
 const layoutItemForkey = (layout, key) => {
     for (let i = 0, length = layout.length; i < length; i++) {
@@ -82,22 +89,16 @@ const compactItem = (finishedLayout, item) => {
     }
     /**
      * 类似一个递归调用
-     * 
      */
     while (true) {
-
         let FirstCollison = getFirstCollison(finishedLayout, newItem)
-
         if (FirstCollison) {
             newItem.GridY = FirstCollison.GridY + FirstCollison.h
             return newItem
         }
         newItem.GridY--
 
-        if (newItem.GridY < 0) {
-
-            return { ...newItem, GridY: 0 }
-        }
+        if (newItem.GridY < 0) return { ...newItem, GridY: 0 }
     }
     return newItem
 }
@@ -112,7 +113,6 @@ const compactLayout = (layout) => {
         compareList.push(finished)
         needCompact[layout.indexOf(sorted[i])] = finished
     }
-
     return needCompact
 }
 
@@ -174,7 +174,6 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                     }
 
                 }
-
                 movedItem.push({ ...item, GridY: offsetY, isUserMove: false })
                 return { ...item, GridY: offsetY, isUserMove: false }
             }
@@ -296,11 +295,11 @@ class DraggerLayout extends React.Component {
     componentDidMount() {
         let that = this
         setTimeout(function () {
+            let layout = correctLayout(that.state.layout)
             that.setState({
-                layout: compactLayout(that.state.layout)
+                layout: compactLayout(layout)
             })
         }, 1);
-
     }
 
     getGridItem(child, index) {
@@ -350,13 +349,13 @@ class DraggerLayout extends React.Component {
 
 export const LayoutDemo = () => {
     const layout = [{
-        GridX: 3, GridY: 2, w: 3, h: 3
+        GridX: 0, GridY: 0, w: 3, h: 3
     }, {
-        GridX: 0, GridY: 2, w: 3, h: 3
+        GridX: 0, GridY: 0, w: 3, h: 3
     }, {
-        GridX: 3, GridY: 6, w: 3, h: 3
+        GridX: 0, GridY: 0, w: 3, h: 3
     }, {
-        GridX: 3, GridY: 8, w: 3, h: 3
+        GridX: 0, GridY: 0, w: 3, h: 3
     }, {
         GridX: 3, GridY: 8, w: 3, h: 3
     }, {

@@ -56,12 +56,12 @@ export default class Dragger extends React.Component {
 
         /**
          * 是否由用户移动
-         * 可能是系统移动
+         * 可能是通过外部props改变
          */
         isUserMove: PropTypes.bool,
 
         /**
-         * 生命周期回掉
+         * 生命周期回调
          */
         onDragStart: PropTypes.func,
         onMove: PropTypes.func,
@@ -113,7 +113,7 @@ export default class Dragger extends React.Component {
             let NewBounds = typeof bounds !== 'string' ? bounds : parseBounds(bounds)
 
             /**
-             * 移动范围设定，永远移动 n 的倍数
+             * 网格式移动范围设定，永远移动 n 的倍数
              * 注意:设定移动范围的时候，一定要在判断bounds之前，否则会造成bounds不对齐
              */
             const { grid } = this.props
@@ -153,7 +153,7 @@ export default class Dragger extends React.Component {
         deltaX = this.props.allowX ? deltaX : 0
         deltaY = this.props.allowY ? deltaY : 0
 
-        /**移动时回掉 */
+        /**移动时回调，用于外部控制 */
         if (this.props.onMove) this.props.onMove(event, deltaX, deltaY)
 
         this.setState({
@@ -213,7 +213,7 @@ export default class Dragger extends React.Component {
         doc.removeEventListener('mousemove', this.move)
         doc.removeEventListener('mouseup', this.onDragEnd)
 
-        this.props.onDragEnd()
+        this.props.onDragEnd(event)
     }
 
     componentDidMount() {
@@ -231,7 +231,11 @@ export default class Dragger extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        // console.log(nextProps)
+        /**
+         * 外部props 改变的时候更新元素的内部位置
+         * 这个api设计其实很不好
+         * 以后可能会修改掉
+         */
         const { isUserMove } = nextProps
         if (!isUserMove) {
             if (typeof nextProps.x === 'number' &&
@@ -239,8 +243,8 @@ export default class Dragger extends React.Component {
                 this.setState({
                     x: nextProps.x,
                     y: nextProps.y,
-                    lastX:nextProps.x,
-                    lastY:nextProps.y
+                    lastX: nextProps.x,
+                    lastY: nextProps.y
                 })
             }
         }
@@ -251,13 +255,13 @@ export default class Dragger extends React.Component {
         const { bounds, style, className, others } = this.props
 
         if (!this.props.isUserMove) {
-            /**当外部设置其x,y初始属性的时候，我们在这里设置元素的初始位移 */
+            /**当外部设置其props的x,y初始属性的时候，我们在这里设置元素的初始位移 */
             x = this.props.x
             y = this.props.y
         }
 
         /**主要是为了让用户定义自己的className去修改css */
-        let fixedClassName = typeof className === 'undefined' ? '' : className + ' '
+        const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
         return (
             <div className={`${fixedClassName}WrapDragger`}
                 style={{ ...style, touchAction: 'none!important', transform: `translate(${x}px,${y}px)` }}

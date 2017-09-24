@@ -61,9 +61,9 @@ export default class GridItem extends Component {
         let GridY = Math.round(y / (this.props.rowHeight + margin[1]))
 
         /**防止元素出container */
-        if (GridX + w > col - 1) GridX = col - w
-        if (GridX < 0) GridX = 0
-        if (GridY < 0) GridY = 0
+        if (GridX + w > col - 1) GridX = col - w //右边界
+        if (GridX < 0) GridX = 0//左边界
+        if (GridY < 0) GridY = 0//上边界
 
         return { GridX, GridY }
     }
@@ -71,7 +71,7 @@ export default class GridItem extends Component {
     /**给予一个grid的位置，算出元素具体的在容器中位置在哪里，单位是px */
     calGridItemPosition(GridX, GridY) {
         const { w, margin, col, containerWidth } = this.props
-        let x = Math.round(GridX * (containerWidth - margin[0] * (col + 1)) / col + (GridX + 1) * margin[0])
+        let x = Math.round(GridX * this.calColWidth() + (GridX + 1) * margin[0])
         let y = Math.round(GridY * this.props.rowHeight + margin[1] * (GridY + 1))
         return {
             x: x,
@@ -98,17 +98,13 @@ export default class GridItem extends Component {
         })
     }
     onDrag(event, x, y) {
-        let { GridX, GridY } = this.calGridXY(x, y)
+        const { GridX, GridY } = this.calGridXY(x, y)
         const { w, h, col, UniqueKey } = this.props
         this.props.onDrag({ GridX, GridY, w, h }, UniqueKey)
     }
 
     onDragEnd() {
         if (this.props.onDragEnd) this.props.onDragEnd(this.props.UniqueKey)
-    }
-
-    componentWillReceiveProps(nextProps) {
-        // console.log(nextProps.isUserMove,nextProps.GridX,nextProps.GridY)
     }
 
     render() {
