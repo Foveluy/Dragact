@@ -2,12 +2,12 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { LayoutDemo } from './App';
 
 ReactDOM.render(React.createElement(
     'div',
     null,
-    React.createElement(App, null)
+    React.createElement(LayoutDemo, null)
 ), document.getElementById('root'));
 ;
 

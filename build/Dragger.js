@@ -25,10 +25,19 @@ var Dragger = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (_ref = Dragger.__proto__ || _Object$getPrototypeOf(Dragger)).call.apply(_ref, [this].concat(props)));
 
         _this.state = {
+            /** x轴位移，单位是px */
             x: null,
+
+            /** y轴位移，单位是px */
             y: null,
+
+            /**鼠标点击元素的原始位置，单位是px */
             originX: 0,
             originY: 0,
+
+            isUserMove: true,
+
+            /**已经移动的位移，单位是px */
             lastX: 0,
             lastY: 0
         };
@@ -37,11 +46,14 @@ var Dragger = function (_React$Component) {
         _this.onDragEnd = _this.onDragEnd.bind(_this);
         return _this;
     }
+    /** props end */
+
+    /**
+     * 初始变量设置
+     */
+
 
     _createClass(Dragger, [{
-        key: 'componentDidMount',
-        value: function componentDidMount() {}
-    }, {
         key: 'move',
         value: function move(event) {
             var _state = this.state,
@@ -63,7 +75,7 @@ var Dragger = function (_React$Component) {
                 var NewBounds = typeof bounds !== 'string' ? bounds : parseBounds(bounds);
 
                 /**
-                 * 移动范围设定，永远移动 n 的倍数
+                 * 网格式移动范围设定，永远移动 n 的倍数
                  * 注意:设定移动范围的时候，一定要在判断bounds之前，否则会造成bounds不对齐
                  */
                 var grid = this.props.grid;
@@ -101,6 +113,9 @@ var Dragger = function (_React$Component) {
             deltaX = this.props.allowX ? deltaX : 0;
             deltaY = this.props.allowY ? deltaY : 0;
 
+            /**移动时回调，用于外部控制 */
+            if (this.props.onMove) this.props.onMove(event, deltaX, deltaY);
+
             this.setState({
                 x: deltaX,
                 y: deltaY
@@ -116,11 +131,17 @@ var Dragger = function (_React$Component) {
                 if (event.target.className !== 'handle') return;
             }
 
+            /**
+             * 把监听事件的回掉函数，绑定在document上
+             * 当设置边界的时候，用户鼠标会离开元素的范围
+             * 绑定在document上可以使得其依旧能够监听
+             * 如果绑定在元素上，则鼠标离开元素，就不会再被监听了
+             */
             doc.addEventListener('mousemove', this.move);
             doc.addEventListener('mouseup', this.onDragEnd);
 
             if (this.props.bounds === 'parent' && (
-            //为了让 这段代码不会重复执行
+            /**为了让 这段代码不会重复执行 */
             typeof this.parent === 'undefined' || this.parent === null)) {
                 /**
                  * 在这里我们将父节点缓存下来，保证当用户鼠标离开拖拽区域时，我们仍然能获取到父节点
@@ -134,6 +155,8 @@ var Dragger = function (_React$Component) {
                  */
                 this.self = event.currentTarget;
             }
+
+            this.props.onDragStart(this.state.x, this.state.y);
 
             this.setState({
                 originX: event.clientX,
@@ -151,6 +174,43 @@ var Dragger = function (_React$Component) {
             this.self = null;
             doc.removeEventListener('mousemove', this.move);
             doc.removeEventListener('mouseup', this.onDragEnd);
+
+            this.props.onDragEnd(event);
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            /** 
+             * 这个函数只会调用一次 
+             * 这个只是一个临时的解决方案，因为这样会使得元素进行两次刷新
+            */
+            if (typeof this.props.x === 'number' && typeof this.props.y === 'number') {
+                this.setState({
+                    x: this.props.x,
+                    y: this.props.y
+                });
+            }
+        }
+    }, {
+        key: 'componentWillReceiveProps',
+        value: function componentWillReceiveProps(nextProps) {
+            /**
+             * 外部props 改变的时候更新元素的内部位置
+             * 这个api设计其实很不好
+             * 以后可能会修改掉
+             */
+            var isUserMove = nextProps.isUserMove;
+
+            if (!isUserMove) {
+                if (typeof nextProps.x === 'number' && typeof nextProps.y === 'number') {
+                    this.setState({
+                        x: nextProps.x,
+                        y: nextProps.y,
+                        lastX: nextProps.x,
+                        lastY: nextProps.y
+                    });
+                }
+            }
         }
     }, {
         key: 'render',
@@ -164,8 +224,14 @@ var Dragger = function (_React$Component) {
                 className = _props.className,
                 others = _props.others;
 
-            /**主要是为了让用户定义自己的className去修改css */
 
+            if (!this.props.isUserMove) {
+                /**当外部设置其props的x,y初始属性的时候，我们在这里设置元素的初始位移 */
+                x = this.props.x;
+                y = this.props.y;
+            }
+
+            /**主要是为了让用户定义自己的className去修改css */
             var fixedClassName = typeof className === 'undefined' ? '' : className + ' ';
             return React.createElement(
                 'div',
@@ -183,21 +249,62 @@ var Dragger = function (_React$Component) {
 }(React.Component);
 
 Dragger.propTypes = {
+    /**
+     * 给予元素一个x,y的初始位置，单位是px
+     */
+    x: PropTypes.number,
+    y: PropTypes.number,
+
+    /**
+     * 拖动范围限制
+     * 如果不规定范围，那么子元素就可以随意拖动不受限制
+     * 1.可以提供自定义的范围限制
+     * 2.也可以提供父类为边框的范围限制(string === parent)
+     */
     bounds: PropTypes.oneOfType([PropTypes.shape({
         left: PropTypes.number,
         right: PropTypes.number,
         top: PropTypes.number,
         bottom: PropTypes.number
     }), PropTypes.string]),
+    /**
+     * 以网格的方式移动，每次移动并不是平滑的移动
+     * [20,30]，鼠标x轴方向移动了20 px ，y方向移动了30 px，整个子元素才会移动
+     */
     grid: PropTypes.arrayOf(PropTypes.number),
+
+    /**只允许移动x轴 */
     allowX: PropTypes.bool,
+
+    /**只允许移动y轴 */
     allowY: PropTypes.bool,
-    hasDraggerHandle: PropTypes.bool
-};
+
+    /**
+     * 内部的移动拖拽把手
+     * 拖拽把手className一定要设置成handle并且这个属性设置成true
+     * <Dragger hasDraggerHandle={true}>
+     *      <div className={handle} >点击我拖动</div>
+     * </Dragger>
+     */
+    hasDraggerHandle: PropTypes.bool,
+
+    /**
+     * 是否由用户移动
+     * 可能是通过外部props改变
+     */
+    isUserMove: PropTypes.bool,
+
+    /**
+     * 生命周期回调
+     */
+    onDragStart: PropTypes.func,
+    onMove: PropTypes.func,
+    onDragEnd: PropTypes.func };
 Dragger.defaultProps = {
     allowX: true,
     allowY: true,
-    hasDraggerHandle: false
+    hasDraggerHandle: false,
+    isUserMove: true
 };
 var _default = Dragger;
 export default _default;
