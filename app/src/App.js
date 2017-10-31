@@ -12,6 +12,11 @@ const correctLayout = (layout) => {
     }
 }
 
+/**
+ * 用key从layout中拿出item
+ * @param {*} layout 输入进来的布局
+ * @param {*} key 
+ */
 const layoutItemForkey = (layout, key) => {
     for (let i = 0, length = layout.length; i < length; i++) {
         if (key === layout[i].key) {
@@ -19,6 +24,14 @@ const layoutItemForkey = (layout, key) => {
         }
     }
 }
+
+/**
+ * 初始化的时候调用
+ * 会把isUserMove和key一起映射到layout中
+ * 不用用户设置
+ * @param {*} layout 
+ * @param {*} children 
+ */
 
 const MapLayoutTostate = (layout, children) => {
     return layout.map((child, index) => {
@@ -68,14 +81,10 @@ const sortLayout = (layout) => {
 
 /**获取layout中，item第一个碰撞到的物体 */
 const getFirstCollison = (layout, item) => {
-
     for (let i = 0, length = layout.length; i < length; i++) {
-
         if (collision(layout[i], item)) {
-
             return layout[i]
         }
-
     }
     return null
 }
@@ -138,16 +147,11 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                      * 
                      */
                     offsetY = item.GridY
-                    console.log('移动到', offsetY, '操纵的物体key', layoutItem.key, '移动的key', item.key)
                 }
+                /**
+                 * 物体向下移动的时候
+                 */
                 if (moving > 0) {
-                    /**
-                     * 这个地方的实现有点奇妙了，moving用于检查最开始移动的方块
-                     * layoutItem.GridY > item.h*(3/4) 这个做会让方块移动比较准确和精确
-                     * 如果是其他数字，很可能会出现不可预计的效果
-                     * 建议取值范围在1/2 ~ 3/4之间
-                     */
-
                     if (layoutItem.GridY + layoutItem.h < item.GridY) {
                         let collision;
                         let copy = { ...item }
@@ -160,19 +164,16 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                             collision = getFirstCollison(newLayout, copy)
                             if (collision) {
                                 offsetY = collision.GridY + collision.h
-                                console.log('移动到', offsetY, '操纵的物体底部', copy.key, '碰撞顶部', copy.GridY, 'key', collision.key)
                                 break
                             } else {
                                 copy.GridY--
                             }
                             if (copy.GridY < 0) {
-                                console.log('移动到', offsetY, '操纵的物体底部', copy.key, '碰撞顶部', copy.GridY, )
                                 offsetY = 0
                                 break
                             }
                         }
                     }
-
                 }
                 movedItem.push({ ...item, GridY: offsetY, isUserMove: false })
                 return { ...item, GridY: offsetY, isUserMove: false }
@@ -306,7 +307,6 @@ class DraggerLayout extends React.Component {
         const { layout } = this.state
         const { col, width, padding, rowHeight } = this.props
         const renderItem = layoutItemForkey(layout, child.key)
-
         return (
             <GridItem
                 col={col}
@@ -336,7 +336,7 @@ class DraggerLayout extends React.Component {
         return (
             <div
                 className='DraggerLayout'
-                style={{ position: 'absolute', left: 100, width: this.props.width, height: 1000, border: '1px solid black' }}
+                style={{ left: 100, width: this.props.width, height: 1000, border: '1px solid black' }}
             >
                 {React.Children.map(this.props.children,
                     (child, index) => this.getGridItem(child, index)
@@ -347,34 +347,33 @@ class DraggerLayout extends React.Component {
     }
 }
 
-export const LayoutDemo = () => {
-    const layout = [{
-        GridX: 0, GridY: 0, w: 3, h: 3
-    }, {
-        GridX: 0, GridY: 0, w: 3, h: 3
-    }, {
-        GridX: 0, GridY: 0, w: 3, h: 3
-    }, {
-        GridX: 0, GridY: 0, w: 3, h: 3
-    }, {
-        GridX: 3, GridY: 8, w: 3, h: 3
-    }, {
-        GridX: 3, GridY: 8, w: 3, h: 3
-    }, {
-        GridX: 3, GridY: 8, w: 3, h: 3
-    }, {
-        GridX: 3, GridY: 8, w: 3, h: 3
-    }]
-    return (
-        <DraggerLayout layout={layout} width={1000} col={12}>
-            <p key='a'>a</p>
-            <p key='b'>b</p>
-            <p key='c'>c</p>
-            <p key='d'>d</p>
-            <p key='e'>e</p>
-            <p key='f'>f</p>
-            <p key='g'>g</p>
-            <p key='h'>h</p>
-        </DraggerLayout>
-    )
+export default class LayoutDemo extends React.Component {
+
+    render(){
+        const layout = [{
+            GridX: 0, GridY: 0, w: 5, h: 3
+        }, {
+            GridX: 0, GridY: 0, w: 3, h: 3
+        }, {
+            GridX: 0, GridY: 0, w: 3, h: 3
+        }, {
+            GridX: 0, GridY: 0, w: 3, h: 3
+        }, {
+            GridX: 3, GridY: 8, w: 3, h: 3
+        }, {
+            GridX: 3, GridY: 8, w: 3, h: 3
+        }, {
+            GridX: 3, GridY: 8, w: 3, h: 3
+        }, {
+            GridX: 3, GridY: 8, w: 3, h: 3
+        }]
+        return (
+            <DraggerLayout layout={layout} width={1000} col={12}>
+                {layout.map((el, index) => {
+                    return (<div key={index}>1</div>)
+                })}
+            </DraggerLayout>
+        )
+    }
+
 }

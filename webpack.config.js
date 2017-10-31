@@ -18,6 +18,12 @@ module.exports = {
         hot: true,
         publicPath: '/',
     },
+     resolve: {
+        alias: {
+           'react': 'luy',
+           'react-dom': 'luy'
+        }
+     },
     module: {
         rules: [
             {

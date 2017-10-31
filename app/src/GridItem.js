@@ -1,9 +1,9 @@
 import React from 'react'
-import { Component } from 'react'
+
 import PropTypes from 'prop-types'
 import Dragger from './Dragger'
 
-export default class GridItem extends Component {
+export default class GridItem extends React.Component {
     constructor(props) {
         super(props)
         this.onDrag = this.onDrag.bind(this)
@@ -49,6 +49,7 @@ export default class GridItem extends Component {
     /** 计算容器的每一个格子多大 */
     calColWidth() {
         const { containerWidth, col, containerPadding, margin } = this.props
+        console.log(this.props)
         return (containerWidth - containerPadding[0] * 2 - margin[0] * (col + 1)) / col
     }
 
