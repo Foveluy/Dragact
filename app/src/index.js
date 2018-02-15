@@ -10,3 +10,7 @@ ReactDOM.render(
     </div>,
     document.getElementById('root')
 );
+
+document.body.addEventListener('touchmove', function (event) {
+    event.preventDefault();
+}, false);
