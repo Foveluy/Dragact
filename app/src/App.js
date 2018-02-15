@@ -50,7 +50,7 @@ const layoutItemForkey = (layout, key) => {
 
 const MapLayoutTostate = (layout, children) => {
     return layout.map((child, index) => {
-        let newChild = { ...child, isUserMove: true, key: children[index].key }
+        let newChild = { ...child, isUserMove: true, key: children[index].key, static: children[index].static }
         return newChild
     })
 }
@@ -208,6 +208,7 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                         }
                     }
                 }
+
                 movedItem.push({ ...item, GridY: offsetY, isUserMove: false })
                 return { ...item, GridY: offsetY, isUserMove: false }
             }
@@ -240,7 +241,7 @@ const getMaxContainerHeight = (layout, elementHeight = 30, elementMarginBottom =
 
 const getDataSet = (children) => {
     return children.map((child) => {
-        return { ...child.props['data-set'], isUserMove: true, key: child.key }
+        return { ...child.props['data-set'], isUserMove: true, key: child.key, }
     })
 }
 
@@ -290,7 +291,7 @@ class DraggerLayout extends React.Component {
         const { GridX, GridY, w, h, UniqueKey } = bundles
 
         const newlayout = syncLayout(this.state.layout, UniqueKey, GridX, GridY, true)
-        console.log(newlayout)
+
         this.setState({
             GridXMoving: GridX,
             GridYMoving: GridY,
@@ -359,7 +360,7 @@ class DraggerLayout extends React.Component {
                 GridY={GridYMoving}
                 w={wMoving}
                 h={hMoving}
-                style={{ background: '#ffccc7', zIndex: -1, transition: ' all .15s' }}
+                style={{ background: '#d6e4ff', zIndex: 0, transition: ' all .15s' }}
                 isUserMove={!placeholderMoving}
             >
             </GridItem >
@@ -397,6 +398,8 @@ class DraggerLayout extends React.Component {
                 index={index}
                 isUserMove={renderItem.isUserMove}
                 UniqueKey={child.key}
+                style={{ zIndex: 1 }}
+
             >
                 {child}
             </GridItem >
@@ -421,16 +424,39 @@ class DraggerLayout extends React.Component {
     }
 }
 
-export default class LayoutDemo extends React.Component {
 
-    render() {
-        return (
-            <DraggerLayout width={300} col={1} rowHeight={40} margin={[5, 5]} className='normal-layout'>
-                {['我', '叫', '做', '方', '正'].map((el, index) => {
-                    return (<div key={index} className='layout-item' data-set={{ GridX: 0, GridY: 1, w: 1, h: 2 }}>{el}</div>)
-                })}
-            </DraggerLayout>
-        )
-    }
+const Words = [
+    { content: 'You can do anything, but not everything.', img: 'http://pic.sc.chinaz.com/files/pic/pic9/201303/xpic10472.jpg' },
+    { content: 'Those who dare to fail miserably can achieve greatly.', img: 'https://img00.deviantart.net/1163/i/2013/059/d/7/irish_views_by_ssquared_photography-d5wjnsk.jpg' },
+    { content: 'You miss 100 percent of the shots you never take.', img: 'http://www.landsendhotel.co.uk/uploads/gallery/gallery/coastal_scenery_seascapes_6.jpg' },
+    { content: 'Those who believe in telekinetics, raise my hand.', img: 'https://tctechcrunch2011.files.wordpress.com/2017/10/26099344353_18cd6fabb8_k.jpg?w=738' },
+    { content: 'I’d rather live with a good question than a bad answer.', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVa26cLzh6PYUwY4LMpwbHyDHFmWi_w2JuqDzeOdm1IIEbBZO0Vg' }
+]
 
+
+const Card = ({ item }) => {
+    return (
+        <div className='layout-item'>
+            <img src={item.img} style={{ width: '100%' }} draggable={false} alt='card'></img>
+            <div style={{ padding: 5, textAlign: 'center', color: '#595959' }}>{item.content}</div>
+        </div>
+    )
 }
+
+
+export const LayoutDemo = () => {
+
+    return (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div>
+                <h1 style={{ textAlign: 'center' }}>Normal Layout Demo</h1>
+                <DraggerLayout width={800} col={12} rowHeight={800 / 12} margin={[5, 5]} className='normal-layout'>
+                    {Words.map((el, index) => {
+                        return <Card item={el} key={index} data-set={{ GridX: (index * 3) % 12, GridY: index * 2, w: 3, h: 3 }} />
+                    })}
+                </DraggerLayout>
+            </div>
+        </div>
+    )
+}
+

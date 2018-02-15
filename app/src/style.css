@@ -14,15 +14,19 @@
     transition: all .15s;
 }
 
+body {
+    background: white;
+}
+
 .normal-layout {
-    border: 1px solid black;
+    background: #d9d9d9;
 }
 
 .layout-item {
-    background: #391085;
+    background: white;
     height: 100%;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+}
+
+.layout-item:hover {
+    cursor: -webkit-grab;
 }

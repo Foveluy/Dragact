@@ -94,7 +94,10 @@ export default class Dragger extends React.Component {
 
         /**已经移动的位移，单位是px */
         lastX: 0,
-        lastY: 0
+        lastY: 0,
+
+        /**堆叠的层级 */
+        zIndex: 1
     }
 
     move(event) {
@@ -223,7 +226,8 @@ export default class Dragger extends React.Component {
             originX: originX,
             originY: originY,
             lastX: this.state.x,
-            lastY: this.state.y
+            lastY: this.state.y,
+            zIndex: 10
         })
     }
 
@@ -237,6 +241,10 @@ export default class Dragger extends React.Component {
 
         doc.removeEventListener('touchend', this.onDragEnd)
         doc.removeEventListener('mouseup', this.onDragEnd)
+
+        this.setState({
+            zIndex: 1
+        })
 
         this.props.onDragEnd(event)
     }
@@ -276,7 +284,7 @@ export default class Dragger extends React.Component {
     }
 
     render() {
-        let { x, y } = this.state
+        let { x, y, zIndex } = this.state
         const { bounds, style, className, others } = this.props
 
         if (!this.props.isUserMove) {
@@ -289,7 +297,7 @@ export default class Dragger extends React.Component {
         const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
         return (
             <div className={`${fixedClassName}WrapDragger`}
-                style={{ ...style, touchAction: 'none!important', transform: `translate(${x}px,${y}px)` }}
+                style={{ ...style, zIndex: zIndex, touchAction: 'none!important', transform: `translate(${x}px,${y}px)` }}
                 onMouseDown={this.onDragStart.bind(this)}
                 onTouchStart={this.onDragStart.bind(this)}
                 onTouchEnd={this.onDragEnd.bind(this)}
