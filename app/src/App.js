@@ -397,7 +397,7 @@ export default class LayoutDemo extends React.Component {
             GridX: 3, GridY: 8, w: 3, h: 3
         }]
         return (
-            <DraggerLayout layout={layout} width={800} col={12}>
+            <DraggerLayout layout={layout} width={document.body.clientWidth} col={12}>
                 {layout.map((el, index) => {
                     return (<div key={index}>{index}</div>)
                 })}
