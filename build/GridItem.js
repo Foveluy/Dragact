@@ -5,12 +5,12 @@ import _createClass from 'babel-runtime/helpers/createClass';
 import _possibleConstructorReturn from 'babel-runtime/helpers/possibleConstructorReturn';
 import _inherits from 'babel-runtime/helpers/inherits';
 import React from 'react';
-import { Component } from 'react';
+
 import PropTypes from 'prop-types';
 import Dragger from './Dragger';
 
-var GridItem = function (_Component) {
-    _inherits(GridItem, _Component);
+var GridItem = function (_React$Component) {
+    _inherits(GridItem, _React$Component);
 
     function GridItem(props) {
         _classCallCheck(this, GridItem);
@@ -36,6 +36,7 @@ var GridItem = function (_Component) {
                 col = _props.col,
                 containerPadding = _props.containerPadding,
                 margin = _props.margin;
+
 
             return (containerWidth - containerPadding[0] * 2 - margin[0] * (col + 1)) / col;
         }
@@ -158,7 +159,7 @@ var GridItem = function (_Component) {
                 Dragger,
                 {
                     style: _extends({}, style, { width: wPx, height: hPx, position: 'absolute',
-                        transition: this.props.isUserMove ? '' : 'all .15s'
+                        transition: this.props.isUserMove ? '' : 'all .2s'
                     }),
                     onDragStart: this.onDragStart,
                     onMove: this.onDrag,
@@ -179,7 +180,7 @@ var GridItem = function (_Component) {
     }]);
 
     return GridItem;
-}(Component);
+}(React.Component);
 
 GridItem.PropTypes = {
     /**外部容器属性 */

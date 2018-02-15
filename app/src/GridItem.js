@@ -48,8 +48,8 @@ export default class GridItem extends React.Component {
 
     /** 计算容器的每一个格子多大 */
     calColWidth() {
-        const { containerWidth, col, containerPadding, margin } = this.props
-        console.log(this.props)
+        const { containerWidth, col, containerPadding, margin } = this.props;
+
         return (containerWidth - containerPadding[0] * 2 - margin[0] * (col + 1)) / col
     }
 
@@ -116,7 +116,7 @@ export default class GridItem extends React.Component {
             <Dragger
                 style={{
                     ...style, width: wPx, height: hPx, position: 'absolute',
-                    transition: this.props.isUserMove ? '' : 'all .15s'
+                    transition: this.props.isUserMove ? '' : 'all .2s'
                 }}
                 onDragStart={this.onDragStart}
                 onMove={this.onDrag}

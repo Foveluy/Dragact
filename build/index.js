@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { LayoutDemo } from './App';
+import LayoutDemo from './App';
 
 ReactDOM.render(React.createElement(
     'div',

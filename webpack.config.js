@@ -10,7 +10,7 @@ module.exports = {
     ],
     output: {
         path: resolve(__dirname, 'build'),//打包后的文件存放的地方
-        filename: "bundle.js",//打包后输出文件的文件名
+        filename: "react-dragger-layout.js",//打包后输出文件的文件名
         publicPath: "/"
     },
     devServer: {
@@ -18,12 +18,7 @@ module.exports = {
         hot: true,
         publicPath: '/',
     },
-     resolve: {
-        alias: {
-           'react': 'luy',
-           'react-dom': 'luy'
-        }
-     },
+
     module: {
         rules: [
             {

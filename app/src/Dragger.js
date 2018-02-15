@@ -98,13 +98,22 @@ export default class Dragger extends React.Component {
     }
 
     move(event) {
+
+
         let { lastX, lastY } = this.state
         /*  event.client - this.state.origin 表示的是移动的距离,
         *   elX表示的是原来已经有的位移
         */
-        let deltaX = event.clientX - this.state.originX + lastX
-        let deltaY = event.clientY - this.state.originY + lastY
+        let deltaX, deltaY;
+        if (event.clientX) {
+            deltaX = event.clientX - this.state.originX + lastX
+            deltaY = event.clientY - this.state.originY + lastY
+        } else {
+            deltaX = event.touches[0].clientX - this.state.originX + lastX
+            deltaY = event.touches[0].clientY - this.state.originY + lastY
+        }
 
+        console.log(event)
         const { bounds } = this.props
         if (bounds) {
             /**
@@ -127,9 +136,9 @@ export default class Dragger extends React.Component {
                     left: int(this.parent.style.paddingLeft) + int(this.self.style.marginLeft) - this.self.offsetLeft,
                     top: int(this.parent.style.paddingTop) + int(this.self.style.marginTop) - this.self.offsetTop,
                     right: innerWidth(this.parent) - outerWidth(this.self) - this.self.offsetLeft +
-                    int(this.parent.style.paddingRight) - int(this.self.style.marginRight),
+                        int(this.parent.style.paddingRight) - int(this.self.style.marginRight),
                     bottom: innerHeight(this.parent) - outerHeight(this.self) - this.self.offsetTop +
-                    int(this.parent.style.paddingBottom) - int(this.self.style.marginBottom)
+                        int(this.parent.style.paddingBottom) - int(this.self.style.marginBottom)
                 }
             }
 
@@ -177,7 +186,12 @@ export default class Dragger extends React.Component {
          * 如果绑定在元素上，则鼠标离开元素，就不会再被监听了
          */
         doc.addEventListener('mousemove', this.move)
+        doc.addEventListener('touchmove', this.move)
+
         doc.addEventListener('mouseup', this.onDragEnd)
+        doc.addEventListener('touchend', this.onDragEnd)
+
+
 
         if (this.props.bounds === 'parent' &&
             /**为了让 这段代码不会重复执行 */
@@ -197,9 +211,18 @@ export default class Dragger extends React.Component {
 
         this.props.onDragStart(this.state.x, this.state.y)
 
+        let originX, originY;
+        if (event.clientX) {
+            originX = event.clientX
+            originY = event.clientY
+        } else {
+            originX = event.touches[0].clientX
+            originY = event.touches[0].clientY
+        }
+
         this.setState({
-            originX: event.clientX,
-            originY: event.clientY,
+            originX: originX,
+            originY: originY,
             lastX: this.state.x,
             lastY: this.state.y
         })
@@ -211,6 +234,9 @@ export default class Dragger extends React.Component {
         this.parent = null
         this.self = null
         doc.removeEventListener('mousemove', this.move)
+        doc.removeEventListener('touchmove', this.move)
+
+        doc.removeEventListener('touchend', this.onDragEnd)
         doc.removeEventListener('mouseup', this.onDragEnd)
 
         this.props.onDragEnd(event)
@@ -266,6 +292,8 @@ export default class Dragger extends React.Component {
             <div className={`${fixedClassName}WrapDragger`}
                 style={{ ...style, touchAction: 'none!important', transform: `translate(${x}px,${y}px)` }}
                 onMouseDown={this.onDragStart.bind(this)}
+                onTouchStart={this.onDragStart.bind(this)}
+                onTouchEnd={this.onDragEnd.bind(this)}
                 onMouseUp={this.onDragEnd.bind(this)}
                 {...others}
             >
