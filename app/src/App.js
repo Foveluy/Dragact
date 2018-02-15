@@ -216,12 +216,12 @@ function quickSort(a) {
     return a.length <= 1 ? a : quickSort(a.slice(1).filter(item => item <= a[0])).concat(a[0], quickSort(a.slice(1).filter(item => item > a[0])));
 }
 
-const getMaxContainerHeight = (layout, elementHeight) => {
+const getMaxContainerHeight = (layout, elementHeight = 30, elementMarginBottom = 10) => {
     const ar = layout.map((item) => {
         return item.GridY + item.h
     })
     const h = quickSort(ar)[ar.length - 1];
-    const height = h * (30 + 10) + 10
+    const height = h * (elementHeight + elementMarginBottom) + elementMarginBottom
     return height
 }
 
@@ -311,7 +311,7 @@ class DraggerLayout extends React.Component {
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
             layout: compactedLayout,
-            containerHeight: getMaxContainerHeight(compactedLayout)
+            containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
         })
     }
 
@@ -320,16 +320,17 @@ class DraggerLayout extends React.Component {
         this.setState({
             placeholderShow: false,
             layout: compactedLayout,
-            containerHeight: getMaxContainerHeight(compactedLayout)
+            containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
         })
     }
     placeholder() {
         if (!this.state.placeholderShow) return null
-        const { col, width, padding, rowHeight } = this.props
+        const { col, width, padding, rowHeight, margin } = this.props
         const { GridXMoving, GridYMoving, wMoving, hMoving, placeholderMoving } = this.state
 
         return (
             <GridItem
+                margin={margin}
                 col={col}
                 containerWidth={width}
                 containerPadding={padding}
@@ -350,17 +351,18 @@ class DraggerLayout extends React.Component {
             const compacted = compactLayout(layout);
             this.setState({
                 layout: compacted,
-                containerHeight: getMaxContainerHeight(compacted)
+                containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
             })
         }, 1);
     }
 
     getGridItem(child, index) {
         const { layout } = this.state
-        const { col, width, padding, rowHeight } = this.props
+        const { col, width, padding, rowHeight, margin } = this.props
         const renderItem = layoutItemForkey(layout, child.key)
         return (
             <GridItem
+                margin={margin}
                 col={col}
                 containerWidth={width}
                 containerPadding={padding}
@@ -403,9 +405,9 @@ export default class LayoutDemo extends React.Component {
 
     render() {
         return (
-            <DraggerLayout width={800} col={16} >
-                {[1, 2, 3, 4, 5].map((el, index) => {
-                    return (<div key={index} data-set={{ GridX: index, GridY: index, w: 5, h: 5 }}>{index}</div>)
+            <DraggerLayout width={800} col={12} rowHeight={800 / 12} margin={[5, 5]}>
+                {['我', '叫', '做', '方', '正'].map((el, index) => {
+                    return (<div key={index} data-set={{ GridX: index * 2, GridY: index, w: 2, h: 2 }}>{el}</div>)
                 })}
             </DraggerLayout>
         )
