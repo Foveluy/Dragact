@@ -3,6 +3,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Dragger from './Dragger'
 
+
+
+
+export const checkInContainer = (GridX, GridY, col, w) => {
+    /**防止元素出container */
+    if (GridX + w > col - 1) GridX = col - w //右边界
+    if (GridX < 0) GridX = 0//左边界
+    if (GridY < 0) GridY = 0//上边界
+    return { GridX, GridY }
+}
+
+
 export default class GridItem extends React.Component {
     constructor(props) {
         super(props)
@@ -61,19 +73,18 @@ export default class GridItem extends React.Component {
         let GridX = Math.round(x / containerWidth * col)
         let GridY = Math.round(y / (this.props.rowHeight + margin[1]))
 
-        /**防止元素出container */
-        if (GridX + w > col - 1) GridX = col - w //右边界
-        if (GridX < 0) GridX = 0//左边界
-        if (GridY < 0) GridY = 0//上边界
-
-        return { GridX, GridY }
+        // /**防止元素出container */
+        return checkInContainer(GridX, GridY, col, w)
     }
+
 
     /**给予一个grid的位置，算出元素具体的在容器中位置在哪里，单位是px */
     calGridItemPosition(GridX, GridY) {
         const { w, margin, col, containerWidth } = this.props
         let x = Math.round(GridX * this.calColWidth() + (GridX + 1) * margin[0])
         let y = Math.round(GridY * this.props.rowHeight + margin[1] * (GridY + 1))
+
+
         return {
             x: x,
             y: y
@@ -109,8 +120,10 @@ export default class GridItem extends React.Component {
     }
 
     render() {
+
+        const { w, h, margin, style, bounds, GridX, GridY } = this.props
         const { x, y } = this.calGridItemPosition(this.props.GridX, this.props.GridY)
-        const { w, h, margin, style, bounds } = this.props
+
         const { wPx, hPx } = this.calWHtoPx(w, h)
         return (
             <Dragger
