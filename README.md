@@ -1,8 +1,11 @@
-# React-drager
-a drager with react style and grid layout system
-waitting for first
+# Whath is Dragact?
 
-[Live Demo  ](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html)
+Dragact is a react component, it allows you to build your own **dragable grid layout** easily.
+
 ![](https://github.com/215566435/React-dragger-layout/blob/master/example/image/NormalLayoutDemo.gif)
 
-准备做好了，开源..
+
+# Demo
+[Live Demo  ](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html)
+
+
