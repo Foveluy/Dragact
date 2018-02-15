@@ -273,7 +273,7 @@ class DraggerLayout extends React.Component {
         }
     }
 
-    static PropTypes = {
+    static propTypes = {
         /**外部属性 */
         layout: PropTypes.array,
         col: PropTypes.number,
@@ -359,7 +359,7 @@ class DraggerLayout extends React.Component {
                 GridY={GridYMoving}
                 w={wMoving}
                 h={hMoving}
-                style={{ background: '#a31', zIndex: -1, transition: ' all .15s' }}
+                style={{ background: '#ffccc7', zIndex: -1, transition: ' all .15s' }}
                 isUserMove={!placeholderMoving}
             >
             </GridItem >
@@ -396,7 +396,6 @@ class DraggerLayout extends React.Component {
                 onDragEnd={this.onDragEnd}
                 index={index}
                 isUserMove={renderItem.isUserMove}
-                style={{ background: '#329' }}
                 UniqueKey={child.key}
             >
                 {child}
@@ -411,7 +410,7 @@ class DraggerLayout extends React.Component {
         return (
             <div
                 className={stringJoin('DraggerLayout', className)}
-                style={{ left: 100, width: width, height: containerHeight, border: '1px solid black' }}
+                style={{ left: 100, width: width, height: containerHeight }}
             >
                 {React.Children.map(this.props.children,
                     (child, index) => this.getGridItem(child, index)
@@ -426,9 +425,9 @@ export default class LayoutDemo extends React.Component {
 
     render() {
         return (
-            <DraggerLayout width={800} col={4} rowHeight={800 / 12} margin={[5, 5]}>
+            <DraggerLayout width={300} col={1} rowHeight={40} margin={[5, 5]} className='normal-layout'>
                 {['我', '叫', '做', '方', '正'].map((el, index) => {
-                    return (<div key={index} data-set={{ GridX: index*3, GridY: index*2, w: 1, h: 2 }}>{el}</div>)
+                    return (<div key={index} className='layout-item' data-set={{ GridX: 0, GridY: 1, w: 1, h: 2 }}>{el}</div>)
                 })}
             </DraggerLayout>
         )

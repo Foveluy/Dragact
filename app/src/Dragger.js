@@ -297,14 +297,10 @@ export default class Dragger extends React.Component {
                 {...others}
             >
                 {/**
-             *  React.cloneElement复制了所有的子元素，然后进行渲染，这样用户就可以使用
-             *  <drager>
-             *       something....
-             *  </drager>
              *
              *  React.Children.only 只允许子元素有一个根节点
              */}
-                {React.cloneElement(React.Children.only(this.props.children), {})}
+                {React.Children.only(this.props.children)}
             </div>
         )
     }

@@ -26,7 +26,7 @@ export default class GridItem extends React.Component {
     }
 
 
-    static PropTypes = {
+    static propTypes = {
         /**外部容器属性 */
         col: PropTypes.number,
         containerWidth: PropTypes.number,
@@ -124,7 +124,7 @@ export default class GridItem extends React.Component {
         const { w, h, margin, style, bounds, GridX, GridY } = this.props
         const { x, y } = this.calGridItemPosition(this.props.GridX, this.props.GridY)
 
-        const { wPx, hPx } = this.calWHtoPx(w, h)
+        const { wPx, hPx } = this.calWHtoPx(w, h);
         return (
             <Dragger
                 style={{
@@ -138,7 +138,7 @@ export default class GridItem extends React.Component {
                 y={y}
                 isUserMove={this.props.isUserMove}
             >
-                <div >
+                <div style={{ width: wPx, height: hPx }}>
                     {React.Children.map(this.props.children, (child) => child)}
                 </div>
             </Dragger>
