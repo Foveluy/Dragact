@@ -113,7 +113,6 @@ export default class Dragger extends React.Component {
             deltaY = event.touches[0].clientY - this.state.originY + lastY
         }
 
-        console.log(event)
         const { bounds } = this.props
         if (bounds) {
             /**

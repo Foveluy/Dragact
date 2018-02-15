@@ -132,6 +132,8 @@ const compactItem = (finishedLayout, item) => {
  */
 const compactLayout = (layout) => {
     let sorted = sortLayout(layout)
+
+
     const needCompact = Array(layout.length)
     const compareList = []
     for (let i = 0, length = sorted.length; i < length; i++) {
@@ -140,7 +142,7 @@ const compactLayout = (layout) => {
         compareList.push(finished)
         needCompact[i] = finished//用于输出从小到大的位置
     }
-    return sortLayout(needCompact)
+    return needCompact
 }
 
 const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
@@ -210,12 +212,25 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
     return newlayout
 }
 
+function quickSort(a) {
+    return a.length <= 1 ? a : quickSort(a.slice(1).filter(item => item <= a[0])).concat(a[0], quickSort(a.slice(1).filter(item => item > a[0])));
+}
 
 const getMaxContainerHeight = (layout, elementHeight) => {
-
-    const height = (layout[layout.length - 1].GridY + layout[layout.length - 1].h) * (30 + 10) + 10
+    const ar = layout.map((item) => {
+        return item.GridY + item.h
+    })
+    const h = quickSort(ar)[ar.length - 1];
+    const height = h * (30 + 10) + 10
     return height
 }
+
+const getDataSet = (children) => {
+    return children.map((child) => {
+        return { ...child.props['data-set'], isUserMove: true, key: child.key }
+    })
+}
+
 
 class DraggerLayout extends React.Component {
     constructor(props) {
@@ -223,6 +238,23 @@ class DraggerLayout extends React.Component {
         this.onDrag = this.onDrag.bind(this)
         this.onDragStart = this.onDragStart.bind(this)
         this.onDragEnd = this.onDragEnd.bind(this)
+
+
+        const layout = props.layout ?
+            MapLayoutTostate(props.layout, props.children)
+            :
+            getDataSet(props.children);
+
+        this.state = {
+            GridXMoving: 0,
+            GridYMoving: 0,
+            wMoving: 0,
+            hMoving: 0,
+            placeholderShow: false,
+            placeholderMoving: false,
+            layout: layout,
+            containerHeight: 500
+        }
     }
 
     static PropTypes = {
@@ -235,16 +267,8 @@ class DraggerLayout extends React.Component {
         padding: PropTypes.number,
     }
 
-    state = {
-        GridXMoving: 0,
-        GridYMoving: 0,
-        wMoving: 0,
-        hMoving: 0,
-        placeholderShow: false,
-        placeholderMoving: false,
-        layout: MapLayoutTostate(this.props.layout, this.props.children),
-        containerHeight: 500
-    }
+
+
 
     onDragStart(bundles) {
         const { GridX, GridY, w, h, UniqueKey } = bundles
@@ -321,11 +345,10 @@ class DraggerLayout extends React.Component {
         )
     }
     componentDidMount() {
-        let that = this
-        setTimeout(function () {
-            let layout = correctLayout(that.state.layout)
+        setTimeout(() => {
+            let layout = correctLayout(this.state.layout)
             const compacted = compactLayout(layout);
-            that.setState({
+            this.setState({
                 layout: compacted,
                 containerHeight: getMaxContainerHeight(compacted)
             })
@@ -379,27 +402,10 @@ class DraggerLayout extends React.Component {
 export default class LayoutDemo extends React.Component {
 
     render() {
-        const layout = [{
-            GridX: 0, GridY: 0, w: 5, h: 5
-        }, {
-            GridX: 0, GridY: 0, w: 3, h: 3
-        }, {
-            GridX: 0, GridY: 0, w: 3, h: 3
-        }, {
-            GridX: 0, GridY: 0, w: 3, h: 3
-        }, {
-            GridX: 3, GridY: 8, w: 3, h: 3
-        }, {
-            GridX: 3, GridY: 8, w: 3, h: 3
-        }, {
-            GridX: 3, GridY: 8, w: 3, h: 3
-        }, {
-            GridX: 3, GridY: 8, w: 3, h: 3
-        }]
         return (
-            <DraggerLayout layout={layout} width={document.body.clientWidth} col={12}>
-                {layout.map((el, index) => {
-                    return (<div key={index} >{index}</div>)
+            <DraggerLayout width={800} col={16} >
+                {[1, 2, 3, 4, 5].map((el, index) => {
+                    return (<div key={index} data-set={{ GridX: index, GridY: index, w: 5, h: 5 }}>{index}</div>)
                 })}
             </DraggerLayout>
         )
