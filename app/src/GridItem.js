@@ -91,6 +91,14 @@ export default class GridItem extends React.Component {
         }
     }
 
+
+    shouldComponentUpdate(props, state) {
+        
+        return this.props.GridX !== props.GridX ||
+            this.props.GridY !== props.GridY||
+            this.props.isUserMove !== props.isUserMove
+    }
+
     /**宽和高计算成为px */
     calWHtoPx(w, h) {
         const { margin, containerPadding, containerWidth, col } = this.props

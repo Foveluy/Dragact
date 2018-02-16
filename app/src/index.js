@@ -10,8 +10,8 @@ import { SortedTableWithStatic } from './StaticHeader';
 ReactDOM.render(
     <div>
         <LayoutDemo />
-        <SortedTable />
-        <SortedTableWithStatic />
+        {/* <SortedTable /> */}
+        {/* <SortedTableWithStatic /> */}
     </div>,
     document.getElementById('root')
 );

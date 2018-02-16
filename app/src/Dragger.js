@@ -100,6 +100,13 @@ export default class Dragger extends React.Component {
         zIndex: 1
     }
 
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     return this.props.x !== nextProps.x ||
+    //         this.props.y !== nextProps.y ||
+    //         this.state.x !== nextProps.x ||
+    //         this.state.y !== nextProps.y;
+    // }
+
     move(event) {
 
 
@@ -241,6 +248,8 @@ export default class Dragger extends React.Component {
 
         doc.removeEventListener('touchend', this.onDragEnd)
         doc.removeEventListener('mouseup', this.onDragEnd)
+
+        console.log('清除lsner')
 
         this.setState({
             zIndex: 1
