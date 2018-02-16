@@ -1,0 +1,19 @@
+.layout-Cell>img {
+    border-radius: 5px;
+}
+
+.layout-Cell {
+    background: white;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    padding-left: 12px;
+}
+
+.layout-Cell:hover {
+    cursor: -webkit-grab;
+}
+
+.layout-Cell.static:hover {
+    cursor: no-drop;
+}

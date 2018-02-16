@@ -384,9 +384,8 @@ export class DraggerLayout extends React.Component {
 
     getGridItem(child, index) {
         const { layout } = this.state
-        const { col, width, padding, rowHeight, margin } = this.props
-        const renderItem = layoutItemForkey(layout, child.key)
-
+        const { col, width, padding, rowHeight, margin } = this.props;
+        const renderItem = layoutItemForkey(layout, child.key);//TODO:可以优化速度，这一步不是必须;
         return (
             <GridItem
                 margin={margin}

@@ -7,17 +7,33 @@ import _extends from 'babel-runtime/helpers/extends';
 import _toConsumableArray from 'babel-runtime/helpers/toConsumableArray';
 import React from 'react';
 import PropTypes from 'prop-types';
-import GridItem from './GridItem';
+import GridItem, { checkInContainer } from './GridItem';
 
 import './style.css';
 
-var correctLayout = function correctLayout(layout) {
+/**
+ * 这个函数会有副作用，不是纯函数，会改变item的Gridx和GridY
+ * @param {*} item 
+ */
+var correctItem = function correctItem(item, col) {
+    var _checkInContainer = checkInContainer(item.GridX, item.GridY, col, item.w),
+        GridX = _checkInContainer.GridX,
+        GridY = _checkInContainer.GridY;
+
+    item.GridX = GridX;
+    item.GridY = GridY;
+};
+var correctLayout = function correctLayout(layout, col) {
     var copy = [].concat(_toConsumableArray(layout));
     for (var i = 0; i < layout.length - 1; i++) {
+        correctItem(copy[i], col);
+        correctItem(copy[i + 1], col);
+
         if (collision(copy[i], copy[i + 1])) {
-            copy = layoutCheck(copy, layout[i], layout[i].key, layout[i].key, undefined);
+            copy = layoutCheck(copy, copy[i], copy[i].key, copy[i].key, undefined);
         }
     }
+
     return copy;
 };
 
@@ -44,7 +60,7 @@ var layoutItemForkey = function layoutItemForkey(layout, key) {
 
 var MapLayoutTostate = function MapLayoutTostate(layout, children) {
     return layout.map(function (child, index) {
-        var newChild = _extends({}, child, { isUserMove: true, key: children[index].key });
+        var newChild = _extends({}, child, { isUserMove: true, key: children[index].key, static: children[index].static });
         return newChild;
     });
 };
@@ -84,6 +100,7 @@ var collision = function collision(a, b) {
 var sortLayout = function sortLayout(layout) {
     return [].concat(layout).sort(function (a, b) {
         if (a.GridY > b.GridY || a.GridY === b.GridY && a.GridX > b.GridX) {
+            if (a.static) return 0; //为了静态，排序的时候尽量把静态的放在前面
             return 1;
         } else if (a.GridY === b.GridY && a.GridX === b.GridX) {
             return 0;
@@ -108,10 +125,9 @@ var getFirstCollison = function getFirstCollison(layout, item) {
  * @param {*} item 
  */
 var compactItem = function compactItem(finishedLayout, item) {
+    if (item.static) return item;
     var newItem = _extends({}, item);
-
     if (finishedLayout.length === 0) {
-
         return _extends({}, newItem, { GridY: 0 });
     }
     /**
@@ -144,16 +160,20 @@ var compactLayout = function compactLayout(layout) {
         var finished = compactItem(compareList, sorted[i]);
         finished.isUserMove = false;
         compareList.push(finished);
-        needCompact[i] = finished; //用于输出从小到大的位置
+        needCompact[i] = finished;
     }
-    return sortLayout(needCompact);
+    return needCompact;
 };
 
 var layoutCheck = function layoutCheck(layout, layoutItem, key, fristItemkey, moving) {
     var i = [],
         movedItem = []; /**收集所有移动过的物体 */
     var newlayout = layout.map(function (item, idx) {
+
         if (item.key !== key) {
+            if (item.static) {
+                return item;
+            }
             if (collision(item, layoutItem)) {
                 i.push(item.key);
                 /**
@@ -169,13 +189,13 @@ var layoutCheck = function layoutCheck(layout, layoutItem, key, fristItemkey, mo
                     /**
                      * 元素向上移动时，元素的上面空间不足,则不移动这个元素
                      * 当元素移动到GridY>所要向上交换的元素时，就不会进入这里，直接交换元素
-                     * 
                      */
                     offsetY = item.GridY;
                 }
                 /**
                  * 物体向下移动的时候
                  */
+
                 if (moving > 0) {
                     if (layoutItem.GridY + layoutItem.h < item.GridY) {
                         (function () {
@@ -202,13 +222,16 @@ var layoutCheck = function layoutCheck(layout, layoutItem, key, fristItemkey, mo
                         })();
                     }
                 }
+
                 movedItem.push(_extends({}, item, { GridY: offsetY, isUserMove: false }));
                 return _extends({}, item, { GridY: offsetY, isUserMove: false });
             }
         } else if (fristItemkey === key) {
+
             /**永远保持用户移动的块是 isUserMove === true */
             return _extends({}, item, { GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true });
         }
+
         return item;
     });
     /** 递归调用,将layout中的所有重叠元素全部移动 */
@@ -219,20 +242,49 @@ var layoutCheck = function layoutCheck(layout, layoutItem, key, fristItemkey, mo
     return newlayout;
 };
 
-var getMaxContainerHeight = function getMaxContainerHeight(layout, elementHeight) {
+function quickSort(a) {
+    return a.length <= 1 ? a : quickSort(a.slice(1).filter(function (item) {
+        return item <= a[0];
+    })).concat(a[0], quickSort(a.slice(1).filter(function (item) {
+        return item > a[0];
+    })));
+}
 
-    var height = (layout[layout.length - 1].GridY + layout[layout.length - 1].h) * (30 + 10) + 10;
-    console.log(height);
+var getMaxContainerHeight = function getMaxContainerHeight(layout) {
+    var elementHeight = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 30;
+    var elementMarginBottom = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
+
+    var ar = layout.map(function (item) {
+        return item.GridY + item.h;
+    });
+    var h = quickSort(ar)[ar.length - 1];
+    var height = h * (elementHeight + elementMarginBottom) + elementMarginBottom;
     return height;
 };
 
-var DraggerLayout = function (_React$Component) {
+var getDataSet = function getDataSet(children) {
+    return children.map(function (child) {
+        return _extends({}, child.props['data-set'], { isUserMove: true, key: child.key });
+    });
+};
+
+var stringJoin = function stringJoin(source, join) {
+    return source + (join ? ' ' + join : '');
+};
+
+export var DraggerLayout = function (_React$Component) {
     _inherits(DraggerLayout, _React$Component);
 
     function DraggerLayout(props) {
         _classCallCheck(this, DraggerLayout);
 
         var _this = _possibleConstructorReturn(this, (DraggerLayout.__proto__ || _Object$getPrototypeOf(DraggerLayout)).call(this, props));
+
+        _this.onDrag = _this.onDrag.bind(_this);
+        _this.onDragStart = _this.onDragStart.bind(_this);
+        _this.onDragEnd = _this.onDragEnd.bind(_this);
+
+        var layout = props.layout ? MapLayoutTostate(props.layout, props.children) : getDataSet(props.children);
 
         _this.state = {
             GridXMoving: 0,
@@ -241,13 +293,9 @@ var DraggerLayout = function (_React$Component) {
             hMoving: 0,
             placeholderShow: false,
             placeholderMoving: false,
-            layout: MapLayoutTostate(_this.props.layout, _this.props.children),
+            layout: layout,
             containerHeight: 500
         };
-
-        _this.onDrag = _this.onDrag.bind(_this);
-        _this.onDragStart = _this.onDragStart.bind(_this);
-        _this.onDragEnd = _this.onDragEnd.bind(_this);
         return _this;
     }
 
@@ -262,6 +310,7 @@ var DraggerLayout = function (_React$Component) {
 
 
             var newlayout = syncLayout(this.state.layout, UniqueKey, GridX, GridY, true);
+
             this.setState({
                 GridXMoving: GridX,
                 GridYMoving: GridY,
@@ -271,6 +320,7 @@ var DraggerLayout = function (_React$Component) {
                 placeholderMoving: true,
                 layout: newlayout
             });
+            this.props.onDragStart && this.props.onDragStart({ GridX: GridX, GridY: GridY });
         }
     }, {
         key: 'onDrag',
@@ -283,26 +333,27 @@ var DraggerLayout = function (_React$Component) {
             var newLayout = layoutCheck(this.state.layout, layoutItem, key, key /*用户移动方块的key */, moving);
             var compactedLayout = compactLayout(newLayout);
             for (var i = 0; i < compactedLayout.length; i++) {
-                if (key === compactedLayout[i].key) {
+                var compactedItem = compactedLayout[i];
+                if (key === compactedItem.key) {
                     /**
                      * 特殊点：当我们移动元素的时候，元素在layout中的位置不断改变
                      * 但是当isUserMove=true的时候，鼠标拖拽的元素不会随着位图变化而变化
                      * 但是实际layout中的位置还是会改变
                      * (isUserMove=true用于解除placeholder和元素的绑定)
                      */
-                    compactedLayout[i].isUserMove = true;
-                    layoutItem.GridX = compactedLayout[i].GridX;
-                    layoutItem.GridY = compactedLayout[i].GridY;
+                    compactedItem.isUserMove = true;
+                    layoutItem.GridX = compactedItem.GridX;
+                    layoutItem.GridY = compactedItem.GridY;
                     break;
                 }
             }
-
             this.setState({
                 GridXMoving: layoutItem.GridX,
                 GridYMoving: layoutItem.GridY,
                 layout: compactedLayout,
-                containerHeight: getMaxContainerHeight(compactedLayout)
+                containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
             });
+            this.props.onDrag && this.props.onDrag({ GridX: GridX, GridY: GridY });
         }
     }, {
         key: 'onDragEnd',
@@ -311,18 +362,21 @@ var DraggerLayout = function (_React$Component) {
             this.setState({
                 placeholderShow: false,
                 layout: compactedLayout,
-                containerHeight: getMaxContainerHeight(compactedLayout)
+                containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
             });
+
+            this.props.onDragEnd && this.props.onDragEnd();
         }
     }, {
-        key: 'placeholder',
-        value: function placeholder() {
+        key: 'renderPlaceholder',
+        value: function renderPlaceholder() {
             if (!this.state.placeholderShow) return null;
             var _props = this.props,
                 col = _props.col,
                 width = _props.width,
                 padding = _props.padding,
-                rowHeight = _props.rowHeight;
+                rowHeight = _props.rowHeight,
+                margin = _props.margin;
             var _state = this.state,
                 GridXMoving = _state.GridXMoving,
                 GridYMoving = _state.GridYMoving,
@@ -332,6 +386,7 @@ var DraggerLayout = function (_React$Component) {
 
 
             return React.createElement(GridItem, {
+                margin: margin,
                 col: col,
                 containerWidth: width,
                 containerPadding: padding,
@@ -340,20 +395,21 @@ var DraggerLayout = function (_React$Component) {
                 GridY: GridYMoving,
                 w: wMoving,
                 h: hMoving,
-                style: { background: '#a31', zIndex: -1, transition: ' all .15s' },
+                style: { background: '#d6e4ff', zIndex: 1, transition: ' all .15s' },
                 isUserMove: !placeholderMoving
             });
         }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var that = this;
+            var _this2 = this;
+
             setTimeout(function () {
-                var layout = correctLayout(that.state.layout);
+                var layout = correctLayout(_this2.state.layout, _this2.props.col);
                 var compacted = compactLayout(layout);
-                that.setState({
+                _this2.setState({
                     layout: compacted,
-                    containerHeight: getMaxContainerHeight(compacted)
+                    containerHeight: getMaxContainerHeight(compacted, _this2.props.rowHeight, _this2.props.margin[1])
                 });
             }, 1);
         }
@@ -365,12 +421,14 @@ var DraggerLayout = function (_React$Component) {
                 col = _props2.col,
                 width = _props2.width,
                 padding = _props2.padding,
-                rowHeight = _props2.rowHeight;
+                rowHeight = _props2.rowHeight,
+                margin = _props2.margin;
 
-            var renderItem = layoutItemForkey(layout, child.key);
+            var renderItem = layoutItemForkey(layout, child.key); //TODO:可以优化速度，这一步不是必须;
             return React.createElement(
                 GridItem,
                 {
+                    margin: margin,
                     col: col,
                     containerWidth: width,
                     containerPadding: padding,
@@ -384,8 +442,9 @@ var DraggerLayout = function (_React$Component) {
                     onDragEnd: this.onDragEnd,
                     index: index,
                     isUserMove: renderItem.isUserMove,
-                    style: { background: '#329' },
-                    UniqueKey: child.key
+                    UniqueKey: child.key,
+                    style: { zIndex: 2 },
+                    'static': renderItem.static
                 },
                 child
             );
@@ -393,34 +452,35 @@ var DraggerLayout = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _this3 = this;
 
             var _props3 = this.props,
                 layout = _props3.layout,
                 col = _props3.col,
                 width = _props3.width,
                 padding = _props3.padding,
-                rowHeight = _props3.rowHeight;
+                rowHeight = _props3.rowHeight,
+                className = _props3.className;
+            var containerHeight = this.state.containerHeight;
 
 
             return React.createElement(
                 'div',
                 {
-                    className: 'DraggerLayout',
-                    style: { left: 100, width: this.props.width, height: this.state.containerHeight, border: '1px solid black' }
+                    className: stringJoin('DraggerLayout', className),
+                    style: { left: 100, width: width, height: containerHeight, zIndex: 1 }
                 },
                 React.Children.map(this.props.children, function (child, index) {
-                    return _this2.getGridItem(child, index);
+                    return _this3.getGridItem(child, index);
                 }),
-                this.placeholder()
+                this.renderPlaceholder()
             );
         }
     }]);
 
     return DraggerLayout;
 }(React.Component);
-
-DraggerLayout.PropTypes = {
+DraggerLayout.propTypes = {
     /**外部属性 */
     layout: PropTypes.array,
     col: PropTypes.number,
@@ -429,61 +489,14 @@ DraggerLayout.PropTypes = {
     rowHeight: PropTypes.number,
     padding: PropTypes.number
 };
-
-var LayoutDemo = function (_React$Component2) {
-    _inherits(LayoutDemo, _React$Component2);
-
-    function LayoutDemo() {
-        _classCallCheck(this, LayoutDemo);
-
-        return _possibleConstructorReturn(this, (LayoutDemo.__proto__ || _Object$getPrototypeOf(LayoutDemo)).apply(this, arguments));
-    }
-
-    _createClass(LayoutDemo, [{
-        key: 'render',
-        value: function render() {
-            var layout = [{
-                GridX: 0, GridY: 0, w: 5, h: 5
-            }, {
-                GridX: 0, GridY: 0, w: 3, h: 3
-            }, {
-                GridX: 0, GridY: 0, w: 3, h: 3
-            }, {
-                GridX: 0, GridY: 0, w: 3, h: 3
-            }, {
-                GridX: 3, GridY: 8, w: 3, h: 3
-            }, {
-                GridX: 3, GridY: 8, w: 3, h: 3
-            }, {
-                GridX: 3, GridY: 8, w: 3, h: 3
-            }, {
-                GridX: 3, GridY: 8, w: 3, h: 3
-            }];
-            return React.createElement(
-                DraggerLayout,
-                { layout: layout, width: 800, col: 12 },
-                layout.map(function (el, index) {
-                    return React.createElement(
-                        'div',
-                        { key: index },
-                        index
-                    );
-                })
-            );
-        }
-    }]);
-
-    return LayoutDemo;
-}(React.Component);
-
-var _default = LayoutDemo;
-export default _default;
 ;
 
 var _temp = function () {
     if (typeof __REACT_HOT_LOADER__ === 'undefined') {
         return;
     }
+
+    __REACT_HOT_LOADER__.register(correctItem, 'correctItem', 'app/src/App.js');
 
     __REACT_HOT_LOADER__.register(correctLayout, 'correctLayout', 'app/src/App.js');
 
@@ -505,13 +518,15 @@ var _temp = function () {
 
     __REACT_HOT_LOADER__.register(layoutCheck, 'layoutCheck', 'app/src/App.js');
 
+    __REACT_HOT_LOADER__.register(quickSort, 'quickSort', 'app/src/App.js');
+
     __REACT_HOT_LOADER__.register(getMaxContainerHeight, 'getMaxContainerHeight', 'app/src/App.js');
 
+    __REACT_HOT_LOADER__.register(getDataSet, 'getDataSet', 'app/src/App.js');
+
+    __REACT_HOT_LOADER__.register(stringJoin, 'stringJoin', 'app/src/App.js');
+
     __REACT_HOT_LOADER__.register(DraggerLayout, 'DraggerLayout', 'app/src/App.js');
-
-    __REACT_HOT_LOADER__.register(LayoutDemo, 'LayoutDemo', 'app/src/App.js');
-
-    __REACT_HOT_LOADER__.register(_default, 'default', 'app/src/App.js');
 }();
 
 ;

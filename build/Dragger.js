@@ -39,7 +39,10 @@ var Dragger = function (_React$Component) {
 
             /**已经移动的位移，单位是px */
             lastX: 0,
-            lastY: 0
+            lastY: 0,
+
+            /**堆叠的层级 */
+            zIndex: 1
         };
 
         _this.move = _this.move.bind(_this);
@@ -63,8 +66,15 @@ var Dragger = function (_React$Component) {
             *   elX表示的是原来已经有的位移
             */
 
-            var deltaX = event.clientX - this.state.originX + lastX;
-            var deltaY = event.clientY - this.state.originY + lastY;
+            var deltaX = void 0,
+                deltaY = void 0;
+            if (event.clientX) {
+                deltaX = event.clientX - this.state.originX + lastX;
+                deltaY = event.clientY - this.state.originY + lastY;
+            } else {
+                deltaX = event.touches[0].clientX - this.state.originX + lastX;
+                deltaY = event.touches[0].clientY - this.state.originY + lastY;
+            }
 
             var bounds = this.props.bounds;
 
@@ -138,7 +148,10 @@ var Dragger = function (_React$Component) {
              * 如果绑定在元素上，则鼠标离开元素，就不会再被监听了
              */
             doc.addEventListener('mousemove', this.move);
+            doc.addEventListener('touchmove', this.move);
+
             doc.addEventListener('mouseup', this.onDragEnd);
+            doc.addEventListener('touchend', this.onDragEnd);
 
             if (this.props.bounds === 'parent' && (
             /**为了让 这段代码不会重复执行 */
@@ -158,11 +171,22 @@ var Dragger = function (_React$Component) {
 
             this.props.onDragStart(this.state.x, this.state.y);
 
+            var originX = void 0,
+                originY = void 0;
+            if (event.clientX) {
+                originX = event.clientX;
+                originY = event.clientY;
+            } else {
+                originX = event.touches[0].clientX;
+                originY = event.touches[0].clientY;
+            }
+
             this.setState({
-                originX: event.clientX,
-                originY: event.clientY,
+                originX: originX,
+                originY: originY,
                 lastX: this.state.x,
-                lastY: this.state.y
+                lastY: this.state.y,
+                zIndex: 10
             });
         }
     }, {
@@ -173,7 +197,14 @@ var Dragger = function (_React$Component) {
             this.parent = null;
             this.self = null;
             doc.removeEventListener('mousemove', this.move);
+            doc.removeEventListener('touchmove', this.move);
+
+            doc.removeEventListener('touchend', this.onDragEnd);
             doc.removeEventListener('mouseup', this.onDragEnd);
+
+            this.setState({
+                zIndex: 1
+            });
 
             this.props.onDragEnd(event);
         }
@@ -217,7 +248,8 @@ var Dragger = function (_React$Component) {
         value: function render() {
             var _state2 = this.state,
                 x = _state2.x,
-                y = _state2.y;
+                y = _state2.y,
+                zIndex = _state2.zIndex;
             var _props = this.props,
                 bounds = _props.bounds,
                 style = _props.style,
@@ -236,11 +268,13 @@ var Dragger = function (_React$Component) {
             return React.createElement(
                 'div',
                 _extends({ className: fixedClassName + 'WrapDragger',
-                    style: _extends({}, style, { touchAction: 'none!important', transform: 'translate(' + x + 'px,' + y + 'px)' }),
+                    style: _extends({}, style, { zIndex: zIndex, touchAction: 'none!important', transform: 'translate(' + x + 'px,' + y + 'px)' }),
                     onMouseDown: this.onDragStart.bind(this),
+                    onTouchStart: this.onDragStart.bind(this),
+                    onTouchEnd: this.onDragEnd.bind(this),
                     onMouseUp: this.onDragEnd.bind(this)
                 }, others),
-                React.cloneElement(React.Children.only(this.props.children), {})
+                React.Children.only(this.props.children)
             );
         }
     }]);
