@@ -12,5 +12,6 @@ Dragact is a react component, which allows you to build your own **dragable grid
 # Feature
 - [x] auto sorted layout
 - [x] mobile device supported
-
+- [x] auto height fixed
+- [x] 
 

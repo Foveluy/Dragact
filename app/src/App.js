@@ -91,6 +91,7 @@ const collision = (a, b) => {
 const sortLayout = (layout) => {
     return [].concat(layout).sort((a, b) => {
         if (a.GridY > b.GridY || (a.GridY === b.GridY && a.GridX > b.GridX)) {
+            if (a.static) return 0//为了静态，排序的时候尽量把静态的放在前面
             return 1
         } else if (a.GridY === b.GridY && a.GridX === b.GridX) {
             return 0
@@ -116,10 +117,9 @@ const getFirstCollison = (layout, item) => {
  * @param {*} item 
  */
 const compactItem = (finishedLayout, item) => {
+    if (item.static) return item;
     const newItem = { ...item }
-
     if (finishedLayout.length === 0) {
-
         return { ...newItem, GridY: 0 }
     }
     /**
@@ -145,15 +145,13 @@ const compactItem = (finishedLayout, item) => {
  */
 const compactLayout = (layout) => {
     let sorted = sortLayout(layout)
-
-
     const needCompact = Array(layout.length)
     const compareList = []
     for (let i = 0, length = sorted.length; i < length; i++) {
         let finished = compactItem(compareList, sorted[i])
         finished.isUserMove = false
         compareList.push(finished)
-        needCompact[i] = finished//用于输出从小到大的位置
+        needCompact[i] = finished
     }
     return needCompact
 }
@@ -161,7 +159,11 @@ const compactLayout = (layout) => {
 const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
     let i = [], movedItem = []/**收集所有移动过的物体 */
     let newlayout = layout.map((item, idx) => {
+
         if (item.key !== key) {
+            if (item.static) {
+                return item
+            }
             if (collision(item, layoutItem)) {
                 i.push(item.key)
                 /**
@@ -177,13 +179,13 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                     /**
                      * 元素向上移动时，元素的上面空间不足,则不移动这个元素
                      * 当元素移动到GridY>所要向上交换的元素时，就不会进入这里，直接交换元素
-                     * 
                      */
                     offsetY = item.GridY
                 }
                 /**
                  * 物体向下移动的时候
                  */
+
                 if (moving > 0) {
                     if (layoutItem.GridY + layoutItem.h < item.GridY) {
                         let collision;
@@ -213,9 +215,11 @@ const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                 return { ...item, GridY: offsetY, isUserMove: false }
             }
         } else if (fristItemkey === key) {
+
             /**永远保持用户移动的块是 isUserMove === true */
             return { ...item, GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true }
         }
+
         return item
     })
     /** 递归调用,将layout中的所有重叠元素全部移动 */
@@ -249,7 +253,7 @@ const stringJoin = (source, join) => {
     return source + (join ? ` ${join}` : '')
 }
 
-class DraggerLayout extends React.Component {
+export class DraggerLayout extends React.Component {
     constructor(props) {
         super(props)
         this.onDrag = this.onDrag.bind(this)
@@ -312,20 +316,20 @@ class DraggerLayout extends React.Component {
         const newLayout = layoutCheck(this.state.layout, layoutItem, key, key/*用户移动方块的key */, moving)
         const compactedLayout = compactLayout(newLayout)
         for (let i = 0; i < compactedLayout.length; i++) {
-            if (key === compactedLayout[i].key) {
+            const compactedItem = compactedLayout[i];
+            if (key === compactedItem.key) {
                 /**
                  * 特殊点：当我们移动元素的时候，元素在layout中的位置不断改变
                  * 但是当isUserMove=true的时候，鼠标拖拽的元素不会随着位图变化而变化
                  * 但是实际layout中的位置还是会改变
                  * (isUserMove=true用于解除placeholder和元素的绑定)
                  */
-                compactedLayout[i].isUserMove = true
-                layoutItem.GridX = compactedLayout[i].GridX
-                layoutItem.GridY = compactedLayout[i].GridY
+                compactedItem.isUserMove = true
+                layoutItem.GridX = compactedItem.GridX
+                layoutItem.GridY = compactedItem.GridY
                 break
             }
         }
-
         this.setState({
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
@@ -342,6 +346,7 @@ class DraggerLayout extends React.Component {
             layout: compactedLayout,
             containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
         })
+
         this.props.onDragEnd && this.props.onDragEnd();
     }
     renderPlaceholder() {
@@ -360,7 +365,7 @@ class DraggerLayout extends React.Component {
                 GridY={GridYMoving}
                 w={wMoving}
                 h={hMoving}
-                style={{ background: '#d6e4ff', zIndex: 0, transition: ' all .15s' }}
+                style={{ background: '#d6e4ff', zIndex: 1, transition: ' all .15s' }}
                 isUserMove={!placeholderMoving}
             >
             </GridItem >
@@ -381,6 +386,7 @@ class DraggerLayout extends React.Component {
         const { layout } = this.state
         const { col, width, padding, rowHeight, margin } = this.props
         const renderItem = layoutItemForkey(layout, child.key)
+
         return (
             <GridItem
                 margin={margin}
@@ -398,8 +404,8 @@ class DraggerLayout extends React.Component {
                 index={index}
                 isUserMove={renderItem.isUserMove}
                 UniqueKey={child.key}
-                style={{ zIndex: 1 }}
-
+                style={{ zIndex: 2 }}
+                static={renderItem.static}
             >
                 {child}
             </GridItem >
@@ -413,7 +419,7 @@ class DraggerLayout extends React.Component {
         return (
             <div
                 className={stringJoin('DraggerLayout', className)}
-                style={{ left: 100, width: width, height: containerHeight }}
+                style={{ left: 100, width: width, height: containerHeight, zIndex: 1 }}
             >
                 {React.Children.map(this.props.children,
                     (child, index) => this.getGridItem(child, index)
@@ -423,40 +429,3 @@ class DraggerLayout extends React.Component {
         )
     }
 }
-
-
-const Words = [
-    { content: 'You can do anything, but not everything.', img: 'http://pic.sc.chinaz.com/files/pic/pic9/201303/xpic10472.jpg' },
-    { content: 'Those who dare to fail miserably can achieve greatly.', img: 'https://img00.deviantart.net/1163/i/2013/059/d/7/irish_views_by_ssquared_photography-d5wjnsk.jpg' },
-    { content: 'You miss 100 percent of the shots you never take.', img: 'http://www.landsendhotel.co.uk/uploads/gallery/gallery/coastal_scenery_seascapes_6.jpg' },
-    { content: 'Those who believe in telekinetics, raise my hand.', img: 'https://tctechcrunch2011.files.wordpress.com/2017/10/26099344353_18cd6fabb8_k.jpg?w=738' },
-    { content: 'I’d rather live with a good question than a bad answer.', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVa26cLzh6PYUwY4LMpwbHyDHFmWi_w2JuqDzeOdm1IIEbBZO0Vg' }
-]
-
-
-const Card = ({ item }) => {
-    return (
-        <div className='layout-item'>
-            <img src={item.img} style={{ width: '100%' }} draggable={false} alt='card'></img>
-            <div style={{ padding: 5, textAlign: 'center', color: '#595959' }}>{item.content}</div>
-        </div>
-    )
-}
-
-
-export const LayoutDemo = () => {
-
-    return (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <div>
-                <h1 style={{ textAlign: 'center' }}>Normal Layout Demo</h1>
-                <DraggerLayout width={800} col={12} rowHeight={800 / 12} margin={[5, 5]} className='normal-layout'>
-                    {Words.map((el, index) => {
-                        return <Card item={el} key={index} data-set={{ GridX: (index * 3) % 12, GridY: index * 2, w: 3, h: 3 }} />
-                    })}
-                </DraggerLayout>
-            </div>
-        </div>
-    )
-}
-

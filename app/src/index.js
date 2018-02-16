@@ -1,12 +1,15 @@
 'use strict'
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { LayoutDemo } from './App';
+import { LayoutDemo } from './NormalLayout';
+import { SortedTable } from './SortedTable';
+
 
 
 ReactDOM.render(
     <div>
         <LayoutDemo />
+        <SortedTable />
     </div>,
     document.getElementById('root')
 );

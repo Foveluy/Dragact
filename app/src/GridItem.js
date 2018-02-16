@@ -102,7 +102,9 @@ export default class GridItem extends React.Component {
     }
 
     onDragStart(x, y) {
-        const { w, h, UniqueKey } = this.props
+        const { w, h, UniqueKey } = this.props;
+        if (this.props.static) return;
+
         const { GridX, GridY } = this.calGridXY(x, y)
 
         this.props.onDragStart({
@@ -110,12 +112,14 @@ export default class GridItem extends React.Component {
         })
     }
     onDrag(event, x, y) {
+        if (this.props.static) return;
         const { GridX, GridY } = this.calGridXY(x, y)
         const { w, h, col, UniqueKey } = this.props
         this.props.onDrag({ GridX, GridY, w, h }, UniqueKey)
     }
 
     onDragEnd() {
+        if (this.props.static) return;
         if (this.props.onDragEnd) this.props.onDragEnd(this.props.UniqueKey)
     }
 
@@ -123,8 +127,9 @@ export default class GridItem extends React.Component {
 
         const { w, h, margin, style, bounds, GridX, GridY } = this.props
         const { x, y } = this.calGridItemPosition(this.props.GridX, this.props.GridY)
-
         const { wPx, hPx } = this.calWHtoPx(w, h);
+
+
         return (
             <Dragger
                 style={{
