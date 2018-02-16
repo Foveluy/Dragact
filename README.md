@@ -4,6 +4,11 @@ Dragact is a react component, which allows you to build your own **dragable grid
 
 ![](https://github.com/215566435/React-dragger-layout/blob/master/example/image/NormalLayoutDemo.gif)
 
+### 快速安装
+```
+npm install --save dragact
+```
+
 
 # Demo
 [Live Demo](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html)

@@ -20,7 +20,7 @@ export interface DragactLayout {
     key?: number | string
 }
 
-interface DragactProps {
+export interface DragactProps {
     layout?: DragactLayout[] //暂时不推荐使用
     /** 
      * 宽度切分比 
