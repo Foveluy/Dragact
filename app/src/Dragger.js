@@ -249,8 +249,6 @@ export default class Dragger extends React.Component {
         doc.removeEventListener('touchend', this.onDragEnd)
         doc.removeEventListener('mouseup', this.onDragEnd)
 
-        console.log('清除lsner')
-
         this.setState({
             zIndex: 1
         })

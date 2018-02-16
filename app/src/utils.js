@@ -47,3 +47,13 @@ export const parseBounds = (bounds) => {
 export const isNumber = (things) => {
     return typeof things === 'number' ? true : false
 }
+
+export const getDataSet = (children) => {
+    return children.map((child) => {
+        return { ...child.props['data-set'], isUserMove: true, key: child.key, }
+    })
+}
+
+export const stringJoin = (source, join) => {
+    return source + (join ? ` ${join}` : '')
+}
