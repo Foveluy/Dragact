@@ -1,5 +1,5 @@
 import *as React from 'react';
-import { DraggerLayout } from '../lib/dragact'
+import { Dragact } from '../lib/dragact'
 import './index.css';
 
 
@@ -34,11 +34,11 @@ export const LayoutDemo = () => {
         <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div>
                 <h1 style={{ textAlign: 'center' }}>Normal Layout Demo</h1>
-                <DraggerLayout width={800} col={12} rowHeight={800 / 12} margin={[5, 5]} className='normal-layout'>
+                <Dragact width={800} col={12} rowHeight={800 / 12} margin={[5, 5]} className='normal-layout'>
                     {Words.map((el, index) => {
                         return <Card item={el} key={index} data-set={{ GridX: (index * 3) % 12, GridY: index * 2, w: 3, h: 3 }} />
                     })}
-                </DraggerLayout>
+                </Dragact>
             </div>
         </div>
     )

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DraggerLayout } from '../lib/dragact'
+import { Dragact } from '../lib/dragact'
 import './index.css'
 
 const Words = [
@@ -29,11 +29,11 @@ export const SortedTable = () => {
         <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div>
                 <h1 style={{ textAlign: 'center' }}>Sorted Table Demo</h1>
-                <DraggerLayout width={800} col={1} rowHeight={60} margin={[2, 2]} className='normal-layout'>
+                <Dragact width={800} col={1} rowHeight={60} margin={[2, 2]} className='normal-layout'>
                     {Words.map((el, index) => {
                         return <Cell item={el} key={index} data-set={{ GridX: 0, GridY: 0, w: 1, h: 1 }} />
                     })}
-                </DraggerLayout>
+                </Dragact>
             </div>
         </div>
     )
