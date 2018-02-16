@@ -1,0 +1,20 @@
+/* .shit:hover{
+    width: 100px;
+    height: 100px;
+} */
+
+.WrapDragger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.DraggerLayout {
+    -webkit-transition: all .15s;
+    transition: all .15s;
+}
+
+body {
+    background: white;
+}
+
