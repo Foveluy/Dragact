@@ -1,5 +1,5 @@
-import React from 'react';
-import { DraggerLayout } from '../App'
+import * as React from 'react';
+import { DraggerLayout } from '../lib/dragact'
 import './index.css'
 
 const Words = [
@@ -11,7 +11,8 @@ const Words = [
 ]
 
 
-const Cell = ({ item }) => {
+const Cell = (props: any) => {
+    const item = props.item;
     return (
         <div className='layout-Cell'>
             <img src={item.img} style={{ width: 45, height: 45 }} draggable={false} alt='card'></img>

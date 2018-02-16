@@ -5,7 +5,7 @@ module.exports = {
     entry: [
         // 'react-hot-loader/patch',
         // 'webpack/hot/only-dev-server',
-        './app/src/index.js'
+        './src/index.tsx'
     ],
     output: {
         path: resolve(__dirname, 'build'),//打包后的文件存放的地方
@@ -16,6 +16,10 @@ module.exports = {
         contentBase: resolve(__dirname, 'build'),
         hot: true,
         publicPath: '/',
+    },
+    resolve: {
+        // Add '.ts' and '.tsx' as resolvable extensions.
+        extensions: [".ts", ".tsx", ".js", ".json"]
     },
     module: {
         rules: [
@@ -33,6 +37,11 @@ module.exports = {
                 ],
                 exclude: /node_modules/
             },
+            // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
+            { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
+
+            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
         ],
     },
     plugins: [
@@ -40,8 +49,15 @@ module.exports = {
         // new webpack.NamedModulesPlugin(),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
-                warnings: false
-            }
+                warnings: false,
+                comparisons: false,
+            },
+            output: {
+                comments: false,
+                // Turned on because emoji and regex is not minified properly using default
+                // https://github.com/facebookincubator/create-react-app/issues/2488
+                ascii_only: true,
+            },
         }),
         new webpack.DefinePlugin({
             'process.env': {

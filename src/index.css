@@ -1,0 +1,14 @@
+.demo-button-layout {
+    display: flex;
+    flex-direction: column;
+    width: 120px;
+    position: fixed;
+}
+
+.demo-button-layout>button {
+    padding: 12px;
+    background-color: white;
+    margin-top: 2px;
+    border-radius: 5px;
+    border: 1pt solid #1890ff;
+}

@@ -1,4 +1,4 @@
-import { collision } from "./collison";
+import { collision, layoutCheck } from "./collison";
 
 
 export const checkInContainer = (GridX, GridY, col, w) => {

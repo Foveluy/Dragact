@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": true,
+        "sourceMap": false,
+        "outDir": "./dist",
+        "watch": false,
+        "noUnusedLocals": true,
+        "strict": true,
+        "experimentalDecorators": true,
+        "strictFunctionTypes": true,
+        "strictPropertyInitialization": false,
+        "jsx": "react"
+    },
+    "include": [
+        "src/**/*"
+    ]
+}
