@@ -1,4 +1,4 @@
-# 什么是 Dragact?
+# Dragact?
 
 Dragact 是一款React组件，他能够使你简单、快速的构建出一款强大的 **拖拽式网格(grid)布局**.
 
