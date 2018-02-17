@@ -10,7 +10,7 @@ import { layoutItemForkey, syncLayout, MapLayoutTostate } from './util/initiate'
 import './style.css';
 
 
-export interface DragactLayout {
+export interface DragactLayoutItem {
     GridX: number
     GridY: number
     static?: Boolean
@@ -21,7 +21,7 @@ export interface DragactLayout {
 }
 
 export interface DragactProps {
-    layout?: DragactLayout[] //暂时不推荐使用
+    layout?: DragactLayoutItem[] //暂时不推荐使用
     /** 
      * 宽度切分比 
      * 这个参数会把容器的宽度平均分为col等份
@@ -88,7 +88,7 @@ interface DragactState {
     hMoving: number
     placeholderShow: Boolean,
     placeholderMoving: Boolean,
-    layout: DragactLayout[],
+    layout: DragactLayoutItem[],
     containerHeight: number
 }
 

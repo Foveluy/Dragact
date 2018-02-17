@@ -1,4 +1,4 @@
-import { DragactLayout } from "../dragact";
+import { DragactLayoutItem } from "../dragact";
 
 export function quickSort(a: number[]): any {
     return a.length <= 1 ? a : quickSort(a.slice(1).filter(item => item <= a[0])).concat(a[0], quickSort(a.slice(1).filter(item => item > a[0])));
@@ -16,7 +16,7 @@ export const sortLayout = (layout: any) => {
     })
 }
 
-export const getMaxContainerHeight = (layout: DragactLayout[], elementHeight = 30, elementMarginBottom = 10) => {
+export const getMaxContainerHeight = (layout: DragactLayoutItem[], elementHeight = 30, elementMarginBottom = 10) => {
     const ar = layout.map((item) => {
         return item.GridY + item.h
     })

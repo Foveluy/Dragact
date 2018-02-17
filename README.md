@@ -127,6 +127,15 @@ interface DragactProps {
 
 
 
+# 测试
+```
+git clone https://github.com/215566435/Dragact.git
+cd Dragact
+npm install 
+npm run test
+```
+
+
 # 贡献
 
 ### 想要一个新的特色、功能？

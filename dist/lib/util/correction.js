@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var collison_1 = require("./collison");
-exports.checkInContainer = function (GridX, GridY, col, w) {
+import { collision, layoutCheck } from "./collison";
+export const checkInContainer = (GridX, GridY, col, w) => {
     /**防止元素出container */
     if (GridX + w > col - 1)
         GridX = col - w; //右边界
@@ -9,24 +7,24 @@ exports.checkInContainer = function (GridX, GridY, col, w) {
         GridX = 0; //左边界
     if (GridY < 0)
         GridY = 0; //上边界
-    return { GridX: GridX, GridY: GridY };
+    return { GridX, GridY };
 };
 /**
  * 这个函数会有副作用，不是纯函数，会改变item的Gridx和GridY
  * @param {*} item
  */
-exports.correctItem = function (item, col) {
-    var _a = exports.checkInContainer(item.GridX, item.GridY, col, item.w), GridX = _a.GridX, GridY = _a.GridY;
+export const correctItem = (item, col) => {
+    const { GridX, GridY } = checkInContainer(item.GridX, item.GridY, col, item.w);
     item.GridX = GridX;
     item.GridY = GridY;
 };
-exports.correctLayout = function (layout, col) {
-    var copy = layout.slice();
-    for (var i = 0; i < layout.length - 1; i++) {
-        exports.correctItem(copy[i], col);
-        exports.correctItem(copy[i + 1], col);
-        if (collison_1.collision(copy[i], copy[i + 1])) {
-            copy = collison_1.layoutCheck(copy, copy[i], copy[i].UniqueKey, copy[i].UniqueKey, 0);
+export const correctLayout = (layout, col) => {
+    var copy = [...layout];
+    for (let i = 0; i < layout.length - 1; i++) {
+        correctItem(copy[i], col);
+        correctItem(copy[i + 1], col);
+        if (collision(copy[i], copy[i + 1])) {
+            copy = layoutCheck(copy, copy[i], copy[i].UniqueKey, copy[i].UniqueKey, 0);
         }
     }
     return copy;

@@ -1,13 +1,13 @@
 import { sortLayout } from "./sort";
 import { getFirstCollison } from "./collison";
-import { DragactLayout } from "../dragact";
+import { DragactLayoutItem } from "../dragact";
 
 /**
  * 压缩单个元素，使得每一个元素都会紧挨着边界或者相邻的元素
  * @param {*} finishedLayout 压缩完的元素会放进这里来，用来对比之后的每一个元素是否需要压缩
  * @param {*} item 
  */
-export const compactItem = (finishedLayout: DragactLayout[], item: DragactLayout) => {
+export const compactItem = (finishedLayout: DragactLayoutItem[], item: DragactLayoutItem) => {
     if (item.static) return item;
     const newItem = { ...item }
     if (finishedLayout.length === 0) {
@@ -34,7 +34,7 @@ export const compactItem = (finishedLayout: DragactLayout[], item: DragactLayout
  * 压缩layout，使得每一个元素都会紧挨着边界或者相邻的元素
  * @param {*} layout 
  */
-export const compactLayout = (layout: DragactLayout[]) => {
+export const compactLayout = (layout: DragactLayoutItem[]) => {
     let sorted = sortLayout(layout)
     const needCompact = Array(layout.length)
     const compareList = []

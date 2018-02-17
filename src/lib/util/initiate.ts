@@ -1,4 +1,4 @@
-import { DragactLayout } from "../dragact";
+import { DragactLayoutItem } from "../dragact";
 
 /**
  * 把用户移动的块，标记为true
@@ -8,7 +8,7 @@ import { DragactLayout } from "../dragact";
  * @param {*} GridY 
  * @param {*} isUserMove 
  */
-export const syncLayout = (layout: DragactLayout[], key: number | string, GridX: number, GridY: number, isUserMove: Boolean) => {
+export const syncLayout = (layout: DragactLayoutItem[], key: number | string, GridX: number, GridY: number, isUserMove: Boolean) => {
     const newlayout = layout.map((item) => {
         if (item.key === key) {
             item.GridX = GridX
@@ -30,7 +30,7 @@ export const syncLayout = (layout: DragactLayout[], key: number | string, GridX:
  * @param {*} children 
  */
 
-export const MapLayoutTostate = (layout: DragactLayout[], children: any[]) => {
+export const MapLayoutTostate = (layout: DragactLayoutItem[], children: any[]) => {
     return layout.map((child, index) => {
         let newChild = { ...child, isUserMove: true, key: children[index].key, static: children[index].static }
         return newChild
@@ -42,7 +42,7 @@ export const MapLayoutTostate = (layout: DragactLayout[], children: any[]) => {
  * @param {*} layout 输入进来的布局
  * @param {*} key 
  */
-export const layoutItemForkey = (layout: DragactLayout[], key: number) => {
+export const layoutItemForkey = (layout: DragactLayoutItem[], key: number) => {
     for (let i = 0, length = layout.length; i < length; i++) {
         if (key === layout[i].key) {
             return layout[i]

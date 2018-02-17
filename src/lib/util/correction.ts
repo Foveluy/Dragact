@@ -1,5 +1,5 @@
 import { collision, layoutCheck } from "./collison";
-import { DragactLayout } from "../dragact";
+import { DragactLayoutItem } from "../dragact";
 import { GridItemEvent } from "../gridItem";
 
 
@@ -15,12 +15,12 @@ export const checkInContainer = (GridX: number, GridY: number, col: number, w: n
  * 这个函数会有副作用，不是纯函数，会改变item的Gridx和GridY
  * @param {*} item 
  */
-export const correctItem = (item: DragactLayout, col: number) => {
+export const correctItem = (item: DragactLayoutItem, col: number) => {
     const { GridX, GridY } = checkInContainer(item.GridX, item.GridY, col, item.w)
     item.GridX = GridX;
     item.GridY = GridY;
 }
-export const correctLayout = (layout: DragactLayout[], col: number) => {
+export const correctLayout = (layout: DragactLayoutItem[], col: number) => {
     var copy = [...layout];
     for (let i = 0; i < layout.length - 1; i++) {
         correctItem(copy[i], col)

@@ -1,7 +1,7 @@
-import { DragactLayout } from "../dragact";
+import { DragactLayoutItem } from "../dragact";
 import { GridItemEvent } from "../gridItem";
 
-export const collision = (a: DragactLayout, b: DragactLayout) => {
+export const collision = (a: DragactLayoutItem, b: DragactLayoutItem) => {
     if (a.GridX === b.GridX && a.GridY === b.GridY &&
         a.w === b.w && a.h === b.h) {
         return true
@@ -15,7 +15,7 @@ export const collision = (a: DragactLayout, b: DragactLayout) => {
 
 
 /**获取layout中，item第一个碰撞到的物体 */
-export const getFirstCollison = (layout: DragactLayout[], item: DragactLayout) => {
+export const getFirstCollison = (layout: DragactLayoutItem[], item: DragactLayoutItem) => {
     for (let i = 0, length = layout.length; i < length; i++) {
         if (collision(layout[i], item)) {
             return layout[i]
@@ -24,7 +24,7 @@ export const getFirstCollison = (layout: DragactLayout[], item: DragactLayout) =
     return null
 }
 
-export const layoutCheck = (layout: DragactLayout[], layoutItem: GridItemEvent,
+export const layoutCheck = (layout: DragactLayoutItem[], layoutItem: GridItemEvent,
     key: string | number, fristItemkey: string | number, moving: number) => {
 
     let i: any = [], movedItem: any = []/**收集所有移动过的物体 */

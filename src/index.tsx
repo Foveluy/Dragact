@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { LayoutDemo } from './NormalLayout/index';
-import { SortedTable } from "./SortedTable";
-import { SortedTableWithStatic } from "./StaticHeader";
+import { SortedTable } from "./SortedTable/index";
+import { SortedTableWithStatic } from "./StaticHeader/index";
 
 import './index.css'
 
