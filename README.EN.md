@@ -1,21 +1,16 @@
-# Dragact?
+# Whath is Dragact?
 
-Dragact 是一款React组件，他能够使你简单、快速的构建出一款强大的 **拖拽式网格(grid)布局**.
+Dragact is a react component, which allows you to build your own **dragable grid layout** easily.
 
 ![](https://github.com/215566435/React-dragger-layout/blob/master/example/image/NormalLayoutDemo.gif)
 
-# Demo地址
-[Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html)
-
-
-# 快速开始
+### 快速安装
 ```
 npm install --save dragact
 ```
 
 ### 写一个例子🌰
 ```javascript
-//index.js
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
@@ -38,26 +33,16 @@ ReactDOM.render(
 );
 ```
 
-```css
-/** index.css */
-.plant-layout {
-    border: 1px solid black;
-}
-.layout-child {
-    height: 100%;
-    background: #ef4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-```
+# Demo
+[Live Demo](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html)
 
-# 特点
-- [x] 自动布局的网格系统
-- [x] 手机上也可以操作
-- [x] 高度自适应
-- [x] 静态组件([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
-- [x] Draggable component([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
+
+# Feature
+- [x] auto sorted layout
+- [x] mobile device supported
+- [x] auto height fixed
+- [x] static component
+- [x] Draggable component
 
 
 # Dragact 提供的属性
@@ -127,23 +112,14 @@ interface DragactProps {
 
 
 
-# 测试
-```
-git clone https://github.com/215566435/Dragact.git
-cd Dragact
-npm install 
-npm run test
-```
+# Contribute
 
+### Want a new feature?
+1. If you have a feature request, please add it as an issue or make a pull request.
+2. After adding some awesome feature, please run the test and make sure it will pass all tests before you make a PR.
 
-# 贡献
-
-### 想要一个新的特色、功能？
-1. 如果你想添加一些新功能或者一些非常棒的点子，请发起issue告诉我，谢谢！
-2. 如果你已经阅读过源代码，并且添加了一些非常牛X🐂的点子，请发起你的PR.
-
-### 有bug?
-如果你发现了本项目的Bug，请务必马上告诉我。添加一个issue，并且帮忙给出最最简单重现的例子，这能让我快速定位到Bug帮你解决，谢谢！
+### A bug?
+If you have a bug to report, please reproduce the bug in Github issue with a sample code to help us easily isolate it.
 
 
 
