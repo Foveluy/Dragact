@@ -3,14 +3,17 @@ import * as ReactDOM from "react-dom";
 import { LayoutDemo } from './NormalLayout/index';
 import { SortedTable } from "./SortedTable/index";
 import { SortedTableWithStatic } from "./StaticHeader/index";
+import { LayoutRestore } from "./LayoutRestore/index";
 
 import './index.css'
+
 
 
 const DemoMap: any = {
     normalLayout: <LayoutDemo />,
     SortedTable: <SortedTable />,
-    StaticHeader: <SortedTableWithStatic />
+    StaticHeader: <SortedTableWithStatic />,
+    LayoutRestore: <LayoutRestore />
 }
 
 class DemoDispatcher extends React.Component<{}, {}> {
@@ -33,6 +36,7 @@ class DemoDispatcher extends React.Component<{}, {}> {
                     <button onClick={() => this.handleLayoutChange('normalLayout')}>normalLayout</button>
                     <button onClick={() => this.handleLayoutChange('SortedTable')}>SortedTable</button>
                     <button onClick={() => this.handleLayoutChange('StaticHeader')}>StaticHeader</button>
+                    <button onClick={() => this.handleLayoutChange('LayoutRestore')}>LayoutRestore</button>
                 </div>
                 {this.state.demo}
             </div>

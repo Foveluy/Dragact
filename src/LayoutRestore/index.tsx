@@ -1,4 +1,4 @@
-import *as React from 'react';
+import * as React from 'react';
 import { Dragact } from '../lib/dragact'
 import './index.css';
 
@@ -28,19 +28,31 @@ const Card = (props: any) => {
 }
 
 
-export class LayoutDemo extends React.Component<{}, {}> {
+var storeLayout: any = {};
+export class LayoutRestore extends React.Component<{}, {}> {
     dragactNode: Dragact;
-    state = {
-        layout: []
-    }
-
-    componentDidMount() {
-        this.setState({
-            layout: this.dragactNode.getLayout()
+    handleOnDragEnd = () => {
+        const maping: any = {};
+        this.dragactNode.getLayout().forEach((item) => {
+            if (item.key)
+                maping[item.key] = item;
         })
+        const parsedLayout = JSON.stringify(maping);
+
+        localStorage.setItem('layout', parsedLayout);
+    }
+    componentWillMount() {
+        const lastLayout = localStorage.getItem('layout');
+        if (lastLayout) {
+            storeLayout = JSON.parse(lastLayout);
+        }
     }
 
-    render() {
+    getLayoutItemForKey(key: string) {
+        return storeLayout[key]
+    }
+
+    renderDragact = () => {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
             width: 800,
@@ -51,14 +63,24 @@ export class LayoutDemo extends React.Component<{}, {}> {
         }
 
         return (
+            <Dragact {...dragactInit} ref={node => node ? this.dragactNode = node : null} onDragEnd={this.handleOnDragEnd}>
+                {Words.map((el, index) => {
+                    const dataSet = this.getLayoutItemForKey(index + '');
+                    if (dataSet)
+                        return <Card item={el} key={index} data-set={...dataSet} />
+                    else
+                        return <Card item={el} key={index} data-set={{ GridX: (index * 3) % 12, GridY: index * 2, w: 3, h: 3 }} />
+                })}
+            </Dragact>
+        )
+    }
+
+    render() {
+        return (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
                     <h1 style={{ textAlign: 'center' }}>Normal Layout Demo</h1>
-                    <Dragact {...dragactInit} ref={node => node ? this.dragactNode = node : null} >
-                        {Words.map((el, index) => {
-                            return <Card item={el} key={index} data-set={{ GridX: (index * 3) % 12, GridY: index * 2, w: 3, h: 3 }} />
-                        })}
-                    </Dragact>
+                    {this.renderDragact()}
                 </div>
             </div>
         )

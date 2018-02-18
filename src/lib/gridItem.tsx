@@ -22,7 +22,7 @@ export interface GridItemProps {
 
     /**生命周期回掉函数 */
     onDragStart?: (event: GridItemEvent) => void,
-    onDragEnd?: (key: string | number) => void,
+    onDragEnd?: (event: GridItemEvent) => void,
     onDrag?: (event: GridItemEvent) => void
 
     isUserMove: Boolean
@@ -142,9 +142,11 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
         this.props.onDrag && this.props.onDrag({ GridX, GridY, w, h, UniqueKey: UniqueKey + '', event })
     }
 
-    onDragEnd() {
+    onDragEnd(event: any, x: number, y: number) {
         if (this.props.static) return;
-        if (this.props.onDragEnd) this.props.onDragEnd(this.props.UniqueKey + '')
+        const { GridX, GridY } = this.calGridXY(x, y);
+        const { w, h, UniqueKey } = this.props;
+        if (this.props.onDragEnd) this.props.onDragEnd({ GridX, GridY, w, h, UniqueKey: UniqueKey + '', event });
     }
 
     render() {

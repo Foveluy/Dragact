@@ -48,7 +48,7 @@ interface DraggerProps {
      */
     onDragStart?: (x: number, y: number) => void,
     onMove?: (event: MouseEvent | TouchEvent, x: number, y: number) => void,
-    onDragEnd?: (event: MouseEvent | TouchEvent) => void,
+    onDragEnd?: (event: MouseEvent | TouchEvent, x: number, y: number) => void,
 
     style?: React.CSSProperties
 }
@@ -250,7 +250,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             zIndex: 1
         })
 
-        this.props.onDragEnd && this.props.onDragEnd(event)
+        this.props.onDragEnd && this.props.onDragEnd(event, this.state.x, this.state.y)
     }
 
     componentDidMount() {

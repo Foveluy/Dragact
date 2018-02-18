@@ -68,7 +68,7 @@ export interface DragactProps {
     /**
      * 拖动结束的回调
      */
-    onDragEnd?: (key: number | string) => void
+    onDragEnd?: (event: GridItemEvent) => void
 
     /**
      * 每个元素的margin,第一个参数是左右，第二个参数是上下
@@ -116,6 +116,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             containerHeight: 500
         }
     }
+
 
 
     onDragStart(bundles: GridItemEvent) {
@@ -166,7 +167,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         this.props.onDrag && this.props.onDrag(layoutItem);
     }
 
-    onDragEnd(key: number | string) {
+    onDragEnd(layoutItem: GridItemEvent) {
         const compactedLayout = compactLayout(this.state.layout)
         this.setState({
             placeholderShow: false,
@@ -174,7 +175,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
         })
 
-        this.props.onDragEnd && this.props.onDragEnd(key);
+        this.props.onDragEnd && this.props.onDragEnd(layoutItem);
     }
     renderPlaceholder() {
         if (!this.state.placeholderShow) return null
@@ -255,5 +256,10 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 {this.renderPlaceholder()}
             </div>
         )
+    }
+
+    //api
+    getLayout() {
+        return this.state.layout;
     }
 }
