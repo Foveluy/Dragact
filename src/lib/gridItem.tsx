@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Dragger } from './dragger/index'
 import { checkInContainer } from './util/correction';
-import { Bound } from './utils'
+import { Bound } from './utils';
 
 
 export interface GridItemProps {
@@ -25,6 +25,10 @@ export interface GridItemProps {
     onDragEnd?: (event: GridItemEvent) => void,
     onDrag?: (event: GridItemEvent) => void
 
+    onResizeStart?: (event: GridItemEvent) => void
+    onResizing?: (event: GridItemEvent) => void
+    onResizeEnd?: (event: GridItemEvent) => void
+
     isUserMove: Boolean
 
     UniqueKey?: string | number
@@ -45,6 +49,20 @@ export interface GridItemEvent {
     UniqueKey: string | number
 }
 
+
+const checkWidthHeight = (w: number, h: number, col: number) => {
+    var newW = w;
+    var newH = h;
+    if (w > col) {
+        newW = col;
+    }
+    if(w<1)newW=1;
+    if(h<1)newH=1;
+    return {
+        w:newW,h:newH
+    }
+
+}
 
 export default class GridItem extends React.Component<GridItemProps, {}> {
     constructor(props: GridItemProps) {
@@ -111,7 +129,9 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
 
         return this.props.GridX !== props.GridX ||
             this.props.GridY !== props.GridY ||
-            this.props.isUserMove !== props.isUserMove
+            this.props.isUserMove !== props.isUserMove ||
+            this.props.w !== props.w ||
+            this.props.h !== props.h
     }
 
     /**宽和高计算成为px */
@@ -123,6 +143,16 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
         const hPx = Math.round(h * this.props.rowHeight + (h - 1) * margin[1])
 
         return { wPx, hPx }
+    }
+
+    calPxToWH(wPx: number, hPx: number) {
+        const calWidth = this.calColWidth();
+
+        const w = Math.round((wPx-calWidth*0.5) / calWidth)
+        const h = Math.round((hPx-this.props.rowHeight*0.8) / this.props.rowHeight)
+        console.log(h);
+
+        return checkWidthHeight(w,h,this.props.col)
     }
 
     onDragStart(x: number, y: number) {
@@ -149,29 +179,51 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
         if (this.props.onDragEnd) this.props.onDragEnd({ GridX, GridY, w, h, UniqueKey: UniqueKey + '', event });
     }
 
+    onResizeStart = (event: any, wPx: number, hPx: number) => {
+        const { GridX, GridY, UniqueKey,w,h } = this.props;
+        this.props.onResizeStart && this.props.onResizeStart({ GridX, GridY, w, h, UniqueKey: UniqueKey + '', event })
+    }
+
+    onResizing = (event: any, wPx: number, hPx: number) => {
+        var { w, h } = this.calPxToWH(wPx, hPx);
+
+        const { GridX, GridY, UniqueKey } = this.props;
+        this.props.onResizing && this.props.onResizing({ GridX, GridY, w, h, UniqueKey: UniqueKey + '', event })
+    }
+
+    onResizeEnd = (event: any, wPx: number, hPx: number) => {
+        var { w, h } = this.calPxToWH(wPx, hPx);
+        const { GridX, GridY, UniqueKey } = this.props;
+
+        this.props.onResizeEnd && this.props.onResizeEnd({ GridX, GridY, w, h, UniqueKey: UniqueKey + '', event })
+    }
+
     render() {
 
         const { w, h, style, bounds, GridX, GridY } = this.props
         const { x, y } = this.calGridItemPosition(GridX, GridY)
         const { wPx, hPx } = this.calWHtoPx(w, h);
-
-
         return (
+
             <Dragger
                 style={{
                     ...style, width: wPx, height: hPx, position: 'absolute',
                     transition: this.props.isUserMove ? '' : 'all .2s'
                 }}
-
                 onDragStart={this.onDragStart}
                 onMove={this.onDrag}
                 onDragEnd={this.onDragEnd}
+                onResizeStart={this.onResizeStart}
+                onResizing={this.onResizing}
+                onResizeEnd={this.onResizeEnd}
                 x={x}
                 y={y}
+                w={wPx}
+                h={hPx}
                 isUserMove={this.props.isUserMove}
                 bounds={bounds}
             >
-                <div style={{ width: wPx, height: hPx }}>
+                <div style={{ height: '100%', width: "100%" }}>
                     {React.Children.map(this.props.children, (child) => child)}
                 </div>
             </Dragger>

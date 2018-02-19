@@ -87,7 +87,7 @@ export const layoutCheck = (layout: DragactLayoutItem[], layoutItem: GridItemEve
         } else if (fristItemkey === key) {
 
             /**永远保持用户移动的块是 isUserMove === true */
-            return { ...item, GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true }
+            return { ...item, GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true, w: layoutItem.w, h: layoutItem.h }
         }
 
         return item

@@ -89,7 +89,8 @@ interface DragactState {
     placeholderShow: Boolean,
     placeholderMoving: Boolean,
     layout: DragactLayoutItem[],
-    containerHeight: number
+    containerHeight: number,
+    dragType: 'drag' | 'resize'
 }
 
 export class Dragact extends React.Component<DragactProps, DragactState> {
@@ -113,11 +114,62 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             placeholderShow: false,
             placeholderMoving: false,
             layout: layout,
-            containerHeight: 500
+            containerHeight: 500,
+            dragType: 'drag'
         }
     }
+    onResizeStart = (layoutItem: GridItemEvent) => {
+        const { GridX, GridY, w, h, UniqueKey } = layoutItem
+        const sync = syncLayout(this.state.layout, UniqueKey, GridX, GridY, true);
+        this.setState({
+            GridXMoving: GridX,
+            GridYMoving: GridY,
+            wMoving: w,
+            hMoving: h,
+            placeholderShow: true,
+            placeholderMoving: true,
+            layout: sync,
+            dragType: 'resize'
+        })
+    }
 
+    onResizing = (layoutItem: GridItemEvent) => {
 
+        const newLayout = layoutCheck(this.state.layout, layoutItem, layoutItem.UniqueKey, layoutItem.UniqueKey, 0);
+
+        const compacted = compactLayout(newLayout)
+
+        for (let i = 0; i < compacted.length; i++) {
+            const compactedItem = compacted[i];
+            if (layoutItem.UniqueKey === compactedItem.key) {
+                /**
+                 * 特殊点：当我们移动元素的时候，元素在layout中的位置不断改变
+                 * 但是当isUserMove=true的时候，鼠标拖拽的元素不会随着位图变化而变化
+                 * 但是实际layout中的位置还是会改变
+                 * (isUserMove=true用于解除placeholder和元素的绑定)
+                 */
+                compactedItem.isUserMove = true
+                break
+            }
+        }
+
+        this.setState({
+            layout: compacted,
+            wMoving: layoutItem.w,
+            hMoving: layoutItem.h,
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
+        })
+    }
+
+    onResizeEnd = (layoutItem: GridItemEvent) => {
+        const compactedLayout = compactLayout(this.state.layout)
+        this.setState({
+            placeholderShow: false,
+            layout: compactedLayout,
+            containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
+        })
+        this.props.onDragEnd && this.props.onDragEnd(layoutItem);
+    }
 
     onDragStart(bundles: GridItemEvent) {
         const { GridX, GridY, w, h, UniqueKey } = bundles
@@ -132,6 +184,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             placeholderShow: true,
             placeholderMoving: true,
             layout: newlayout,
+            dragType: 'drag'
         })
         this.props.onDragStart && this.props.onDragStart(bundles)
     }
@@ -168,7 +221,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     onDragEnd(layoutItem: GridItemEvent) {
+
         const compactedLayout = compactLayout(this.state.layout)
+
         this.setState({
             placeholderShow: false,
             layout: compactedLayout,
@@ -180,7 +235,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     renderPlaceholder() {
         if (!this.state.placeholderShow) return null
         var { col, width, padding, rowHeight, margin } = this.props
-        const { GridXMoving, GridYMoving, wMoving, hMoving, placeholderMoving } = this.state
+        const { GridXMoving, GridYMoving, wMoving, hMoving, placeholderMoving, dragType } = this.state
 
         if (!padding) padding = 0;
         return (
@@ -194,7 +249,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 GridY={GridYMoving}
                 w={wMoving}
                 h={hMoving}
-                style={{ background: '#d6e4ff', zIndex: 1, transition: ' all .15s' }}
+                style={{ background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s' }}
                 isUserMove={!placeholderMoving}
             />
         )
@@ -234,6 +289,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     UniqueKey={child.key}
                     style={{ zIndex: 2 }}
                     static={renderItem.static}
+                    onResizing={this.onResizing}
+                    onResizeStart={this.onResizeStart}
+                    onResizeEnd={this.onResizeEnd}
                 >
                     {child}
                 </GridItem >

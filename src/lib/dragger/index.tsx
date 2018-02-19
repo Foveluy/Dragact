@@ -1,6 +1,6 @@
 import * as React from "react";
 import { int, innerHeight, innerWidth, outerHeight, outerWidth, parseBounds, Bound } from '../utils'
-/// <reference path="react.d.ts" />
+
 
 const doc = document
 
@@ -50,7 +50,14 @@ interface DraggerProps {
     onMove?: (event: MouseEvent | TouchEvent, x: number, y: number) => void,
     onDragEnd?: (event: MouseEvent | TouchEvent, x: number, y: number) => void,
 
-    style?: React.CSSProperties
+    onResizeStart?: (event: any, x: number, y: number) => void,
+    onResizing?: (event: MouseEvent | TouchEvent, x: number, y: number) => void
+    onResizeEnd?: (event: MouseEvent | TouchEvent, x: number, y: number) => void
+
+    style?: React.CSSProperties,
+
+    w?: number,
+    h?: number
 }
 
 export class Dragger extends React.Component<DraggerProps, {}> {
@@ -91,7 +98,13 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         lastY: 0,
 
         /**堆叠的层级 */
-        zIndex: 1
+        zIndex: 1,
+
+        w: 0,
+        h: 0,
+
+        lastW: 0,
+        lastH: 0
     }
 
 
@@ -253,6 +266,59 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         this.props.onDragEnd && this.props.onDragEnd(event, this.state.x, this.state.y)
     }
 
+    onResizeStart = (event: React.MouseEvent<HTMLSpanElement>) => {
+        /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
+        doc.body.style.userSelect = 'none';
+
+        doc.addEventListener('mouseup', this.onResizeEnd);
+        doc.addEventListener('mousemove', this.onResizing);
+
+        let originX, originY;
+        originX = event.clientX
+        originY = event.clientY
+
+        this.props.onResizeStart && this.props.onResizeStart(event, this.state.w, this.state.h);
+
+        this.setState({
+            originX: originX,
+            originY: originY,
+            zIndex: 10,
+            lastW: this.state.w,
+            lastH: this.state.h
+        })
+        event.stopPropagation();
+    }
+    onResizing = (event: any) => {
+        /*  event.client - this.state.origin 表示的是移动的距离,
+        *   elX表示的是原来已经有的位移
+        */
+
+        let deltaX, deltaY;
+        if (event.type.indexOf('mouse') >= 0) {
+            deltaX = (event as MouseEvent).clientX - this.state.originX
+            deltaY = (event as MouseEvent).clientY - this.state.originY
+        } else {
+            deltaX = (event as TouchEvent).touches[0].clientX - this.state.originX
+            deltaY = (event as TouchEvent).touches[0].clientY - this.state.originY
+        }
+        /**移动时回调，用于外部控制 */
+
+        this.props.onResizing && this.props.onResizing(event, this.state.w, this.state.h);
+
+        this.setState({
+            w: deltaX + this.state.lastW,
+            h: deltaY + this.state.lastH
+        })
+
+    }
+    onResizeEnd = (event: any) => {
+        doc.body.style.userSelect = '';
+        doc.removeEventListener('mousemove', this.onResizing)
+        doc.removeEventListener('mouseup', this.onResizeEnd)
+
+        this.props.onResizeEnd && this.props.onResizeEnd(event, this.state.w, this.state.h);
+    }
+
     componentDidMount() {
         /** 
          * 这个函数只会调用一次 
@@ -275,43 +341,68 @@ export class Dragger extends React.Component<DraggerProps, {}> {
          */
         const { isUserMove } = nextProps
         if (!isUserMove) {
+
             if (typeof nextProps.x === 'number' &&
                 typeof nextProps.y === 'number') {
                 this.setState({
                     x: nextProps.x,
                     y: nextProps.y,
                     lastX: nextProps.x,
-                    lastY: nextProps.y
+                    lastY: nextProps.y,
+                    w: nextProps.w,
+                    h: nextProps.h
                 })
             }
         }
     }
 
     render() {
-        let { x, y, zIndex } = this.state
-        const { style, className } = this.props
-
+        var { x, y, w, h } = this.state
+        var { style, className } = this.props
         if (!this.props.isUserMove) {
             /**当外部设置其props的x,y初始属性的时候，我们在这里设置元素的初始位移 */
-            x = this.props.x ? this.props.x : 0
-            y = this.props.y ? this.props.y : 0
+            x = this.props.x ? this.props.x : 0;
+            y = this.props.y ? this.props.y : 0;
+            if (style) {
+                w = style.width ? style.width : w;
+                h = style.height ? style.height : h;
+            }
         }
+        if (style) {
+            w = w === 0 ? style.width : w;
+            h = h === 0 ? style.height : h;
+        }
+
 
         /**主要是为了让用户定义自己的className去修改css */
         const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
         return (
             <div className={`${fixedClassName}WrapDragger`}
-                style={{ ...style, zIndex: zIndex, touchAction: 'none!important', transform: `translate(${x}px,${y}px)` }}
+                style={{
+                    ...style,
+                    touchAction: 'none!important',
+                    transform: `translate(${x}px,${y}px)`,
+                    width: w,
+                    height: h
+                }}
                 onMouseDown={this.onDragStart.bind(this)}
                 onTouchStart={this.onDragStart.bind(this)}
                 onTouchEnd={this.onDragEnd.bind(this)}
                 onMouseUp={this.onDragEnd.bind(this)}
             >
-                {/**
-             *
-             *  React.Children.only 只允许子元素有一个根节点
-             */}
                 {React.Children.only(this.props.children)}
+                <span
+                    onMouseDown={this.onResizeStart}
+                    // onTouchStart={this.onDragStart.bind(this)}
+                    // onTouchEnd={this.onDragEnd.bind(this)}
+                    onMouseUp={this.onResizeEnd}
+                    style={{
+                        position: 'absolute',
+                        width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
+                        borderRight: '2px solid rgba(15,15,15,0.2)',
+                        borderBottom: '2px solid rgba(15,15,15,0.2)'
+                    }}
+                />
             </div>
         )
     }

@@ -79,7 +79,7 @@ export class LayoutRestore extends React.Component<{}, {}> {
         return (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
-                    <h1 style={{ textAlign: 'center' }}>Normal Layout Demo</h1>
+                    <h1 style={{ textAlign: 'center' }}>Layout Restore Demo</h1>
                     {this.renderDragact()}
                 </div>
             </div>
