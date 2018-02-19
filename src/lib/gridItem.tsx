@@ -50,16 +50,14 @@ export interface GridItemEvent {
 }
 
 
-const checkWidthHeight = (w: number, h: number, col: number) => {
+const checkWidthHeight = (GridX: number, w: number, h: number, col: number) => {
     var newW = w;
     var newH = h;
-    if (w > col) {
-        newW = col;
-    }
-    if(w<1)newW=1;
-    if(h<1)newH=1;
+    if (GridX + w > col - 1) newW = col - GridX //右边界
+    if (w < 1) newW = 1;
+    if (h < 1) newH = 1;
     return {
-        w:newW,h:newH
+        w: newW, h: newH
     }
 
 }
@@ -148,11 +146,11 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
     calPxToWH(wPx: number, hPx: number) {
         const calWidth = this.calColWidth();
 
-        const w = Math.round((wPx-calWidth*0.5) / calWidth)
-        const h = Math.round((hPx-this.props.rowHeight*0.8) / this.props.rowHeight)
+        const w = Math.round((wPx - calWidth * 0.5) / calWidth)
+        const h = Math.round((hPx - this.props.rowHeight * 0.8) / this.props.rowHeight)
         console.log(h);
 
-        return checkWidthHeight(w,h,this.props.col)
+        return checkWidthHeight(this.props.GridX, w, h, this.props.col)
     }
 
     onDragStart(x: number, y: number) {
@@ -180,7 +178,7 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
     }
 
     onResizeStart = (event: any, wPx: number, hPx: number) => {
-        const { GridX, GridY, UniqueKey,w,h } = this.props;
+        const { GridX, GridY, UniqueKey, w, h } = this.props;
         this.props.onResizeStart && this.props.onResizeStart({ GridX, GridY, w, h, UniqueKey: UniqueKey + '', event })
     }
 
