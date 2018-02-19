@@ -3,9 +3,19 @@
 Dragact 是一款React组件，他能够使你简单、快速的构建出一款强大的 **拖拽式网格(grid)布局**.
 
 ![](https://github.com/215566435/React-dragger-layout/blob/master/example/image/NormalLayoutDemo.gif)
+![](https://github.com/215566435/React-dragger-layout/blob/master/example/image/resizing.gif)
 
 # Demo地址
 [Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html)
+
+# 特点
+
+- [x] 自动布局的网格系统
+- [x] 手机上也可以操作
+- [x] 高度自适应
+- [x] 静态组件([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
+- [x] 拖拽组件([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
+- [x] 自动缩放组件
 
 
 # 快速开始
@@ -52,12 +62,7 @@ ReactDOM.render(
 }
 ```
 
-# 特点
-- [x] 自动布局的网格系统
-- [x] 手机上也可以操作
-- [x] 高度自适应
-- [x] 静态组件([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
-- [x] Draggable component([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
+
 
 
 # Dragact 提供的属性
@@ -125,6 +130,19 @@ interface DragactProps {
 
 ```
 
+# Ref Api
+获取到组件的ref，就可以使用其api
+
+```ts
+/*
+返回当前的layout.
+*/
+getLayout():DragactLayout;
+
+
+```
+
+
 
 
 # 测试
@@ -150,7 +168,7 @@ npm run test
 
 # TODO-LIST
 - [ ] horizontal swaping
-- [ ] resizing
+- [x] resizing
 - [ ] touch handle
 - [ ] responsive layout
 - [ ] SSR/server rendering 
