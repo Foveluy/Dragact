@@ -68,8 +68,8 @@ export class Dragger extends React.Component<DraggerProps, {}> {
 
     constructor(props: DraggerProps) {
         super(props)
-        this.move = this.move.bind(this)
-        this.onDragEnd = this.onDragEnd.bind(this)
+        // this.move = this.move.bind(this)
+        // this.onDragEnd = this.onDragEnd.bind(this)
         this.parent = null;
         this.self = null;
     }
@@ -111,7 +111,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
 
 
 
-    move(event: any) {
+    move = (event: any) => {
 
         let { lastX, lastY } = this.state
         /*  event.client - this.state.origin 表示的是移动的距离,
@@ -248,7 +248,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         })
     }
 
-    onDragEnd(event: any) {
+    onDragEnd = (event: any) => {
         /** 取消用户选择限制，用户可以重新选择 */
         doc.body.style.userSelect = ''
         this.parent = null

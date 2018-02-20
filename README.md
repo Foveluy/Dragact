@@ -169,6 +169,6 @@ npm run test
 # TODO-LIST
 - [ ] horizontal swaping
 - [x] resizing
-- [ ] touch handle
+- [x] touch handle
 - [ ] responsive layout
 - [ ] SSR/server rendering 
