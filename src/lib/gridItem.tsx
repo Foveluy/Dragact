@@ -38,6 +38,8 @@ export interface GridItemProps {
     style?: React.CSSProperties
 
     bounds?: Bound | 'parent'
+
+    dragType: 'drag' | 'resize'
 }
 
 export interface GridItemEvent {
@@ -148,8 +150,6 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
 
         const w = Math.round((wPx - calWidth * 0.5) / calWidth)
         const h = Math.round((hPx - this.props.rowHeight * 0.8) / this.props.rowHeight)
-        console.log(h);
-
         return checkWidthHeight(this.props.GridX, w, h, this.props.col)
     }
 
@@ -206,7 +206,8 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
             <Dragger
                 style={{
                     ...style, width: wPx, height: hPx, position: 'absolute',
-                    transition: this.props.isUserMove ? '' : 'all .2s'
+                    transition: this.props.isUserMove ? '' : 'all .2s',
+                    zIndex: this.props.isUserMove ? (this.props.dragType === 'drag' ? 10 : 2) : 2
                 }}
                 onDragStart={this.onDragStart}
                 onMove={this.onDrag}

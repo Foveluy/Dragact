@@ -282,7 +282,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         this.setState({
             originX: originX,
             originY: originY,
-            zIndex: 10,
+            zIndex: 2,
             lastW: this.state.w,
             lastH: this.state.h
         })
@@ -366,6 +366,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             if (style) {
                 w = style.width ? style.width : w;
                 h = style.height ? style.height : h;
+                console.log(style)
             }
         }
         if (style) {
@@ -383,7 +384,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
                     touchAction: 'none!important',
                     transform: `translate(${x}px,${y}px)`,
                     width: w,
-                    height: h
+                    height: h,
                 }}
                 onMouseDown={this.onDragStart.bind(this)}
                 onTouchStart={this.onDragStart.bind(this)}

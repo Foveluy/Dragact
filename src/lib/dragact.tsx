@@ -251,6 +251,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 h={hMoving}
                 style={{ background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s' }}
                 isUserMove={!placeholderMoving}
+                dragType={dragType}
             />
         )
     }
@@ -266,7 +267,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     getGridItem(child: any, index: number) {
-        const { layout } = this.state
+        const { layout, dragType } = this.state
         var { col, width, padding, rowHeight, margin } = this.props;
         const renderItem = layoutItemForkey(layout, child.key);//TODO:可以优化速度，这一步不是必须;
         if (renderItem) {
@@ -287,11 +288,11 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     onDragEnd={this.onDragEnd}
                     isUserMove={renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false}
                     UniqueKey={child.key}
-                    style={{ zIndex: 2 }}
                     static={renderItem.static}
                     onResizing={this.onResizing}
                     onResizeStart={this.onResizeStart}
                     onResizeEnd={this.onResizeEnd}
+                    dragType={dragType}
                 >
                     {child}
                 </GridItem >
