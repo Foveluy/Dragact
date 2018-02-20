@@ -1,4 +1,12 @@
-export const collision = (a, b) => {
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
+export var collision = function (a, b) {
     if (a.GridX === b.GridX && a.GridY === b.GridY &&
         a.w === b.w && a.h === b.h) {
         return true;
@@ -14,17 +22,17 @@ export const collision = (a, b) => {
     return true;
 };
 /**获取layout中，item第一个碰撞到的物体 */
-export const getFirstCollison = (layout, item) => {
-    for (let i = 0, length = layout.length; i < length; i++) {
+export var getFirstCollison = function (layout, item) {
+    for (var i = 0, length_1 = layout.length; i < length_1; i++) {
         if (collision(layout[i], item)) {
             return layout[i];
         }
     }
     return null;
 };
-export const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
-    let i = [], movedItem = []; /**收集所有移动过的物体 */
-    let newlayout = layout.map((item, idx) => {
+export var layoutCheck = function (layout, layoutItem, key, fristItemkey, moving) {
+    var i = [], movedItem = []; /**收集所有移动过的物体 */
+    var newlayout = layout.map(function (item, idx) {
         if (item.key !== key) {
             if (item.static) {
                 return item;
@@ -35,7 +43,7 @@ export const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                  * 这里就是奇迹发生的地方，如果向上移动，那么必须注意的是
                  * 一格一格的移动，而不是一次性移动
                  */
-                let offsetY = item.GridY + 1;
+                var offsetY = item.GridY + 1;
                 /**这一行也非常关键，当向上移动的时候，碰撞的元素必须固定 */
                 // if (moving < 0 && layoutItem.GridY > 0) offsetY = item.GridY
                 if (layoutItem.GridY > item.GridY && layoutItem.GridY < item.GridY + item.h) {
@@ -50,42 +58,42 @@ export const layoutCheck = (layout, layoutItem, key, fristItemkey, moving) => {
                  */
                 if (moving > 0) {
                     if (layoutItem.GridY + layoutItem.h < item.GridY) {
-                        let collision;
-                        let copy = Object.assign({}, item);
+                        var collision_1;
+                        var copy_1 = __assign({}, item);
                         while (true) {
-                            let newLayout = layout.filter((item) => {
-                                if (item.key !== key && (item.key !== copy.key)) {
+                            var newLayout = layout.filter(function (item) {
+                                if (item.key !== key && (item.key !== copy_1.key)) {
                                     return item;
                                 }
                             });
-                            collision = getFirstCollison(newLayout, copy);
-                            if (collision) {
-                                offsetY = collision.GridY + collision.h;
+                            collision_1 = getFirstCollison(newLayout, copy_1);
+                            if (collision_1) {
+                                offsetY = collision_1.GridY + collision_1.h;
                                 break;
                             }
                             else {
-                                copy.GridY--;
+                                copy_1.GridY--;
                             }
-                            if (copy.GridY < 0) {
+                            if (copy_1.GridY < 0) {
                                 offsetY = 0;
                                 break;
                             }
                         }
                     }
                 }
-                movedItem.push(Object.assign({}, item, { GridY: offsetY, isUserMove: false }));
-                return Object.assign({}, item, { GridY: offsetY, isUserMove: false });
+                movedItem.push(__assign({}, item, { GridY: offsetY, isUserMove: false }));
+                return __assign({}, item, { GridY: offsetY, isUserMove: false });
             }
         }
         else if (fristItemkey === key) {
             /**永远保持用户移动的块是 isUserMove === true */
-            return Object.assign({}, item, { GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true });
+            return __assign({}, item, { GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true, w: layoutItem.w, h: layoutItem.h });
         }
         return item;
     });
     /** 递归调用,将layout中的所有重叠元素全部移动 */
-    const length = movedItem.length;
-    for (let c = 0; c < length; c++) {
+    var length = movedItem.length;
+    for (var c = 0; c < length; c++) {
         newlayout = layoutCheck(newlayout, movedItem[c], i[c], fristItemkey, 0);
     }
     return newlayout;

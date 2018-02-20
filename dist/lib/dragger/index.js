@@ -1,11 +1,29 @@
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || Object.assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 import * as React from "react";
 import { int, innerHeight, innerWidth, outerHeight, outerWidth, parseBounds } from '../utils';
-/// <reference path="react.d.ts" />
-const doc = document;
-export class Dragger extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
+var doc = document;
+var Dragger = /** @class */ (function (_super) {
+    __extends(Dragger, _super);
+    function Dragger(props) {
+        var _this = _super.call(this, props) || this;
+        _this.state = {
             /** x轴位移，单位是px */
             x: 0,
             /** y轴位移，单位是px */
@@ -18,19 +36,68 @@ export class Dragger extends React.Component {
             lastX: 0,
             lastY: 0,
             /**堆叠的层级 */
-            zIndex: 1
+            zIndex: 1,
+            w: 0,
+            h: 0,
+            lastW: 0,
+            lastH: 0
         };
-        this.move = this.move.bind(this);
-        this.onDragEnd = this.onDragEnd.bind(this);
-        this.parent = null;
-        this.self = null;
+        _this.onResizeStart = function (event) {
+            /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
+            doc.body.style.userSelect = 'none';
+            doc.addEventListener('mouseup', _this.onResizeEnd);
+            doc.addEventListener('mousemove', _this.onResizing);
+            var originX, originY;
+            originX = event.clientX;
+            originY = event.clientY;
+            _this.props.onResizeStart && _this.props.onResizeStart(event, _this.state.w, _this.state.h);
+            _this.setState({
+                originX: originX,
+                originY: originY,
+                zIndex: 2,
+                lastW: _this.state.w,
+                lastH: _this.state.h
+            });
+            event.stopPropagation();
+        };
+        _this.onResizing = function (event) {
+            /*  event.client - this.state.origin 表示的是移动的距离,
+            *   elX表示的是原来已经有的位移
+            */
+            var deltaX, deltaY;
+            if (event.type.indexOf('mouse') >= 0) {
+                deltaX = event.clientX - _this.state.originX;
+                deltaY = event.clientY - _this.state.originY;
+            }
+            else {
+                deltaX = event.touches[0].clientX - _this.state.originX;
+                deltaY = event.touches[0].clientY - _this.state.originY;
+            }
+            /**移动时回调，用于外部控制 */
+            _this.props.onResizing && _this.props.onResizing(event, _this.state.w, _this.state.h);
+            _this.setState({
+                w: deltaX + _this.state.lastW,
+                h: deltaY + _this.state.lastH
+            });
+        };
+        _this.onResizeEnd = function (event) {
+            doc.body.style.userSelect = '';
+            doc.removeEventListener('mousemove', _this.onResizing);
+            doc.removeEventListener('mouseup', _this.onResizeEnd);
+            _this.props.onResizeEnd && _this.props.onResizeEnd(event, _this.state.w, _this.state.h);
+        };
+        _this.move = _this.move.bind(_this);
+        _this.onDragEnd = _this.onDragEnd.bind(_this);
+        _this.parent = null;
+        _this.self = null;
+        return _this;
     }
-    move(event) {
-        let { lastX, lastY } = this.state;
+    Dragger.prototype.move = function (event) {
+        var _a = this.state, lastX = _a.lastX, lastY = _a.lastY;
         /*  event.client - this.state.origin 表示的是移动的距离,
         *   elX表示的是原来已经有的位移
         */
-        let deltaX, deltaY;
+        var deltaX, deltaY;
         if (event.type.indexOf('mouse') >= 0) {
             deltaX = event.clientX - this.state.originX + lastX;
             deltaY = event.clientY - this.state.originY + lastY;
@@ -39,17 +106,17 @@ export class Dragger extends React.Component {
             deltaX = event.touches[0].clientX - this.state.originX + lastX;
             deltaY = event.touches[0].clientY - this.state.originY + lastY;
         }
-        const { bounds } = this.props;
+        var bounds = this.props.bounds;
         if (bounds) {
             /**
             * 如果用户指定一个边界，那么在这里处理
             */
-            let NewBounds = typeof bounds !== 'string' ? parseBounds(bounds) : bounds;
+            var NewBounds = typeof bounds !== 'string' ? parseBounds(bounds) : bounds;
             /**
              * 网格式移动范围设定，永远移动 n 的倍数
              * 注意:设定移动范围的时候，一定要在判断bounds之前，否则会造成bounds不对齐
              */
-            const { grid } = this.props;
+            var grid = this.props.grid;
             if (Array.isArray(grid) && grid.length === 2) {
                 deltaX = Math.round(deltaX / grid[0]) * grid[0];
                 deltaY = Math.round(deltaY / grid[1]) * grid[1];
@@ -91,8 +158,8 @@ export class Dragger extends React.Component {
             x: deltaX,
             y: deltaY
         });
-    }
-    onDragStart(event) {
+    };
+    Dragger.prototype.onDragStart = function (event) {
         /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
         doc.body.style.userSelect = 'none';
         // if (this.props.hasDraggerHandle) {
@@ -128,7 +195,7 @@ export class Dragger extends React.Component {
             this.self = event.currentTarget;
         }
         this.props.onDragStart && this.props.onDragStart(this.state.x, this.state.y);
-        let originX, originY;
+        var originX, originY;
         if (event.type.indexOf('mouse') >= 0) {
             originX = event.clientX;
             originY = event.clientY;
@@ -144,8 +211,8 @@ export class Dragger extends React.Component {
             lastY: this.state.y,
             zIndex: 10
         });
-    }
-    onDragEnd(event) {
+    };
+    Dragger.prototype.onDragEnd = function (event) {
         /** 取消用户选择限制，用户可以重新选择 */
         doc.body.style.userSelect = '';
         this.parent = null;
@@ -161,9 +228,9 @@ export class Dragger extends React.Component {
         this.setState({
             zIndex: 1
         });
-        this.props.onDragEnd && this.props.onDragEnd(event);
-    }
-    componentDidMount() {
+        this.props.onDragEnd && this.props.onDragEnd(event, this.state.x, this.state.y);
+    };
+    Dragger.prototype.componentDidMount = function () {
         /**
          * 这个函数只会调用一次
          * 这个只是一个临时的解决方案，因为这样会使得元素进行两次刷新
@@ -175,14 +242,14 @@ export class Dragger extends React.Component {
                 y: this.props.y
             });
         }
-    }
-    componentWillReceiveProps(nextProps) {
+    };
+    Dragger.prototype.componentWillReceiveProps = function (nextProps) {
         /**
          * 外部props 改变的时候更新元素的内部位置
          * 这个api设计其实很不好
          * 以后可能会修改掉
          */
-        const { isUserMove } = nextProps;
+        var isUserMove = nextProps.isUserMove;
         if (!isUserMove) {
             if (typeof nextProps.x === 'number' &&
                 typeof nextProps.y === 'number') {
@@ -190,29 +257,52 @@ export class Dragger extends React.Component {
                     x: nextProps.x,
                     y: nextProps.y,
                     lastX: nextProps.x,
-                    lastY: nextProps.y
+                    lastY: nextProps.y,
+                    w: nextProps.w,
+                    h: nextProps.h
                 });
             }
         }
-    }
-    render() {
-        let { x, y, zIndex } = this.state;
-        const { style, className } = this.props;
+    };
+    Dragger.prototype.render = function () {
+        var _a = this.state, x = _a.x, y = _a.y, w = _a.w, h = _a.h;
+        var _b = this.props, style = _b.style, className = _b.className;
         if (!this.props.isUserMove) {
             /**当外部设置其props的x,y初始属性的时候，我们在这里设置元素的初始位移 */
             x = this.props.x ? this.props.x : 0;
             y = this.props.y ? this.props.y : 0;
+            if (style) {
+                w = style.width ? style.width : w;
+                h = style.height ? style.height : h;
+                console.log(style);
+            }
+        }
+        if (style) {
+            w = w === 0 ? style.width : w;
+            h = h === 0 ? style.height : h;
         }
         /**主要是为了让用户定义自己的className去修改css */
-        const fixedClassName = typeof className === 'undefined' ? '' : className + ' ';
-        return (React.createElement("div", { className: `${fixedClassName}WrapDragger`, style: Object.assign({}, style, { zIndex: zIndex, touchAction: 'none!important', transform: `translate(${x}px,${y}px)` }), onMouseDown: this.onDragStart.bind(this), onTouchStart: this.onDragStart.bind(this), onTouchEnd: this.onDragEnd.bind(this), onMouseUp: this.onDragEnd.bind(this) }, React.Children.only(this.props.children)));
-    }
-}
-/**
- * 初始变量设置
- */
-Dragger.defaultProps = {
-    allowX: true,
-    allowY: true,
-    isUserMove: true
-};
+        var fixedClassName = typeof className === 'undefined' ? '' : className + ' ';
+        return (React.createElement("div", { className: fixedClassName + "WrapDragger", style: __assign({}, style, { touchAction: 'none!important', transform: "translate(" + x + "px," + y + "px)", width: w, height: h }), onMouseDown: this.onDragStart.bind(this), onTouchStart: this.onDragStart.bind(this), onTouchEnd: this.onDragEnd.bind(this), onMouseUp: this.onDragEnd.bind(this) },
+            React.Children.only(this.props.children),
+            React.createElement("span", { onMouseDown: this.onResizeStart, 
+                // onTouchStart={this.onDragStart.bind(this)}
+                // onTouchEnd={this.onDragEnd.bind(this)}
+                onMouseUp: this.onResizeEnd, style: {
+                    position: 'absolute',
+                    width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
+                    borderRight: '2px solid rgba(15,15,15,0.2)',
+                    borderBottom: '2px solid rgba(15,15,15,0.2)'
+                } })));
+    };
+    /**
+     * 初始变量设置
+     */
+    Dragger.defaultProps = {
+        allowX: true,
+        allowY: true,
+        isUserMove: true
+    };
+    return Dragger;
+}(React.Component));
+export { Dragger };

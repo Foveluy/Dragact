@@ -32,37 +32,54 @@ var Card = function (props) {
         React.createElement("img", { src: item.img, style: { width: '100%', height: '60%' }, draggable: false, alt: 'card' }),
         React.createElement("div", { style: { padding: 5, textAlign: 'center', color: '#595959' } }, item.content)));
 };
-var LayoutDemo = /** @class */ (function (_super) {
-    __extends(LayoutDemo, _super);
-    function LayoutDemo() {
+var storeLayout = {};
+var LayoutRestore = /** @class */ (function (_super) {
+    __extends(LayoutRestore, _super);
+    function LayoutRestore() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.state = {
-            layout: []
+        _this.handleOnDragEnd = function () {
+            var maping = {};
+            _this.dragactNode.getLayout().forEach(function (item) {
+                if (item.key)
+                    maping[item.key] = item;
+            });
+            var parsedLayout = JSON.stringify(maping);
+            localStorage.setItem('layout', parsedLayout);
+        };
+        _this.renderDragact = function () {
+            var margin = [5, 5];
+            var dragactInit = {
+                width: 800,
+                col: 12,
+                rowHeight: 800 / 12,
+                margin: margin,
+                className: 'normal-layout'
+            };
+            return (React.createElement(Dragact, __assign({}, dragactInit, { ref: function (node) { return node ? _this.dragactNode = node : null; }, onDragEnd: _this.handleOnDragEnd }), Words.map(function (el, index) {
+                var dataSet = _this.getLayoutItemForKey(index + '');
+                if (dataSet)
+                    return React.createElement(Card, { item: el, key: index, "data-set": dataSet });
+                else
+                    return React.createElement(Card, { item: el, key: index, "data-set": { GridX: (index * 3) % 12, GridY: index * 2, w: 3, h: 3 } });
+            })));
         };
         return _this;
     }
-    LayoutDemo.prototype.componentDidMount = function () {
-        this.setState({
-            layout: this.dragactNode.getLayout()
-        });
+    LayoutRestore.prototype.componentWillMount = function () {
+        var lastLayout = localStorage.getItem('layout');
+        if (lastLayout) {
+            storeLayout = JSON.parse(lastLayout);
+        }
     };
-    LayoutDemo.prototype.render = function () {
-        var _this = this;
-        var margin = [5, 5];
-        var dragactInit = {
-            width: 800,
-            col: 12,
-            rowHeight: 800 / 12,
-            margin: margin,
-            className: 'normal-layout'
-        };
+    LayoutRestore.prototype.getLayoutItemForKey = function (key) {
+        return storeLayout[key];
+    };
+    LayoutRestore.prototype.render = function () {
         return (React.createElement("div", { style: { display: 'flex', justifyContent: 'center' } },
             React.createElement("div", null,
-                React.createElement("h1", { style: { textAlign: 'center' } }, "Normal Layout Demo"),
-                React.createElement(Dragact, __assign({}, dragactInit, { ref: function (node) { return node ? _this.dragactNode = node : null; } }), Words.map(function (el, index) {
-                    return React.createElement(Card, { item: el, key: index, "data-set": { GridX: (index * 3) % 12, GridY: index * 2, w: 3, h: 3 } });
-                })))));
+                React.createElement("h1", { style: { textAlign: 'center' } }, "Layout Restore Demo"),
+                this.renderDragact())));
     };
-    return LayoutDemo;
+    return LayoutRestore;
 }(React.Component));
-export { LayoutDemo };
+export { LayoutRestore };
