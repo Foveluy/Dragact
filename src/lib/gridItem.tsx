@@ -40,6 +40,8 @@ export interface GridItemProps {
     bounds?: Bound | 'parent'
 
     dragType: 'drag' | 'resize'
+
+    handle?: Boolean
 }
 
 export interface GridItemEvent {
@@ -198,7 +200,7 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
 
     render() {
 
-        const { w, h, style, bounds, GridX, GridY } = this.props
+        const { w, h, style, bounds, GridX, GridY, handle } = this.props
         const { x, y } = this.calGridItemPosition(GridX, GridY)
         const { wPx, hPx } = this.calWHtoPx(w, h);
         return (
@@ -221,6 +223,7 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
                 h={hPx}
                 isUserMove={this.props.isUserMove}
                 bounds={bounds}
+                handle={handle}
             >
                 <div style={{ height: '100%', width: "100%" }}>
                     {React.Children.map(this.props.children, (child) => child)}

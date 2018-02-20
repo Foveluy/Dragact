@@ -57,7 +57,9 @@ interface DraggerProps {
     style?: React.CSSProperties,
 
     w?: number,
-    h?: number
+    h?: number,
+
+    handle?: Boolean
 }
 
 export class Dragger extends React.Component<DraggerProps, {}> {
@@ -109,7 +111,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
 
 
 
-    move(event: MouseEvent | TouchEvent) {
+    move(event: any) {
 
         let { lastX, lastY } = this.state
         /*  event.client - this.state.origin 表示的是移动的距离,
@@ -184,13 +186,14 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         })
     }
 
-    onDragStart(event: MouseEvent | TouchEvent) {
+    onDragStart = (event: any) => {
         /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
         doc.body.style.userSelect = 'none'
 
-        // if (this.props.hasDraggerHandle) {
-        //     if (event.target.className !== 'handle') return
-        // }
+        if (this.props.handle) {
+            if (event.target.id !== 'dragact-handle') return
+        }
+
 
         /**
          * 把监听事件的回掉函数，绑定在document上
@@ -245,7 +248,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         })
     }
 
-    onDragEnd(event: MouseEvent | TouchEvent) {
+    onDragEnd(event: any) {
         /** 取消用户选择限制，用户可以重新选择 */
         doc.body.style.userSelect = ''
         this.parent = null
@@ -366,10 +369,10 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             if (style) {
                 w = style.width ? style.width : w;
                 h = style.height ? style.height : h;
-                console.log(style)
             }
         }
         if (style) {
+            //使得初始化的时候，不会有从0-1缩放动画
             w = w === 0 ? style.width : w;
             h = h === 0 ? style.height : h;
         }
@@ -386,10 +389,10 @@ export class Dragger extends React.Component<DraggerProps, {}> {
                     width: w,
                     height: h,
                 }}
-                onMouseDown={this.onDragStart.bind(this)}
-                onTouchStart={this.onDragStart.bind(this)}
-                onTouchEnd={this.onDragEnd.bind(this)}
-                onMouseUp={this.onDragEnd.bind(this)}
+                onMouseDown={this.onDragStart}
+                onTouchStart={this.onDragStart}
+                onTouchEnd={this.onDragEnd}
+                onMouseUp={this.onDragEnd}
             >
                 {React.Children.only(this.props.children)}
                 <span

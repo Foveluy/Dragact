@@ -18,6 +18,7 @@ export interface DragactLayoutItem {
     h: number
     isUserMove?: Boolean
     key?: number | string
+    handle?: Boolean
 }
 
 export interface DragactProps {
@@ -293,6 +294,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     onResizeStart={this.onResizeStart}
                     onResizeEnd={this.onResizeEnd}
                     dragType={dragType}
+                    handle={renderItem.handle}
                 >
                     {child}
                 </GridItem >
