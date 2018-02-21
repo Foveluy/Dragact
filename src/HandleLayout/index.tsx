@@ -28,7 +28,7 @@ export class HandleLayout extends React.Component<{}, {}> {
     layoutWrap: HTMLDivElement | null
     dragactNode: Dragact;
     state = {
-        layout: []
+        layout: [1]
     }
 
     componentDidMount() {
@@ -36,6 +36,13 @@ export class HandleLayout extends React.Component<{}, {}> {
             layout: this.dragactNode.getLayout()
         })
     }
+    handleClick = () => {
+        this.setState({
+            layout: [...this.state.layout, 1]
+        })
+        console.log(this.state.layout)
+    }
+
     render() {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
@@ -51,11 +58,13 @@ export class HandleLayout extends React.Component<{}, {}> {
                     <div>
                         <h1 style={{ textAlign: 'center' }}>Handle Layout Demo</h1>
                         <Dragact {...dragactInit} ref={node => node ? this.dragactNode = node : null} >
-                            <Card item={Words[0]} key={0} data-set={{ GridX: 0, GridY: 0, w: 3, h: 3 }} />
-                            <Card item={Words[1]} key={1} data-set={{ GridX: 3, GridY: 0, w: 3, h: 3 }} />
-                            <Card item={Words[2]} key={2} data-set={{ GridX: 6, GridY: 0, w: 3, h: 3 }} />
-                            <Card item={Words[3]} key={3} data-set={{ GridX: 9, GridY: 0, w: 3, h: 3, handle: true }} />
+                            {this.state.layout.map((el, i) => {
+                                return (
+                                    <Card item={Words[0]} key={i} data-set={{ GridX: i*3, GridY: 0, w: 3, h: 3 }} />
+                                )
+                            })}
                         </Dragact>
+                        <button onClick={this.handleClick}>新增</button>
                     </div>
                 </div>
             </div>

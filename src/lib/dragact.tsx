@@ -260,6 +260,19 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             />
         )
     }
+
+    componentWillReceiveProps(nextProps: any) {
+
+        const layout = getDataSet(nextProps.children);
+        let newlayout = correctLayout(layout, this.props.col)
+        const compacted = compactLayout(newlayout);
+        console.log(layout)
+        this.setState({
+            layout: compacted
+        })
+    }
+
+
     componentDidMount() {
         setTimeout(() => {
             let layout = correctLayout(this.state.layout, this.props.col)
