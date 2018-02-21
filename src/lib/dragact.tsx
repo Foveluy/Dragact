@@ -262,6 +262,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     componentWillReceiveProps(nextProps: any) {
+        if(nextProps.children.length !== this.props.children.length){
+            
+        }
 
         const layout = getDataSet(nextProps.children);
         let newlayout = correctLayout(layout, this.props.col)
