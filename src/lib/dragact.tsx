@@ -19,6 +19,8 @@ export interface DragactLayoutItem {
     isUserMove?: Boolean
     key?: number | string
     handle?: Boolean
+    canDrag?: Boolean
+    canResize?: Boolean
 }
 
 export interface DragactProps {
@@ -253,6 +255,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 style={{ background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s' }}
                 isUserMove={!placeholderMoving}
                 dragType={dragType}
+                canDrag={false}
+                canResize={false}
             />
         )
     }
@@ -295,6 +299,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     onResizeEnd={this.onResizeEnd}
                     dragType={dragType}
                     handle={renderItem.handle}
+                    canDrag={renderItem.canDrag}
+                    canResize={renderItem.canResize}
                 >
                     {child}
                 </GridItem >

@@ -16,7 +16,7 @@ const Card = (props: any) => {
     const item: any = props.item;
     const dataSet: any = props['data-set'];
     return (
-        <div className='layout-Item'>
+        <div className='layout-Item' >
             <img src={item.img} style={{ width: '100%', height: '60%' }} draggable={false} alt='card'></img>
             <div style={{ padding: 5, textAlign: 'center', color: '#595959' }}>{dataSet.handle ? <div className='card-handle' id="dragact-handle">点我拖动</div> : item.content}</div>
         </div>
@@ -25,6 +25,7 @@ const Card = (props: any) => {
 
 
 export class HandleLayout extends React.Component<{}, {}> {
+    layoutWrap: HTMLDivElement | null
     dragactNode: Dragact;
     state = {
         layout: []
@@ -35,7 +36,6 @@ export class HandleLayout extends React.Component<{}, {}> {
             layout: this.dragactNode.getLayout()
         })
     }
-
     render() {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
@@ -46,15 +46,17 @@ export class HandleLayout extends React.Component<{}, {}> {
             className: 'normal-layout'
         }
         return (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-                <div>
-                    <h1 style={{ textAlign: 'center' }}>Handle Layout Demo</h1>
-                    <Dragact {...dragactInit} ref={node => node ? this.dragactNode = node : null} >
-                        <Card item={Words[0]} key={0} data-set={{ GridX: 0, GridY: 0, w: 3, h: 3 }} />
-                        <Card item={Words[1]} key={1} data-set={{ GridX: 3, GridY: 0, w: 3, h: 3 }} />
-                        <Card item={Words[2]} key={2} data-set={{ GridX: 6, GridY: 0, w: 3, h: 3 }} />
-                        <Card item={Words[3]} key={3} data-set={{ GridX: 9, GridY: 0, w: 3, h: 3, handle: true }} />
-                    </Dragact>
+            <div>
+                <div style={{ display: 'flex', justifyContent: 'center' }} >
+                    <div>
+                        <h1 style={{ textAlign: 'center' }}>Handle Layout Demo</h1>
+                        <Dragact {...dragactInit} ref={node => node ? this.dragactNode = node : null} >
+                            <Card item={Words[0]} key={0} data-set={{ GridX: 0, GridY: 0, w: 3, h: 3 }} />
+                            <Card item={Words[1]} key={1} data-set={{ GridX: 3, GridY: 0, w: 3, h: 3 }} />
+                            <Card item={Words[2]} key={2} data-set={{ GridX: 6, GridY: 0, w: 3, h: 3 }} />
+                            <Card item={Words[3]} key={3} data-set={{ GridX: 9, GridY: 0, w: 3, h: 3, handle: true }} />
+                        </Dragact>
+                    </div>
                 </div>
             </div>
         )

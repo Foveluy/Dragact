@@ -59,7 +59,11 @@ interface DraggerProps {
     w?: number,
     h?: number,
 
-    handle?: Boolean
+    handle?: Boolean;
+
+    canDrag?: Boolean;
+
+    canResize?: Boolean;
 }
 
 export class Dragger extends React.Component<DraggerProps, {}> {
@@ -359,9 +363,33 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         }
     }
 
+    mixin = () => {
+        var dragMix = {};
+        if (this.props.canDrag === void 666 || this.props.canDrag === true) {
+            dragMix = {
+                onMouseDown: this.onDragStart,
+                onTouchStart: this.onDragStart,
+                onTouchEnd: this.onDragEnd,
+                onMouseUp: this.onDragEnd
+            }
+        }
+
+        var resizeMix = {}
+        if (this.props.canResize === void 666 || this.props.canDrag === true) {
+            resizeMix = {
+                onMouseDown: this.onResizeStart,
+                onMouseUp: this.onResizeEnd
+            }
+        }
+
+        return {
+            dragMix, resizeMix
+        };
+    }
+
     render() {
         var { x, y, w, h } = this.state
-        var { style, className } = this.props
+        var { style, className, canResize } = this.props
         if (!this.props.isUserMove) {
             /**当外部设置其props的x,y初始属性的时候，我们在这里设置元素的初始位移 */
             x = this.props.x ? this.props.x : 0;
@@ -376,7 +404,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             w = w === 0 ? style.width : w;
             h = h === 0 ? style.height : h;
         }
-
+        const { dragMix, resizeMix } = this.mixin();
 
         /**主要是为了让用户定义自己的className去修改css */
         const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
@@ -389,24 +417,19 @@ export class Dragger extends React.Component<DraggerProps, {}> {
                     width: w,
                     height: h,
                 }}
-                onMouseDown={this.onDragStart}
-                onTouchStart={this.onDragStart}
-                onTouchEnd={this.onDragEnd}
-                onMouseUp={this.onDragEnd}
+                {...dragMix}
             >
                 {React.Children.only(this.props.children)}
-                <span
-                    onMouseDown={this.onResizeStart}
-                    // onTouchStart={this.onDragStart.bind(this)}
-                    // onTouchEnd={this.onDragEnd.bind(this)}
-                    onMouseUp={this.onResizeEnd}
-                    style={{
-                        position: 'absolute',
-                        width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
-                        borderRight: '2px solid rgba(15,15,15,0.2)',
-                        borderBottom: '2px solid rgba(15,15,15,0.2)'
-                    }}
-                />
+                {canResize !== false ?
+                    <span
+                        {...resizeMix}
+                        style={{
+                            position: 'absolute',
+                            width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
+                            borderRight: '2px solid rgba(15,15,15,0.2)',
+                            borderBottom: '2px solid rgba(15,15,15,0.2)'
+                        }}
+                    /> : null}
             </div>
         )
     }

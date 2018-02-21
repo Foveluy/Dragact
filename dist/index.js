@@ -14,19 +14,21 @@ import { LayoutDemo } from './NormalLayout/index';
 import { SortedTable } from "./SortedTable/index";
 import { SortedTableWithStatic } from "./StaticHeader/index";
 import { LayoutRestore } from "./LayoutRestore/index";
+import { HandleLayout } from "./HandleLayout/index";
 import './index.css';
 var DemoMap = {
     normalLayout: React.createElement(LayoutDemo, null),
     SortedTable: React.createElement(SortedTable, null),
     StaticHeader: React.createElement(SortedTableWithStatic, null),
-    LayoutRestore: React.createElement(LayoutRestore, null)
+    LayoutRestore: React.createElement(LayoutRestore, null),
+    HandleLayout: React.createElement(HandleLayout, null)
 };
 var DemoDispatcher = /** @class */ (function (_super) {
     __extends(DemoDispatcher, _super);
     function DemoDispatcher() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            demo: React.createElement(LayoutDemo, null)
+            demo: React.createElement(SortedTable, null)
         };
         _this.handleLayoutChange = function (demoName) {
             _this.setState({
@@ -43,7 +45,8 @@ var DemoDispatcher = /** @class */ (function (_super) {
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('normalLayout'); } }, "normalLayout"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('SortedTable'); } }, "SortedTable"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('StaticHeader'); } }, "StaticHeader"),
-                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('LayoutRestore'); } }, "LayoutRestore")),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('LayoutRestore'); } }, "LayoutRestore"),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('HandleLayout'); } }, "HandleLayout")),
             this.state.demo));
     };
     return DemoDispatcher;

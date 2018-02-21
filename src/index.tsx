@@ -19,7 +19,7 @@ const DemoMap: any = {
 class DemoDispatcher extends React.Component<{}, {}> {
 
     state = {
-        demo: <LayoutDemo />
+        demo: <SortedTable />
     }
 
     handleLayoutChange = (demoName: string) => {

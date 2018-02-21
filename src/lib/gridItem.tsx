@@ -42,6 +42,10 @@ export interface GridItemProps {
     dragType: 'drag' | 'resize'
 
     handle?: Boolean
+
+    canDrag?: Boolean
+
+    canResize?: Boolean
 }
 
 export interface GridItemEvent {
@@ -197,10 +201,9 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
 
         this.props.onResizeEnd && this.props.onResizeEnd({ GridX, GridY, w, h, UniqueKey: UniqueKey + '', event })
     }
-
     render() {
 
-        const { w, h, style, bounds, GridX, GridY, handle } = this.props
+        const { w, h, style, bounds, GridX, GridY, handle, canDrag,canResize } = this.props
         const { x, y } = this.calGridItemPosition(GridX, GridY)
         const { wPx, hPx } = this.calWHtoPx(w, h);
         return (
@@ -224,6 +227,8 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
                 isUserMove={this.props.isUserMove}
                 bounds={bounds}
                 handle={handle}
+                canDrag={canDrag}
+                canResize={canResize}
             >
                 <div style={{ height: '100%', width: "100%" }}>
                     {React.Children.map(this.props.children, (child) => child)}

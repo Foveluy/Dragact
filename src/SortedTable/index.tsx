@@ -31,7 +31,7 @@ export const SortedTable = () => {
                 <h1 style={{ textAlign: 'center' }}>Sorted Table Demo</h1>
                 <Dragact width={800} col={1} rowHeight={60} margin={[2, 2]} className='normal-layout'>
                     {Words.map((el, index) => {
-                        return <Cell item={el} key={index} data-set={{ GridX: 0, GridY: 0, w: 1, h: 1 }} />
+                        return <Cell item={el} key={index} data-set={{ GridX: 0, GridY: 0, w: 1, h: 1, canResize: false }} />
                     })}
                 </Dragact>
             </div>

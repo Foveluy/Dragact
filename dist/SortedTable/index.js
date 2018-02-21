@@ -19,6 +19,6 @@ export var SortedTable = function () {
         React.createElement("div", null,
             React.createElement("h1", { style: { textAlign: 'center' } }, "Sorted Table Demo"),
             React.createElement(Dragact, { width: 800, col: 1, rowHeight: 60, margin: [2, 2], className: 'normal-layout' }, Words.map(function (el, index) {
-                return React.createElement(Cell, { item: el, key: index, "data-set": { GridX: 0, GridY: 0, w: 1, h: 1 } });
+                return React.createElement(Cell, { item: el, key: index, "data-set": { GridX: 0, GridY: 0, w: 1, h: 1, canResize: false } });
             })))));
 };

@@ -146,7 +146,7 @@ var Dragact = /** @class */ (function (_super) {
         var _b = this.state, GridXMoving = _b.GridXMoving, GridYMoving = _b.GridYMoving, wMoving = _b.wMoving, hMoving = _b.hMoving, placeholderMoving = _b.placeholderMoving, dragType = _b.dragType;
         if (!padding)
             padding = 0;
-        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s' }, isUserMove: !placeholderMoving, dragType: dragType }));
+        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s' }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }));
     };
     Dragact.prototype.componentDidMount = function () {
         var _this = this;
@@ -166,7 +166,7 @@ var Dragact = /** @class */ (function (_super) {
         if (renderItem) {
             if (!padding)
                 padding = 0;
-            return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: renderItem.GridX, GridY: renderItem.GridY, w: renderItem.w, h: renderItem.h, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false, UniqueKey: child.key, static: renderItem.static, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType }, child));
+            return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: renderItem.GridX, GridY: renderItem.GridY, w: renderItem.w, h: renderItem.h, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false, UniqueKey: child.key, static: renderItem.static, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, handle: renderItem.handle, canDrag: renderItem.canDrag, canResize: renderItem.canResize }, child));
         }
     };
     Dragact.prototype.render = function () {
