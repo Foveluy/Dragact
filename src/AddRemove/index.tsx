@@ -1,7 +1,5 @@
-import * as React from 'react';
+import *as React from 'react';
 import { Dragact } from '../lib/dragact';
-
-import './index.css';
 
 const Words = [
     { content: 'You can do anything, but not everything.', img: 'http://pic.sc.chinaz.com/files/pic/pic9/201303/xpic10472.jpg' },
@@ -24,7 +22,7 @@ const Card = (props: any) => {
 }
 
 
-export class HandleLayout extends React.Component<{}, {}> {
+export class AddRemove extends React.Component<{}, {}> {
     layoutWrap: HTMLDivElement | null
     dragactNode: Dragact;
     state = {
@@ -62,13 +60,16 @@ export class HandleLayout extends React.Component<{}, {}> {
             <div>
                 <div style={{ display: 'flex', justifyContent: 'center' }} >
                     <div>
-                        <h1 style={{ textAlign: 'center' }}>Handle Layout Demo</h1>
+                        <h1 style={{ textAlign: 'center' }}>AddRemove Demo</h1>
                         <Dragact {...dragactInit} ref={node => node ? this.dragactNode = node : null} >
-                            <Card item={Words[0]} key={0} data-set={{ GridX: 0 * 3, GridY: 0, w: 3, h: 3 }} />
-                            <Card item={Words[1]} key={1} data-set={{ GridX: 1 * 3, GridY: 0, w: 3, h: 3 }} />
-                            <Card item={Words[2]} key={2} data-set={{ GridX: 2 * 3, GridY: 0, w: 3, h: 3, handle: true }} />
-                            <Card item={Words[3]} key={3} data-set={{ GridX: 3 * 3, GridY: 0, w: 3, h: 3 }} />
+                            {this.state.layout.map((el, i) => {
+                                return (
+                                    <Card item={Words[0]} key={i} data-set={{ GridX: i * 3, GridY: 0, w: 3, h: 3 }} />
+                                )
+                            })}
                         </Dragact>
+                        <button onClick={this.handleClick}>新增</button>
+                        <button onClick={this.handleDeleteClick}>删除</button>
                     </div>
                 </div>
             </div>

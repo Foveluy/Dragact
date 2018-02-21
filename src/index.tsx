@@ -5,15 +5,17 @@ import { SortedTable } from "./SortedTable/index";
 import { SortedTableWithStatic } from "./StaticHeader/index";
 import { LayoutRestore } from "./LayoutRestore/index";
 import { HandleLayout } from "./HandleLayout/index";
-
+import { AddRemove } from "./AddRemove/index";
 import './index.css'
+
 
 const DemoMap: any = {
     normalLayout: <LayoutDemo />,
     SortedTable: <SortedTable />,
     StaticHeader: <SortedTableWithStatic />,
     LayoutRestore: <LayoutRestore />,
-    HandleLayout: <HandleLayout />
+    HandleLayout: <HandleLayout />,
+    AddRemove: <AddRemove />
 }
 
 class DemoDispatcher extends React.Component<{}, {}> {
@@ -38,6 +40,7 @@ class DemoDispatcher extends React.Component<{}, {}> {
                     <button onClick={() => this.handleLayoutChange('StaticHeader')}>StaticHeader</button>
                     <button onClick={() => this.handleLayoutChange('LayoutRestore')}>LayoutRestore</button>
                     <button onClick={() => this.handleLayoutChange('HandleLayout')}>HandleLayout</button>
+                    <button onClick={() => this.handleLayoutChange('AddRemove')}>AddRemove</button>
                 </div>
                 {this.state.demo}
             </div>

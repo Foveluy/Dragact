@@ -245,13 +245,48 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     componentWillReceiveProps(nextProps: any) {
-        const layout = getDataSet(nextProps.children);
-        let newlayout = correctLayout(layout, this.props.col)
-        const { compacted } = compactLayout(newlayout, undefined);
-        console.log(layout)
-        this.setState({
-            layout: compacted
-        })
+        if (this.props.children.length > nextProps.children.length) { //remove
+            const mapLayoutCopy = { ...this.state.mapLayout };
+            nextProps.children.forEach((child: any) => {
+                if ((mapLayoutCopy as any)[child.key] !== void 666) delete (mapLayoutCopy as any)[child.key];
+            })
+            for (const key in mapLayoutCopy) {
+                const newLayout = this.state.layout.filter((child) => {
+                    if (child.key !== key) return child
+                })
+                const { compacted, mapLayout } = compactLayout(newLayout, undefined);
+                this.setState({
+                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1]),
+                    layout: compacted,
+                    mapLayout
+                })
+            }
+        }
+
+        if (this.props.children.length < nextProps.children.length) { //add
+            var item;
+            for (const idx in nextProps.children) {
+                const i = nextProps.children[idx];
+                if (this.state.mapLayout && !this.state.mapLayout[i.key]) {
+                    item = i;
+                    break;
+                }
+            }
+            if (item !== void 666) {
+                const dataSet = { ...item.props['data-set'], isUserMove: false, key: item.key };
+                var newLayout = [...this.state.layout, dataSet]
+                newLayout = correctLayout(newLayout, this.props.col)
+                const { compacted, mapLayout } = compactLayout(newLayout, undefined);
+                console.log(mapLayout)
+                // console.log(layout)
+                this.setState({
+                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1]),
+                    layout: compacted,
+                    mapLayout
+                })
+            }
+        }
+
     }
 
 
@@ -323,5 +358,12 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     //api
     getLayout() {
         return this.state.layout;
+    }
+
+    //api
+    deleteItem(key: any) {
+
+
+
     }
 }
