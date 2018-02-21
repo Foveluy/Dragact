@@ -81,13 +81,16 @@ export const layoutCheck = (layout: DragactLayoutItem[], layoutItem: GridItemEve
                     }
                 }
 
-                movedItem.push({ ...item, GridY: offsetY, isUserMove: false })
-                return { ...item, GridY: offsetY, isUserMove: false }
+                // const newItem = { ...item, GridX: layoutItem.GridX, GridY: offsetY, isUserMove: false };
+
+                const newItem = { ...item, GridY: offsetY, isUserMove: false }
+                movedItem.push(newItem)
+                return newItem
             }
         } else if (fristItemkey === key) {
 
             /**永远保持用户移动的块是 isUserMove === true */
-            return { ...item, GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true, w: layoutItem.w, h: layoutItem.h }
+            return { ...item, ...layoutItem, isUserMove: true }
         }
 
         return item
