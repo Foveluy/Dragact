@@ -29,7 +29,6 @@ export const layoutCheck = (layout: DragactLayoutItem[], layoutItem: GridItemEve
 
     let i: any = [], movedItem: any = []/**收集所有移动过的物体 */
     let newlayout = layout.map((item, idx) => {
-
         if (item.key !== key) {
             if (item.static) {
                 return item
@@ -52,35 +51,6 @@ export const layoutCheck = (layout: DragactLayoutItem[], layoutItem: GridItemEve
                      */
                     offsetY = item.GridY
                 }
-                /**
-                 * 物体向下移动的时候
-                 */
-
-                if (moving > 0) {
-                    if (layoutItem.GridY + layoutItem.h < item.GridY) {
-                        let collision;
-                        let copy = { ...item }
-                        while (true) {
-                            let newLayout = layout.filter((item) => {
-                                if (item.key !== key && (item.key !== copy.key)) {
-                                    return item
-                                }
-                            })
-                            collision = getFirstCollison(newLayout, copy)
-                            if (collision) {
-                                offsetY = collision.GridY + collision.h
-                                break
-                            } else {
-                                copy.GridY--
-                            }
-                            if (copy.GridY < 0) {
-                                offsetY = 0
-                                break
-                            }
-                        }
-                    }
-                }
-
                 // const newItem = { ...item, GridX: layoutItem.GridX, GridY: offsetY, isUserMove: false };
 
                 const newItem = { ...item, GridY: offsetY, isUserMove: false }
@@ -90,7 +60,7 @@ export const layoutCheck = (layout: DragactLayoutItem[], layoutItem: GridItemEve
         } else if (fristItemkey === key) {
 
             /**永远保持用户移动的块是 isUserMove === true */
-            return { ...item, ...layoutItem, isUserMove: true }
+            return { ...item, ...layoutItem }
         }
 
         return item

@@ -84,16 +84,22 @@ export interface DragactProps {
     className: number | string
 }
 
+export interface mapLayout {
+    [key: string]: DragactLayoutItem
+}
+
 interface DragactState {
     GridXMoving: number
     GridYMoving: number
     wMoving: number
     hMoving: number
-    placeholderShow: Boolean,
-    placeholderMoving: Boolean,
-    layout: DragactLayoutItem[],
-    containerHeight: number,
+    placeholderShow: Boolean
+    placeholderMoving: Boolean
+    layout: DragactLayoutItem[]
+    containerHeight: number
     dragType: 'drag' | 'resize'
+    mapLayout: mapLayout | undefined
+
 }
 
 export class Dragact extends React.Component<DragactProps, DragactState> {
@@ -118,12 +124,13 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             placeholderMoving: false,
             layout: layout,
             containerHeight: 500,
-            dragType: 'drag'
+            dragType: 'drag',
+            mapLayout: undefined
         }
     }
     onResizeStart = (layoutItem: GridItemEvent) => {
-        const { GridX, GridY, w, h, UniqueKey } = layoutItem
-        const sync = syncLayout(this.state.layout, UniqueKey, GridX, GridY, true);
+        const { GridX, GridY, w, h } = layoutItem
+        const sync = syncLayout(this.state.layout, layoutItem);
         this.setState({
             GridXMoving: GridX,
             GridYMoving: GridY,
@@ -140,44 +147,32 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
         const newLayout = layoutCheck(this.state.layout, layoutItem, layoutItem.UniqueKey, layoutItem.UniqueKey, 0);
 
-        const compacted = compactLayout(newLayout)
-
-        for (let i = 0; i < compacted.length; i++) {
-            const compactedItem = compacted[i];
-            if (layoutItem.UniqueKey === compactedItem.key) {
-                /**
-                 * 特殊点：当我们移动元素的时候，元素在layout中的位置不断改变
-                 * 但是当isUserMove=true的时候，鼠标拖拽的元素不会随着位图变化而变化
-                 * 但是实际layout中的位置还是会改变
-                 * (isUserMove=true用于解除placeholder和元素的绑定)
-                 */
-                compactedItem.isUserMove = true
-                break
-            }
-        }
+        const { compacted, mapLayout } = compactLayout(newLayout, layoutItem)
 
         this.setState({
             layout: compacted,
             wMoving: layoutItem.w,
             hMoving: layoutItem.h,
+            mapLayout: mapLayout,
             containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
         })
     }
 
     onResizeEnd = (layoutItem: GridItemEvent) => {
-        const compactedLayout = compactLayout(this.state.layout)
+        const { compacted, mapLayout } = compactLayout(this.state.layout, undefined)
         this.setState({
             placeholderShow: false,
-            layout: compactedLayout,
-            containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
+            layout: compacted,
+            mapLayout: mapLayout,
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
         })
         this.props.onDragEnd && this.props.onDragEnd(layoutItem);
     }
 
     onDragStart(bundles: GridItemEvent) {
-        const { GridX, GridY, w, h, UniqueKey } = bundles
+        const { GridX, GridY, w, h } = bundles
 
-        const newlayout = syncLayout(this.state.layout, UniqueKey, GridX, GridY, true)
+        const newlayout = syncLayout(this.state.layout, bundles)
 
         this.setState({
             GridXMoving: GridX,
@@ -198,39 +193,27 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         const moving = GridY - this.state.GridYMoving
 
         const newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey, UniqueKey/*用户移动方块的key */, moving)
-        const compactedLayout = compactLayout(newLayout)
-        for (let i = 0; i < compactedLayout.length; i++) {
-            const compactedItem = compactedLayout[i];
-            if (UniqueKey === compactedItem.key) {
-                /**
-                 * 特殊点：当我们移动元素的时候，元素在layout中的位置不断改变
-                 * 但是当isUserMove=true的时候，鼠标拖拽的元素不会随着位图变化而变化
-                 * 但是实际layout中的位置还是会改变
-                 * (isUserMove=true用于解除placeholder和元素的绑定)
-                 */
-                compactedItem.isUserMove = true
-                layoutItem.GridX = compactedItem.GridX
-                layoutItem.GridY = compactedItem.GridY
-                break
-            }
-        }
+        const { compacted, mapLayout } = compactLayout(newLayout, layoutItem)
+
         this.setState({
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
-            layout: compactedLayout,
-            containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
+            layout: compacted,
+            mapLayout: mapLayout,
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
         })
         this.props.onDrag && this.props.onDrag(layoutItem);
     }
 
     onDragEnd(layoutItem: GridItemEvent) {
 
-        const compactedLayout = compactLayout(this.state.layout)
+        const { compacted, mapLayout } = compactLayout(this.state.layout, undefined)
 
         this.setState({
             placeholderShow: false,
-            layout: compactedLayout,
-            containerHeight: getMaxContainerHeight(compactedLayout, this.props.rowHeight, this.props.margin[1])
+            layout: compacted,
+            mapLayout: mapLayout,
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
         })
 
         this.props.onDragEnd && this.props.onDragEnd(layoutItem);
@@ -262,13 +245,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     componentWillReceiveProps(nextProps: any) {
-        if(nextProps.children.length !== this.props.children.length){
-            
-        }
-
         const layout = getDataSet(nextProps.children);
         let newlayout = correctLayout(layout, this.props.col)
-        const compacted = compactLayout(newlayout);
+        const { compacted } = compactLayout(newlayout, undefined);
         console.log(layout)
         this.setState({
             layout: compacted
@@ -279,19 +258,20 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     componentDidMount() {
         setTimeout(() => {
             let layout = correctLayout(this.state.layout, this.props.col)
-            const compacted = compactLayout(layout);
+            const { compacted, mapLayout } = compactLayout(layout, undefined);
             this.setState({
                 layout: compacted,
+                mapLayout: mapLayout,
                 containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
             })
         }, 1);
     }
 
     getGridItem(child: any, index: number) {
-        const { layout, dragType } = this.state
+        const { dragType, mapLayout } = this.state
         var { col, width, padding, rowHeight, margin } = this.props;
-        const renderItem = layoutItemForkey(layout, child.key);//TODO:可以优化速度，这一步不是必须;
-        if (renderItem) {
+        if (mapLayout) {
+            const renderItem = layoutItemForkey(mapLayout, child.key);
             if (!padding) padding = 0;
             return (
                 <GridItem
@@ -323,7 +303,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             )
         }
     }
-
     render() {
         const { width, className } = this.props;
         const { containerHeight } = this.state;
