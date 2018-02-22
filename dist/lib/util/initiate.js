@@ -14,17 +14,16 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
  * @param {*} GridY
  * @param {*} isUserMove
  */
-export var syncLayout = function (layout, key, GridX, GridY, isUserMove) {
-    var newlayout = layout.map(function (item) {
-        if (item.key === key) {
-            item.GridX = GridX;
-            item.GridY = GridY;
-            item.isUserMove = isUserMove;
-            return item;
+export var syncLayout = function (layout, movingItem) {
+    for (var idx in layout) {
+        if (layout[idx].key === movingItem.UniqueKey) {
+            layout[idx].GridX = movingItem.GridX;
+            layout[idx].GridY = movingItem.GridY;
+            layout[idx].isUserMove = true;
+            break;
         }
-        return item;
-    });
-    return newlayout;
+    }
+    return layout;
 };
 /**
  * 初始化的时候调用
@@ -45,9 +44,5 @@ export var MapLayoutTostate = function (layout, children) {
  * @param {*} key
  */
 export var layoutItemForkey = function (layout, key) {
-    for (var i = 0, length_1 = layout.length; i < length_1; i++) {
-        if (key === layout[i].key) {
-            return layout[i];
-        }
-    }
+    return layout[key];
 };

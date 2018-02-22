@@ -53,41 +53,15 @@ export var layoutCheck = function (layout, layoutItem, key, fristItemkey, moving
                      */
                     offsetY = item.GridY;
                 }
-                /**
-                 * 物体向下移动的时候
-                 */
-                if (moving > 0) {
-                    if (layoutItem.GridY + layoutItem.h < item.GridY) {
-                        var collision_1;
-                        var copy_1 = __assign({}, item);
-                        while (true) {
-                            var newLayout = layout.filter(function (item) {
-                                if (item.key !== key && (item.key !== copy_1.key)) {
-                                    return item;
-                                }
-                            });
-                            collision_1 = getFirstCollison(newLayout, copy_1);
-                            if (collision_1) {
-                                offsetY = collision_1.GridY + collision_1.h;
-                                break;
-                            }
-                            else {
-                                copy_1.GridY--;
-                            }
-                            if (copy_1.GridY < 0) {
-                                offsetY = 0;
-                                break;
-                            }
-                        }
-                    }
-                }
-                movedItem.push(__assign({}, item, { GridY: offsetY, isUserMove: false }));
-                return __assign({}, item, { GridY: offsetY, isUserMove: false });
+                // const newItem = { ...item, GridX: layoutItem.GridX, GridY: offsetY, isUserMove: false };
+                var newItem = __assign({}, item, { GridY: offsetY, isUserMove: false });
+                movedItem.push(newItem);
+                return newItem;
             }
         }
         else if (fristItemkey === key) {
             /**永远保持用户移动的块是 isUserMove === true */
-            return __assign({}, item, { GridX: layoutItem.GridX, GridY: layoutItem.GridY, isUserMove: true, w: layoutItem.w, h: layoutItem.h });
+            return __assign({}, item, layoutItem);
         }
         return item;
     });

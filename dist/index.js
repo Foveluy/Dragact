@@ -15,20 +15,22 @@ import { SortedTable } from "./SortedTable/index";
 import { SortedTableWithStatic } from "./StaticHeader/index";
 import { LayoutRestore } from "./LayoutRestore/index";
 import { HandleLayout } from "./HandleLayout/index";
+import { AddRemove } from "./AddRemove/index";
 import './index.css';
 var DemoMap = {
     normalLayout: React.createElement(LayoutDemo, null),
     SortedTable: React.createElement(SortedTable, null),
     StaticHeader: React.createElement(SortedTableWithStatic, null),
     LayoutRestore: React.createElement(LayoutRestore, null),
-    HandleLayout: React.createElement(HandleLayout, null)
+    HandleLayout: React.createElement(HandleLayout, null),
+    AddRemove: React.createElement(AddRemove, null)
 };
 var DemoDispatcher = /** @class */ (function (_super) {
     __extends(DemoDispatcher, _super);
     function DemoDispatcher() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            demo: React.createElement(SortedTable, null)
+            demo: React.createElement(LayoutDemo, null)
         };
         _this.handleLayoutChange = function (demoName) {
             _this.setState({
@@ -46,7 +48,8 @@ var DemoDispatcher = /** @class */ (function (_super) {
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('SortedTable'); } }, "SortedTable"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('StaticHeader'); } }, "StaticHeader"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('LayoutRestore'); } }, "LayoutRestore"),
-                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('HandleLayout'); } }, "HandleLayout")),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('HandleLayout'); } }, "HandleLayout"),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('AddRemove'); } }, "AddRemove")),
             this.state.demo));
     };
     return DemoDispatcher;

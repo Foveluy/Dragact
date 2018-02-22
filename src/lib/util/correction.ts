@@ -4,6 +4,7 @@ import { GridItemEvent } from "../gridItem";
 
 
 export const checkInContainer = (GridX: number, GridY: number, col: number, w: number) => {
+
     /**防止元素出container */
     if (GridX + w > col - 1) GridX = col - w //右边界
     if (GridX < 0) GridX = 0//左边界

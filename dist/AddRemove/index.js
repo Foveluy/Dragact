@@ -18,7 +18,6 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 import * as React from 'react';
 import { Dragact } from '../lib/dragact';
-import './index.css';
 var Words = [
     { content: 'You can do anything, but not everything.', img: 'http://pic.sc.chinaz.com/files/pic/pic9/201303/xpic10472.jpg' },
     { content: 'Those who dare to fail miserably can achieve greatly.', img: 'https://img00.deviantart.net/1163/i/2013/059/d/7/irish_views_by_ssquared_photography-d5wjnsk.jpg' },
@@ -33,9 +32,9 @@ var Card = function (props) {
         React.createElement("img", { src: item.img, style: { width: '100%', height: '60%' }, draggable: false, alt: 'card' }),
         React.createElement("div", { style: { padding: 5, textAlign: 'center', color: '#595959' } }, dataSet.handle ? React.createElement("div", { className: 'card-handle', id: "dragact-handle" }, "\u70B9\u6211\u62D6\u52A8") : item.content)));
 };
-var HandleLayout = /** @class */ (function (_super) {
-    __extends(HandleLayout, _super);
-    function HandleLayout() {
+var AddRemove = /** @class */ (function (_super) {
+    __extends(AddRemove, _super);
+    function AddRemove() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
             layout: [1]
@@ -54,12 +53,12 @@ var HandleLayout = /** @class */ (function (_super) {
         };
         return _this;
     }
-    HandleLayout.prototype.componentDidMount = function () {
+    AddRemove.prototype.componentDidMount = function () {
         this.setState({
             layout: this.dragactNode.getLayout()
         });
     };
-    HandleLayout.prototype.render = function () {
+    AddRemove.prototype.render = function () {
         var _this = this;
         var margin = [5, 5];
         var dragactInit = {
@@ -72,13 +71,13 @@ var HandleLayout = /** @class */ (function (_super) {
         return (React.createElement("div", null,
             React.createElement("div", { style: { display: 'flex', justifyContent: 'center' } },
                 React.createElement("div", null,
-                    React.createElement("h1", { style: { textAlign: 'center' } }, "Handle Layout Demo"),
-                    React.createElement(Dragact, __assign({}, dragactInit, { ref: function (node) { return node ? _this.dragactNode = node : null; } }),
-                        React.createElement(Card, { item: Words[0], key: 0, "data-set": { GridX: 0 * 3, GridY: 0, w: 3, h: 3 } }),
-                        React.createElement(Card, { item: Words[1], key: 1, "data-set": { GridX: 1 * 3, GridY: 0, w: 3, h: 3 } }),
-                        React.createElement(Card, { item: Words[2], key: 2, "data-set": { GridX: 2 * 3, GridY: 0, w: 3, h: 3, handle: true } }),
-                        React.createElement(Card, { item: Words[3], key: 3, "data-set": { GridX: 3 * 3, GridY: 0, w: 3, h: 3 } }))))));
+                    React.createElement("h1", { style: { textAlign: 'center' } }, "AddRemove Demo"),
+                    React.createElement(Dragact, __assign({}, dragactInit, { ref: function (node) { return node ? _this.dragactNode = node : null; } }), this.state.layout.map(function (el, i) {
+                        return (React.createElement(Card, { item: Words[0], key: i, "data-set": { GridX: i * 3, GridY: 0, w: 3, h: 3 } }));
+                    })),
+                    React.createElement("button", { onClick: this.handleClick }, "\u65B0\u589E"),
+                    React.createElement("button", { onClick: this.handleDeleteClick }, "\u5220\u9664")))));
     };
-    return HandleLayout;
+    return AddRemove;
 }(React.Component));
-export { HandleLayout };
+export { AddRemove };

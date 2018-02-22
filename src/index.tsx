@@ -6,7 +6,9 @@ import { SortedTableWithStatic } from "./StaticHeader/index";
 import { LayoutRestore } from "./LayoutRestore/index";
 import { HandleLayout } from "./HandleLayout/index";
 import { AddRemove } from "./AddRemove/index";
+import { SortableList } from "./SortableList/index";
 import './index.css'
+
 
 
 const DemoMap: any = {
@@ -15,13 +17,14 @@ const DemoMap: any = {
     StaticHeader: <SortedTableWithStatic />,
     LayoutRestore: <LayoutRestore />,
     HandleLayout: <HandleLayout />,
-    AddRemove: <AddRemove />
+    AddRemove: <AddRemove />,
+    SortableList: <SortableList />
 }
 
 class DemoDispatcher extends React.Component<{}, {}> {
 
     state = {
-        demo: <LayoutDemo />
+        demo: <SortableList />
     }
 
     handleLayoutChange = (demoName: string) => {
@@ -41,6 +44,7 @@ class DemoDispatcher extends React.Component<{}, {}> {
                     <button onClick={() => this.handleLayoutChange('LayoutRestore')}>LayoutRestore</button>
                     <button onClick={() => this.handleLayoutChange('HandleLayout')}>HandleLayout</button>
                     <button onClick={() => this.handleLayoutChange('AddRemove')}>AddRemove</button>
+                    <button onClick={() => this.handleLayoutChange('SortableList')}>SortableList</button>
                 </div>
                 {this.state.demo}
             </div>

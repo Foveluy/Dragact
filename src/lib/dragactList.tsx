@@ -5,7 +5,7 @@ import { getMaxContainerHeight } from './util/sort';
 import { layoutCheck } from './util/collison';
 import { correctLayout } from './util/correction';
 import { getDataSet, stringJoin } from './utils';
-import { layoutItemForkey, syncLayout, MapLayoutTostate } from './util/initiate';
+import { layoutItemForkey, syncLayout } from './util/initiate';
 
 import './style.css';
 
@@ -24,14 +24,6 @@ export interface DragactLayoutItem {
 }
 
 export interface DragactProps {
-    layout?: DragactLayoutItem[] //暂时不推荐使用
-    /** 
-     * 宽度切分比 
-     * 这个参数会把容器的宽度平均分为col等份
-     * 于是容器内元素的最小宽度就等于 containerWidth/col
-    */
-    col: number,
-
     /** 
      * 容器的宽度
     */
@@ -39,7 +31,6 @@ export interface DragactProps {
 
     /**容器内每个元素的最小高度 */
     rowHeight: number,
-
     /**
      * 容器内部的padding
      */
@@ -99,10 +90,13 @@ interface DragactState {
     containerHeight: number
     dragType: 'drag' | 'resize'
     mapLayout: mapLayout | undefined
+    col: number
 
 }
 
-export class Dragact extends React.Component<DragactProps, DragactState> {
+export class DragactList extends React.Component<DragactProps, DragactState> {
+    dragact: HTMLDivElement | null
+
     constructor(props: DragactProps) {
         super(props)
         this.onDrag = this.onDrag.bind(this)
@@ -110,10 +104,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         this.onDragEnd = this.onDragEnd.bind(this)
 
 
-        const layout = props.layout ?
-            MapLayoutTostate(props.layout, props.children)
-            :
-            getDataSet(props.children);
+        const layout = getDataSet(props.children);
 
         this.state = {
             GridXMoving: 0,
@@ -125,7 +116,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             layout: layout,
             containerHeight: 500,
             dragType: 'drag',
-            mapLayout: undefined
+            mapLayout: undefined,
+            col: 1
         }
     }
     onResizeStart = (layoutItem: GridItemEvent) => {
@@ -188,7 +180,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     onDrag(layoutItem: GridItemEvent) {
-
         const { GridY, UniqueKey } = layoutItem
         const moving = GridY - this.state.GridYMoving
 
@@ -220,8 +211,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
     renderPlaceholder() {
         if (!this.state.placeholderShow) return null
-        var { col, width, padding, rowHeight, margin } = this.props
-        const { GridXMoving, GridYMoving, wMoving, hMoving, placeholderMoving, dragType } = this.state
+        var { width, padding, rowHeight, margin } = this.props
+        const { GridXMoving, GridYMoving, wMoving, hMoving, placeholderMoving, dragType, col } = this.state
 
         if (!padding) padding = 0;
         return (
@@ -275,7 +266,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             if (item !== void 666) {
                 const dataSet = { ...item.props['data-set'], isUserMove: false, key: item.key };
                 var newLayout = [...this.state.layout, dataSet]
-                newLayout = correctLayout(newLayout, this.props.col)
+                newLayout = correctLayout(newLayout, this.state.col)
                 const { compacted, mapLayout } = compactLayout(newLayout, undefined);
                 console.log(mapLayout)
                 // console.log(layout)
@@ -291,8 +282,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
 
     componentDidMount() {
+
         setTimeout(() => {
-            let layout = correctLayout(this.state.layout, this.props.col)
+            let layout = correctLayout(this.state.layout, this.state.col)
             const { compacted, mapLayout } = compactLayout(layout, undefined);
             this.setState({
                 layout: compacted,
@@ -303,8 +295,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     getGridItem(child: any, index: number) {
-        const { dragType, mapLayout } = this.state
-        var { col, width, padding, rowHeight, margin } = this.props;
+        const { dragType, mapLayout, col } = this.state
+        var { width, padding, rowHeight, margin } = this.props;
         if (mapLayout) {
             const renderItem = layoutItemForkey(mapLayout, child.key);
             if (!padding) padding = 0;
@@ -338,6 +330,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             )
         }
     }
+
     render() {
         const { width, className } = this.props;
         const { containerHeight } = this.state;
@@ -346,6 +339,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             <div
                 className={stringJoin('DraggerLayout', className + '')}
                 style={{ left: 100, width: width, height: containerHeight, zIndex: 1 }}
+                ref={node => this.dragact = node}
             >
                 {React.Children.map(this.props.children,
                     (child, index) => this.getGridItem(child, index)
@@ -360,7 +354,16 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         return this.state.layout;
     }
 
+    getReact = () => {
+        if (this.dragact) {
+            return this.dragact.getClientRects()[0];
+        }
+    }
+
     //api
     deleteItem(key: any) {
+
+
+
     }
 }

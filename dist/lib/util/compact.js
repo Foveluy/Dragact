@@ -39,15 +39,30 @@ export var compactItem = function (finishedLayout, item) {
  * 压缩layout，使得每一个元素都会紧挨着边界或者相邻的元素
  * @param {*} layout
  */
-export var compactLayout = function (layout) {
-    var sorted = sortLayout(layout);
+export var compactLayout = function (layout, movingItem) {
+    var sorted = sortLayout(layout); //把静态的放在前面
     var needCompact = Array(layout.length);
     var compareList = [];
+    var mapLayout = {};
     for (var i = 0, length_1 = sorted.length; i < length_1; i++) {
         var finished = compactItem(compareList, sorted[i]);
-        finished.isUserMove = false;
+        if (movingItem) {
+            if (movingItem.UniqueKey === finished.key) {
+                movingItem.GridX = finished.GridX;
+                movingItem.GridY = finished.GridY;
+                finished.isUserMove = true;
+            }
+            else
+                finished.isUserMove = false;
+        }
+        else
+            finished.isUserMove = false;
         compareList.push(finished);
         needCompact[i] = finished;
+        mapLayout[finished.key + ''] = finished;
     }
-    return needCompact;
+    return {
+        compacted: needCompact,
+        mapLayout: mapLayout
+    };
 };
