@@ -388,6 +388,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
     }
 
     render() {
+        
         var { x, y, w, h } = this.state
         var { style, className, canResize } = this.props
         if (!this.props.isUserMove) {
