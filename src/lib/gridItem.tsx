@@ -155,7 +155,7 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
         const calWidth = this.calColWidth();
 
         const w = Math.round((wPx - calWidth * 0.5) / calWidth)
-        const h = Math.round((hPx - this.props.rowHeight * 0.8) / this.props.rowHeight)
+        const h = Math.round((hPx - this.props.rowHeight * 0.5) / this.props.rowHeight)
         return checkWidthHeight(this.props.GridX, w, h, this.props.col)
     }
 
