@@ -88,10 +88,10 @@ export class Dragger extends React.Component<DraggerProps, {}> {
 
     state = {
         /** x轴位移，单位是px */
-        x: 0,
+        x: this.props.x || 0,
 
         /** y轴位移，单位是px */
-        y: 0,
+        y: this.props.y || 0,
 
         /**鼠标点击元素的原始位置，单位是px */
         originX: 0,
@@ -106,8 +106,8 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         /**堆叠的层级 */
         zIndex: 1,
 
-        w: 0,
-        h: 0,
+        w: this.props.w || 0,
+        h: this.props.h || 0,
 
         lastW: 0,
         lastH: 0
@@ -331,13 +331,13 @@ export class Dragger extends React.Component<DraggerProps, {}> {
          * 这个函数只会调用一次 
          * 这个只是一个临时的解决方案，因为这样会使得元素进行两次刷新
         */
-        if (typeof this.props.x === 'number' &&
-            typeof this.props.y === 'number') {
-            this.setState({
-                x: this.props.x,
-                y: this.props.y
-            })
-        }
+        // if (typeof this.props.x === 'number' &&
+        //     typeof this.props.y === 'number') {
+        //     this.setState({
+        //         x: this.props.x,
+        //         y: this.props.y
+        //     })
+        // }
     }
 
     componentWillReceiveProps(nextProps: DraggerProps) {
