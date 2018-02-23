@@ -80,20 +80,20 @@ export interface mapLayout {
     [key: string]: DragactLayoutItem
 }
 
-interface DragactState {
-    GridXMoving: number
-    GridYMoving: number
-    wMoving: number
-    hMoving: number
-    placeholderShow: Boolean
-    placeholderMoving: Boolean
-    layout: any;
-    containerHeight: number
-    dragType: 'drag' | 'resize'
-    mapLayout: mapLayout | undefined
-    col: number
+// interface DragactState {
+//     GridXMoving: number
+//     GridYMoving: number
+//     wMoving: number
+//     hMoving: number
+//     placeholderShow: Boolean
+//     placeholderMoving: Boolean
+//     layout: any;
+//     containerHeight: number
+//     dragType: 'drag' | 'resize'
+//     mapLayout: mapLayout | undefined
+//     col: number
 
-}
+// }
 
 
 export class Column extends React.Component<{}, {}>{
@@ -168,12 +168,12 @@ export class ListCell extends React.Component<ListCellProps, {}>{
 
 
     render() {
-        const { x, y, isUserMove, width, style, rowHeight } = this.props;
+        const { x, y, isUserMove, width, style, rowHeight, margin } = this.props;
 
         return (
             <Dragger
                 x={x * width}
-                y={y * rowHeight}
+                y={Math.round(y * rowHeight + margin[1] * (y + 1))}
                 style={{ ...style, width: width, transition: this.props.isUserMove ? '' : 'all .2s', }}
                 isUserMove={isUserMove}
                 onDragStart={this.onDragStart}
@@ -189,7 +189,7 @@ export class ListCell extends React.Component<ListCellProps, {}>{
 }
 
 export const collision = (a: number, b: number) => {
-    if (a + 1 === b) {
+    if (a === b) {
         return 1
     }
     if (a + 1 <= b) return -1
@@ -204,30 +204,32 @@ const swapList = (list: any, movingItem: any, firstKey: any) => {
         if (oldItem.key !== movingItem.key) {
             const num = collision(oldItem.y, movingItem.y)
             if (num > 0) {
-                console.log('痛', oldItem.y, movingItem.y)
-                var offset = movingItem.y - 1
-                if (oldItem.y < movingItem.y) {
-                    offset = movingItem.y + 2
-                }
-                // if (oldItem.y == movingItem.y) {
+                // console.log(num)
+                var offset = oldItem.y - 1
+                // if (movingItem.y > oldItem.y && movingItem.y < oldItem.y + 1) {
+                //     /**
+                //      * 元素向上移动时，元素的上面空间不足,则不移动这个元素
+                //      * 当元素移动到GridY>所要向上交换的元素时，就不会进入这里，直接交换元素
+                //      */
+                //     console.log('你来了')
                 //     offset = oldItem.y
                 // }
-                moving.push({ ...oldItem, y: offset })
+                // }
+                moving.push({ ...oldItem, y: offset, isUserMove: false })
 
-                return { ...oldItem, y: offset }
+                return { ...oldItem, y: offset, isUserMove: false }
             }
-            return { ...oldItem }
-        } else if (oldItem.key === firstKey) {
+            return oldItem
+        } else if (movingItem.key === firstKey) {
 
             /**永远保持用户移动的块是 isUserMove === true */
             return { ...oldItem, ...movingItem }
         }
-        return { ...oldItem }
+        return oldItem
     })
 
 
     for (const i in moving) {
-
         newList = swapList(newList, moving[i], firstKey);
     }
     return newList;
@@ -271,11 +273,14 @@ const compactCell = (partialList: any, cell: any) => {
 
 export const compactList = (list: any, movingItem: any) => {
     const sort = list.sort((a: any, b: any) => {
+        if (a.y === b.y) {
+
+            if (b.isUserMove) return 1
+        }
         if (a.y > b.y) return 1
         return 0
     })
     // console.log('sor',sort)
-    console.log(sort)
     const needCompact = Array(list.length)
     const after: any = [];
     for (const i in sort) {
@@ -283,7 +288,6 @@ export const compactList = (list: any, movingItem: any) => {
 
         if (movingItem) {
             if (movingItem.key === finished.key) {
-                finished.y = movingItem.y;
                 finished.isUserMove = true
             } else
                 finished.isUserMove = false
@@ -300,7 +304,7 @@ export const compactList = (list: any, movingItem: any) => {
 }
 
 
-export class DragactList extends React.Component<DragactProps, DragactState> {
+export class DragactList extends React.Component<DragactProps, any> {
     dragact: HTMLDivElement | null
 
     constructor(props: DragactProps) {
@@ -327,7 +331,8 @@ export class DragactList extends React.Component<DragactProps, DragactState> {
             containerHeight: 500,
             dragType: 'drag',
             mapLayout: undefined,
-            col: 3
+            col: 3,
+            currentList: 0
         }
     }
 
@@ -379,15 +384,15 @@ export class DragactList extends React.Component<DragactProps, DragactState> {
 
     componentDidMount() {
 
-        // setTimeout(() => {
-        //     let layout = correctLayout(this.state.layout, this.state.col)
-        //     const { compacted, mapLayout } = compactLayout(layout, undefined);
-        //     this.setState({
-        //         layout: compacted,
-        //         mapLayout: mapLayout,
-        //         containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
-        //     })
-        // }, 1);
+        setTimeout(() => {
+            const swp = [...this.state.layout[0]]
+            this.state.layout[0] = this.state.layout[1];
+            this.state.layout[1] = swp;
+            this.setState({
+                layout: this.state.layout
+            })
+
+        }, 1000);
     }
 
 
@@ -403,7 +408,8 @@ export class DragactList extends React.Component<DragactProps, DragactState> {
             }
         }
         this.setState({
-            layout: this.state.layout
+            layout: this.state.layout,
+            currentList: x
         })
         console.log(this.state.layout)
     }
@@ -411,25 +417,35 @@ export class DragactList extends React.Component<DragactProps, DragactState> {
     onDrag = (e: ListItemEvent) => {
         const { key, x, y } = e;
 
-        console.log(y)
+
         const newList = swapList(this.state.layout[x], { y, key }, key)
-        // const compacted = compactList(newList, { y, key });
-        this.state.layout[x] = newList;
-        // console.log(compacted);
+        const compacted = compactList(newList, { y, key });
+        this.state.layout[x] = compacted;
+
         this.setState({
             layout: [...this.state.layout]
         })
-
     }
 
     onDragEnd = (e: ListItemEvent) => {
-        const { x } = e;
-        const compacted = compactList(this.state.layout[x], undefined);
-        this.state.layout[x] = compacted;
-        console.log(compacted);
-        this.setState({
-            layout: [...this.state.layout]
-        })
+        const { x, y } = e;
+
+        if (this.state.currentList !== x) {
+            this.state.layout[x].push({ y, key: "10203", isUserMove: false })
+            const compacted = compactList(this.state.layout[x], undefined);
+            this.state.layout[x] = compacted;
+            this.setState({
+                layout: [...this.state.layout]
+            })
+
+        } else {
+            const compacted = compactList(this.state.layout[x], undefined);
+            this.state.layout[x] = compacted;
+            this.setState({
+                layout: [...this.state.layout]
+            })
+        }
+
     }
 
     renderList = () => {
@@ -440,6 +456,8 @@ export class DragactList extends React.Component<DragactProps, DragactState> {
 
         const { width, margin, rowHeight } = this.props;
 
+        
+
         return child.map((c: any, idx: any) => {
             const key = c.key;
             var renderItem: any;
@@ -448,7 +466,7 @@ export class DragactList extends React.Component<DragactProps, DragactState> {
                     renderItem = this.state.layout[index][i];
                 }
             }
-
+            console.log(index,key)
             return <ListCell
                 margin={margin}
                 rowHeight={rowHeight}
