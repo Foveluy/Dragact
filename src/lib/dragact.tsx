@@ -24,7 +24,7 @@ export interface DragactLayoutItem {
 }
 
 export interface DragactProps {
-    layout: DragactLayoutItem[] //暂时不推荐使用
+    layout?: DragactLayoutItem[] //暂时不推荐使用
     /** 
      * 宽度切分比 
      * 这个参数会把容器的宽度平均分为col等份
