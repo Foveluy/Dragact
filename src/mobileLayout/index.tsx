@@ -16,7 +16,7 @@ const fakeData = () => {
     return Words.map((item, index) => {
         if (index % 4 === 0) Y++;
 
-        return { ...item, GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '' }
+        return { ...item, GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '', canResize: false }
     })
 }
 
@@ -40,13 +40,13 @@ const Card = (props: any) => {
 }
 
 
-export class LayoutDemo extends React.Component<{}, {}> {
+export class Mobile extends React.Component<{}, {}> {
     render() {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
-            width: 600,
+            width: 500,
             col: 16,
-            rowHeight: 40,
+            rowHeight: 45,
             margin: margin,
             className: 'normal-layout',
             layout: fakeData()
@@ -60,7 +60,7 @@ export class LayoutDemo extends React.Component<{}, {}> {
             >
                 <div>
                     <h1 style={{ textAlign: 'center' }}>
-                        普通布局demo
+                        手机普通布局demo
                     </h1>
                     <Dragact
                         {...dragactInit}

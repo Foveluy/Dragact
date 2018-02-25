@@ -130,12 +130,48 @@ ReactDOM.render(
 通过获取dragact组件的实例，我提供了一个api ```getLayout():DragactLayout;```，用于获取当前的**布局信息**。
 
 
+### 4.拖拽把手的设计
+设计一个拖拽把手，必须要两个步骤。
+1. 挂件中拖拽把手拥有一个```id='dragact-handle'```的html tag（```<div id='dragact-handle'>我是把手</div>```);
+2. 在数据中标记是否存在把手
+```ts
+const layout = [
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '0',handle:true },
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '1' },
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '2' }
+]
 
+```
+
+这样的一个设计，略显繁杂，但是起码能够保证了把手的**自定义**，或许在下个版本中我将设计一款高皆组件，使得书写拖拽把手更加轻便简洁。
 
 
 
 
 # Dragact 提供的属性
+
+### 数据属性
+数据属性指的是我们每一个组件所拥有的属性,类似以下的一组数据
+```ts
+const layout = [
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '0',canResize:false,static:true,canDrag:false,handle:true },
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '1' },
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '2' }
+]
+
+GridX:number//必填，挂件布局中的横坐标
+GridY:number//必填，挂件布局中的纵坐标
+w:number//必填，挂件布局中宽度，整数
+h:number//必填，挂件布局中高度，整数
+key:number|string//必填，挂件在布局中的唯一id
+canResize:boolean //非必要，能否调整大小的开关
+static:boolean //非必要，静态组件的开关
+canDrag:boolean //非必要，是否能拖拽的开关
+handle:boolean //非必要，是否有拖拽把手的开关
+```
+
+
+### 组件属性
 ```ts
 interface DragactProps {
     layout?: DragactLayout[] //暂时不推荐使用

@@ -1,0 +1,13 @@
+.layout-Item {
+    background: white;
+    height: 100%;
+    border-radius: 3px;
+}
+
+.layout-item:hover {
+    cursor: -webkit-grab;
+}
+
+.normal-layout {
+    background: #d9d9d9;
+}

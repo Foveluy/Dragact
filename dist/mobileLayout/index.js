@@ -25,7 +25,7 @@ var fakeData = function () {
     return Words.map(function (item, index) {
         if (index % 4 === 0)
             Y++;
-        return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '' });
+        return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '', canResize: false });
     });
 };
 var Card = function (props) {
@@ -37,17 +37,17 @@ var Card = function (props) {
             React.createElement("div", { style: { borderBottom: '1px solid rgba(120,120,120,0.1)' } }),
             item.content)));
 };
-var LayoutDemo = /** @class */ (function (_super) {
-    __extends(LayoutDemo, _super);
-    function LayoutDemo() {
+var Mobile = /** @class */ (function (_super) {
+    __extends(Mobile, _super);
+    function Mobile() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
-    LayoutDemo.prototype.render = function () {
+    Mobile.prototype.render = function () {
         var margin = [5, 5];
         var dragactInit = {
-            width: 600,
+            width: 500,
             col: 16,
-            rowHeight: 40,
+            rowHeight: 45,
             margin: margin,
             className: 'normal-layout',
             layout: fakeData()
@@ -57,13 +57,13 @@ var LayoutDemo = /** @class */ (function (_super) {
                 justifyContent: 'center'
             } },
             React.createElement("div", null,
-                React.createElement("h1", { style: { textAlign: 'center' } }, "\u666E\u901A\u5E03\u5C40demo"),
+                React.createElement("h1", { style: { textAlign: 'center' } }, "\u624B\u673A\u666E\u901A\u5E03\u5C40demo"),
                 React.createElement(Dragact, __assign({}, dragactInit, { placeholder: true, style: {
                         background: '#003A8C'
                     } }), function (item, isDragging) {
                     return React.createElement(Card, { item: item, isDragging: isDragging });
                 }))));
     };
-    return LayoutDemo;
+    return Mobile;
 }(React.Component));
-export { LayoutDemo };
+export { Mobile };

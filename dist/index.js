@@ -11,16 +11,20 @@ var __extends = (this && this.__extends) || (function () {
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { LayoutDemo } from './NormalLayout/index';
-// import { SortedTable } from "./SortedTable/index";
-// import { SortedTableWithStatic } from "./StaticHeader/index";
-// import { LayoutRestore } from "./LayoutRestore/index";
-// import { HandleLayout } from "./HandleLayout/index";
+import { SortedTableWithStatic } from "./StaticWidget/index";
+import { LayoutRestore } from "./LayoutRestore/index";
+import { HandleLayout } from "./HandleLayout/index";
 // import { AddRemove } from "./AddRemove/index";
-// import { SortableList } from "./SortableList/index";
+import { Mobile } from "./mobileLayout/index";
 import './index.css';
-import { Dragact } from "./lib/dragact";
 var DemoMap = {
     normalLayout: React.createElement(LayoutDemo, null),
+    // SortedTable: <SortedTable />,
+    StaticHeader: React.createElement(SortedTableWithStatic, null),
+    LayoutRestore: React.createElement(LayoutRestore, null),
+    HandleLayout: React.createElement(HandleLayout, null),
+    // AddRemove: <AddRemove />,
+    Mobile: React.createElement(Mobile, null)
 };
 var DemoDispatcher = /** @class */ (function (_super) {
     __extends(DemoDispatcher, _super);
@@ -39,23 +43,17 @@ var DemoDispatcher = /** @class */ (function (_super) {
     DemoDispatcher.prototype.render = function () {
         var _this = this;
         return (React.createElement("div", null,
+            React.createElement("div", null, "\u5207\u6362 Demos"),
             React.createElement("div", { className: 'demo-button-layout' },
-                React.createElement("div", null, "Switch Demos"),
-                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('normalLayout'); } }, "normalLayout")),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('normalLayout'); } }, "\u666E\u901A\u5E03\u5C40"),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('StaticHeader'); } }, "\u9759\u6001\u7EC4\u4EF6"),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('LayoutRestore'); } }, "\u5B58\u50A8\u5E03\u5C40"),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('HandleLayout'); } }, "\u62D6\u62FD\u628A\u624B"),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('Mobile'); } }, "\u79FB\u52A8\u7AEF")),
             this.state.demo));
     };
     return DemoDispatcher;
 }(React.Component));
 React.createElement(DemoDispatcher, null);
-var fakeData = [
-    { GridX: 0, GridY: 0, w: 4, h: 2, key: '0' },
-    { GridX: 0, GridY: 0, w: 4, h: 2, key: '1' },
-    { GridX: 0, GridY: 0, w: 4, h: 2, key: '2' }
-];
-var blockStyle = {
-    background: 'grey',
-    height: '100%'
-};
-ReactDOM.render(React.createElement(Dragact, { layout: fakeData, col: 16, width: 800, rowHeight: 40, margin: [5, 5], className: 'plant-layout', style: { background: '#eee' }, placeholder: true }, function (item, isDragging) {
-    return React.createElement("div", { style: blockStyle }, isDragging ? '正在抓取' : '停放');
-}), document.getElementById('root'));
+ReactDOM.render(React.createElement(DemoDispatcher, null), document.getElementById('root'));
+document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);

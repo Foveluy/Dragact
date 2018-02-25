@@ -1,25 +1,23 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { LayoutDemo } from './NormalLayout/index';
-// import { SortedTable } from "./SortedTable/index";
-// import { SortedTableWithStatic } from "./StaticHeader/index";
-// import { LayoutRestore } from "./LayoutRestore/index";
-// import { HandleLayout } from "./HandleLayout/index";
+import { SortedTableWithStatic } from "./StaticWidget/index";
+import { LayoutRestore } from "./LayoutRestore/index";
+import { HandleLayout } from "./HandleLayout/index";
 // import { AddRemove } from "./AddRemove/index";
-// import { SortableList } from "./SortableList/index";
+import { Mobile } from "./mobileLayout/index";
 import './index.css'
-import { Dragact } from "./lib/dragact";
 
 
 
 const DemoMap: any = {
     normalLayout: <LayoutDemo />,
     // SortedTable: <SortedTable />,
-    // StaticHeader: <SortedTableWithStatic />,
-    // LayoutRestore: <LayoutRestore />,
-    // HandleLayout: <HandleLayout />,
+    StaticHeader: <SortedTableWithStatic />,
+    LayoutRestore: <LayoutRestore />,
+    HandleLayout: <HandleLayout />,
     // AddRemove: <AddRemove />,
-    // SortableList: <SortableList />
+    Mobile: <Mobile />
 }
 
 class DemoDispatcher extends React.Component<{}, {}> {
@@ -37,15 +35,13 @@ class DemoDispatcher extends React.Component<{}, {}> {
     render() {
         return (
             <div>
+                <div>切换 Demos</div>
                 <div className='demo-button-layout'>
-                    <div>Switch Demos</div>
-                    <button onClick={() => this.handleLayoutChange('normalLayout')}>normalLayout</button>
-                    {/* <button onClick={() => this.handleLayoutChange('SortedTable')}>SortedTable</button>
-                    <button onClick={() => this.handleLayoutChange('StaticHeader')}>StaticHeader</button>
-                    <button onClick={() => this.handleLayoutChange('LayoutRestore')}>LayoutRestore</button>
-                    <button onClick={() => this.handleLayoutChange('HandleLayout')}>HandleLayout</button>
-                    <button onClick={() => this.handleLayoutChange('AddRemove')}>AddRemove</button> */}
-                    {/* <button onClick={() => this.handleLayoutChange('SortableList')}>SortableList</button> */}
+                    <button onClick={() => this.handleLayoutChange('normalLayout')}>普通布局</button>
+                    <button onClick={() => this.handleLayoutChange('StaticHeader')}>静态组件</button>
+                    <button onClick={() => this.handleLayoutChange('LayoutRestore')}>存储布局</button>
+                    <button onClick={() => this.handleLayoutChange('HandleLayout')}>拖拽把手</button>
+                    <button onClick={() => this.handleLayoutChange('Mobile')}>移动端</button>
                 </div>
                 {this.state.demo}
             </div>
@@ -56,33 +52,14 @@ class DemoDispatcher extends React.Component<{}, {}> {
 <DemoDispatcher />
 
 
-const fakeData = [
-    { GridX: 0, GridY: 0, w: 4, h: 2, key: '0' },
-    { GridX: 0, GridY: 0, w: 4, h: 2, key: '1' },
-    { GridX: 0, GridY: 0, w: 4, h: 2, key: '2' }
-]
 
-const blockStyle = {
-    background: 'grey',
-    height: '100%'
-};
+
+
 
 ReactDOM.render(
-    <Dragact
-        layout={fakeData}
-        col={16}
-        width={800}
-        rowHeight={40}
-        margin={[5, 5]}
-        className='plant-layout'
-        style={{ background: '#eee' }}
-        placeholder={true}
-    >
-        {(item: any, isDragging: Boolean) => {
-            return <div style={blockStyle}>
-                {isDragging ? '正在抓取' : '停放'}
-            </div>
-        }}
-    </Dragact>,
+    <DemoDispatcher />,
     document.getElementById('root')
 );
+
+
+document.addEventListener('touchmove', function (e) { e.preventDefault() }, false);
