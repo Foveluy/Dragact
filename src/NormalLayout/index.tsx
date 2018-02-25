@@ -1,5 +1,6 @@
 import *as React from 'react';
 import { Dragact, DragactLayoutItem } from '../lib/dragact'
+import { Words } from './largedata'
 import './index.css';
 
 
@@ -8,17 +9,11 @@ interface CardItem {
     img: string
 }
 
-const Words = [
-    { content: 'You can do anything, but not everything.' },
-    { content: 'Those who dare to fail miserably can achieve greatly.' },
-    { content: 'You miss 100 percent of the shots you never take.' },
-    { content: 'Those who believe in telekinetics, raise my hand.' },
-    { content: 'I’d rather live with a good question than a bad answer.' }
-]
+
 
 const fakeData = () => {
     return Words.map((item, index) => {
-        return { ...item, GridX: index * 2, GridY: 0, w: 4, h: 2, key: index + '' }
+        return { ...item, GridX: 2, GridY: index * 2, w: 4, h: 2, key: index + '' }
     })
 }
 
