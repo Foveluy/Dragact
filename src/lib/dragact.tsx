@@ -84,6 +84,8 @@ export interface DragactProps {
     className: number | string
 
     placeholder?: Boolean
+
+    style?: React.CSSProperties
 }
 
 export interface mapLayout {
@@ -293,7 +295,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
     }
 
-
     componentDidMount() {
         setTimeout(() => {
             let layout = correctLayout(this.state.layout, this.props.col)
@@ -314,31 +315,24 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             if (!padding) padding = 0;
             return (
                 <GridItem
+                    {...renderItem}
                     margin={margin}
                     col={col}
                     containerWidth={width}
                     containerPadding={[padding, padding]}
                     rowHeight={rowHeight}
-                    GridX={renderItem.GridX}
-                    GridY={renderItem.GridY}
-                    w={renderItem.w}
-                    h={renderItem.h}
                     onDrag={this.onDrag}
                     onDragStart={this.onDragStart}
                     onDragEnd={this.onDragEnd}
                     isUserMove={renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false}
                     UniqueKey={child.key}
-                    static={renderItem.static}
                     onResizing={this.onResizing}
                     onResizeStart={this.onResizeStart}
                     onResizeEnd={this.onResizeEnd}
                     dragType={dragType}
-                    handle={renderItem.handle}
-                    canDrag={renderItem.canDrag}
-                    canResize={renderItem.canResize}
                     key={child.key}
                 >
-                    {this.props.children(child, index)}
+                    {this.props.children(child, renderItem.isUserMove)}
                 </GridItem >
             )
         }
@@ -347,7 +341,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         const {
             width,
             className,
-            layout
+            layout,
+            style
         } = this.props;
         const { containerHeight } = this.state;
 
@@ -355,6 +350,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             <div
                 className={stringJoin('DraggerLayout', className + '')}
                 style={{
+                    ...style,
                     left: 100,
                     width: width,
                     height: containerHeight,

@@ -9,26 +9,32 @@ interface CardItem {
 }
 
 const Words = [
-    { content: 'You can do anything, but not everything.', img: 'http://pic.sc.chinaz.com/files/pic/pic9/201303/xpic10472.jpg' },
-    { content: 'Those who dare to fail miserably can achieve greatly.', img: 'https://img00.deviantart.net/1163/i/2013/059/d/7/irish_views_by_ssquared_photography-d5wjnsk.jpg' },
-    { content: 'You miss 100 percent of the shots you never take.', img: 'http://www.landsendhotel.co.uk/uploads/gallery/gallery/coastal_scenery_seascapes_6.jpg' },
-    { content: 'Those who believe in telekinetics, raise my hand.', img: 'https://tctechcrunch2011.files.wordpress.com/2017/10/26099344353_18cd6fabb8_k.jpg?w=738' },
-    { content: 'I’d rather live with a good question than a bad answer.', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVa26cLzh6PYUwY4LMpwbHyDHFmWi_w2JuqDzeOdm1IIEbBZO0Vg' }
+    { content: 'You can do anything, but not everything.' },
+    { content: 'Those who dare to fail miserably can achieve greatly.' },
+    { content: 'You miss 100 percent of the shots you never take.' },
+    { content: 'Those who believe in telekinetics, raise my hand.' },
+    { content: 'I’d rather live with a good question than a bad answer.' }
 ]
 
 const fakeData = () => {
     return Words.map((item, index) => {
-        return { ...item, GridX: index * 2, GridY: 0, w: 3, h: 3, key: index + '' }
+        return { ...item, GridX: index * 2, GridY: 0, w: 4, h: 2, key: index + '' }
     })
 }
 
 
 const Card = (props: any) => {
     const item: CardItem = props.item;
+    const isDragging: Boolean = props.isDragging;
     return (
-        <div className='layout-Item'>
-            <img src={item.img} style={{ width: '100%', height: '60%' }} draggable={false} alt='card'></img>
-            <div style={{ padding: 5, textAlign: 'center', color: '#595959' }}>{item.content}</div>
+        <div
+            className='layout-Item'
+            style={{ background: `${isDragging ? '#eaff8f' : 'white'}` }}>
+            <div
+                style={{ padding: 5, textAlign: 'center', color: '#595959' }}
+            >
+                {item.content}
+            </div>
         </div>
     )
 }
@@ -38,21 +44,36 @@ export class LayoutDemo extends React.Component<{}, {}> {
     render() {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
-            width: 800,
-            col: 12,
-            rowHeight: 800 / 12,
+            width: 1200,
+            col: 16,
+            rowHeight: 40,
             margin: margin,
             className: 'normal-layout',
             layout: fakeData()
         }
-
         return (
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div
+                style={{
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}
+            >
                 <div>
-                    <h1 style={{ textAlign: 'center' }}>Normal Layout Demo</h1>
-                    <Dragact {...dragactInit} placeholder={true}>
-                        {(item: DragactLayoutItem, index: number) => {
-                            return <Card item={item} />
+                    <h1 style={{ textAlign: 'center' }}>
+                        Normal Layout Demo
+                    </h1>
+                    <Dragact
+                        {...dragactInit}
+                        placeholder={true}
+                        style={{
+                            background: '#003A8C'
+                        }}
+                    >
+                        {(item: DragactLayoutItem, isDragging: Boolean) => {
+                            return <Card
+                                item={item}
+                                isDragging={isDragging}
+                            />
                         }}
                     </Dragact>
                 </div>
