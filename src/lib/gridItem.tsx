@@ -209,8 +209,11 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
 
             <Dragger
                 style={{
-                    ...style, width: wPx, height: hPx, position: 'absolute',
-                    transition: this.props.isUserMove ? '' : 'all .2s',
+                    ...style,
+                    width: wPx,
+                    height: hPx,
+                    position: 'absolute',
+                    transition: this.props.isUserMove ? '' : 'all .2s ease-out',
                     zIndex: this.props.isUserMove ? (this.props.dragType === 'drag' ? 10 : 2) : 2
                 }}
                 onDragStart={this.onDragStart}

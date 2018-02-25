@@ -189,11 +189,11 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
     onDrag(layoutItem: GridItemEvent) {
 
-        const { GridY, UniqueKey } = layoutItem
-        const moving = GridY - this.state.GridYMoving
+        const { GridY, UniqueKey } = layoutItem;
+        const moving = GridY - this.state.GridYMoving;
 
-        const newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey, UniqueKey/*用户移动方块的key */, moving)
-        const { compacted, mapLayout } = compactLayout(newLayout, layoutItem)
+        const newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey, UniqueKey/*用户移动方块的key */, moving);
+        const { compacted, mapLayout } = compactLayout(newLayout, layoutItem);
 
         this.setState({
             GridXMoving: layoutItem.GridX,
@@ -235,7 +235,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 GridY={GridYMoving}
                 w={wMoving}
                 h={hMoving}
-                style={{ background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s' }}
+                style={{ background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s ease-out' }}
                 isUserMove={!placeholderMoving}
                 dragType={dragType}
                 canDrag={false}
@@ -303,7 +303,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     getGridItem(child: any, index: number) {
-        const { dragType, mapLayout } = this.state
+        const { dragType, mapLayout } = this.state;
         var { col, width, padding, rowHeight, margin } = this.props;
         if (mapLayout) {
             const renderItem = layoutItemForkey(mapLayout, child.key);
@@ -339,13 +339,21 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         }
     }
     render() {
-        const { width, className } = this.props;
+        const {
+            width,
+            className
+        } = this.props;
         const { containerHeight } = this.state;
 
         return (
             <div
                 className={stringJoin('DraggerLayout', className + '')}
-                style={{ left: 100, width: width, height: containerHeight, zIndex: 1 }}
+                style={{
+                    left: 100,
+                    width: width,
+                    height: containerHeight,
+                    zIndex: 1
+                }}
             >
                 {React.Children.map(this.props.children,
                     (child, index) => this.getGridItem(child, index)
