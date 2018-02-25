@@ -18,7 +18,6 @@ Dragact 是一款React组件，他能够使你简单、快速的构建出一款�
 - [x] 静态组件([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
 - [x] 拖拽组件([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
 - [x] 自动缩放组件
-- [x] 性能优异，200个挂件依然有良好的表现
 - [x] 自定义拖拽把手
 
 
