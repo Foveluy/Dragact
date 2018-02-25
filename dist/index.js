@@ -11,19 +11,15 @@ var __extends = (this && this.__extends) || (function () {
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { LayoutDemo } from './NormalLayout/index';
-import { SortedTable } from "./SortedTable/index";
-import { SortedTableWithStatic } from "./StaticHeader/index";
-import { LayoutRestore } from "./LayoutRestore/index";
-import { HandleLayout } from "./HandleLayout/index";
-import { AddRemove } from "./AddRemove/index";
+// import { SortedTable } from "./SortedTable/index";
+// import { SortedTableWithStatic } from "./StaticHeader/index";
+// import { LayoutRestore } from "./LayoutRestore/index";
+// import { HandleLayout } from "./HandleLayout/index";
+// import { AddRemove } from "./AddRemove/index";
+// import { SortableList } from "./SortableList/index";
 import './index.css';
 var DemoMap = {
     normalLayout: React.createElement(LayoutDemo, null),
-    SortedTable: React.createElement(SortedTable, null),
-    StaticHeader: React.createElement(SortedTableWithStatic, null),
-    LayoutRestore: React.createElement(LayoutRestore, null),
-    HandleLayout: React.createElement(HandleLayout, null),
-    AddRemove: React.createElement(AddRemove, null)
 };
 var DemoDispatcher = /** @class */ (function (_super) {
     __extends(DemoDispatcher, _super);
@@ -44,12 +40,7 @@ var DemoDispatcher = /** @class */ (function (_super) {
         return (React.createElement("div", null,
             React.createElement("div", { className: 'demo-button-layout' },
                 React.createElement("div", null, "Switch Demos"),
-                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('normalLayout'); } }, "normalLayout"),
-                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('SortedTable'); } }, "SortedTable"),
-                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('StaticHeader'); } }, "StaticHeader"),
-                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('LayoutRestore'); } }, "LayoutRestore"),
-                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('HandleLayout'); } }, "HandleLayout"),
-                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('AddRemove'); } }, "AddRemove")),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('normalLayout'); } }, "normalLayout")),
             this.state.demo));
     };
     return DemoDispatcher;

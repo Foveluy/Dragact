@@ -25,9 +25,9 @@ var Dragger = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.state = {
             /** x轴位移，单位是px */
-            x: 0,
+            x: _this.props.x || 0,
             /** y轴位移，单位是px */
-            y: 0,
+            y: _this.props.y || 0,
             /**鼠标点击元素的原始位置，单位是px */
             originX: 0,
             originY: 0,
@@ -37,8 +37,8 @@ var Dragger = /** @class */ (function (_super) {
             lastY: 0,
             /**堆叠的层级 */
             zIndex: 1,
-            w: 0,
-            h: 0,
+            w: _this.props.w || 0,
+            h: _this.props.h || 0,
             lastW: 0,
             lastH: 0
         };
@@ -257,13 +257,13 @@ var Dragger = /** @class */ (function (_super) {
          * 这个函数只会调用一次
          * 这个只是一个临时的解决方案，因为这样会使得元素进行两次刷新
         */
-        if (typeof this.props.x === 'number' &&
-            typeof this.props.y === 'number') {
-            this.setState({
-                x: this.props.x,
-                y: this.props.y
-            });
-        }
+        // if (typeof this.props.x === 'number' &&
+        //     typeof this.props.y === 'number') {
+        //     this.setState({
+        //         x: this.props.x,
+        //         y: this.props.y
+        //     })
+        // }
     };
     Dragger.prototype.componentWillReceiveProps = function (nextProps) {
         /**

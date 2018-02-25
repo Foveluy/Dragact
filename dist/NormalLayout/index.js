@@ -20,48 +20,52 @@ import * as React from 'react';
 import { Dragact } from '../lib/dragact';
 import './index.css';
 var Words = [
-    { content: 'You can do anything, but not everything.', img: 'http://pic.sc.chinaz.com/files/pic/pic9/201303/xpic10472.jpg' },
-    { content: 'Those who dare to fail miserably can achieve greatly.', img: 'https://img00.deviantart.net/1163/i/2013/059/d/7/irish_views_by_ssquared_photography-d5wjnsk.jpg' },
-    { content: 'You miss 100 percent of the shots you never take.', img: 'http://www.landsendhotel.co.uk/uploads/gallery/gallery/coastal_scenery_seascapes_6.jpg' },
-    { content: 'Those who believe in telekinetics, raise my hand.', img: 'https://tctechcrunch2011.files.wordpress.com/2017/10/26099344353_18cd6fabb8_k.jpg?w=738' },
-    { content: 'I’d rather live with a good question than a bad answer.', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVa26cLzh6PYUwY4LMpwbHyDHFmWi_w2JuqDzeOdm1IIEbBZO0Vg' }
+    { content: 'You can do anything, but not everything.' },
+    { content: 'Those who dare to fail miserably can achieve greatly.' },
+    { content: 'You miss 100 percent of the shots you never take.' },
+    { content: 'Those who believe in telekinetics, raise my hand.' },
+    { content: 'I’d rather live with a good question than a bad answer.' }
 ];
+var fakeData = function () {
+    return Words.map(function (item, index) {
+        return __assign({}, item, { GridX: index * 2, GridY: 0, w: 4, h: 2, key: index + '' });
+    });
+};
 var Card = function (props) {
     var item = props.item;
-    return (React.createElement("div", { className: 'layout-Item' },
-        React.createElement("img", { src: item.img, style: { width: '100%', height: '60%' }, draggable: false, alt: 'card' }),
-        React.createElement("div", { style: { padding: 5, textAlign: 'center', color: '#595959' } }, item.content)));
+    var isDragging = props.isDragging;
+    return (React.createElement("div", { className: 'layout-Item', style: { background: "" + (isDragging ? '#eaff8f' : 'white') } },
+        React.createElement("div", { style: { padding: 5, textAlign: 'center', color: '#595959' } },
+            React.createElement("span", null, "title"),
+            React.createElement("div", { style: { borderBottom: '1px solid rgba(120,120,120,0.1)' } }),
+            item.content)));
 };
 var LayoutDemo = /** @class */ (function (_super) {
     __extends(LayoutDemo, _super);
     function LayoutDemo() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this.state = {
-            layout: []
-        };
-        return _this;
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-    LayoutDemo.prototype.componentDidMount = function () {
-        this.setState({
-            layout: this.dragactNode.getLayout()
-        });
-    };
     LayoutDemo.prototype.render = function () {
-        var _this = this;
         var margin = [5, 5];
         var dragactInit = {
-            width: 800,
-            col: 12,
-            rowHeight: 800 / 12,
+            width: 1200,
+            col: 16,
+            rowHeight: 40,
             margin: margin,
-            className: 'normal-layout'
+            className: 'normal-layout',
+            layout: fakeData()
         };
-        return (React.createElement("div", { style: { display: 'flex', justifyContent: 'center' } },
+        return (React.createElement("div", { style: {
+                display: 'flex',
+                justifyContent: 'center'
+            } },
             React.createElement("div", null,
                 React.createElement("h1", { style: { textAlign: 'center' } }, "Normal Layout Demo"),
-                React.createElement(Dragact, __assign({}, dragactInit, { ref: function (node) { return node ? _this.dragactNode = node : null; } }), Words.map(function (el, index) {
-                    return React.createElement(Card, { item: el, key: index, "data-set": { GridX: (index * 3) % 12, GridY: index * 2, w: 3, h: 3 } });
-                })))));
+                React.createElement(Dragact, __assign({}, dragactInit, { placeholder: true, style: {
+                        background: '#003A8C'
+                    } }), function (item, isDragging) {
+                    return React.createElement(Card, { item: item, isDragging: isDragging });
+                }))));
     };
     return LayoutDemo;
 }(React.Component));

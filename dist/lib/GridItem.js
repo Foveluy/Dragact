@@ -105,7 +105,7 @@ var GridItem = /** @class */ (function (_super) {
     GridItem.prototype.calPxToWH = function (wPx, hPx) {
         var calWidth = this.calColWidth();
         var w = Math.round((wPx - calWidth * 0.5) / calWidth);
-        var h = Math.round((hPx - this.props.rowHeight * 0.8) / this.props.rowHeight);
+        var h = Math.round((hPx - this.props.rowHeight * 0.5) / this.props.rowHeight);
         return checkWidthHeight(this.props.GridX, w, h, this.props.col);
     };
     GridItem.prototype.onDragStart = function (x, y) {
@@ -136,7 +136,7 @@ var GridItem = /** @class */ (function (_super) {
         var _a = this.props, w = _a.w, h = _a.h, style = _a.style, bounds = _a.bounds, GridX = _a.GridX, GridY = _a.GridY, handle = _a.handle, canDrag = _a.canDrag, canResize = _a.canResize;
         var _b = this.calGridItemPosition(GridX, GridY), x = _b.x, y = _b.y;
         var _c = this.calWHtoPx(w, h), wPx = _c.wPx, hPx = _c.hPx;
-        return (React.createElement(Dragger, { style: __assign({}, style, { width: wPx, height: hPx, position: 'absolute', transition: this.props.isUserMove ? '' : 'all .2s', zIndex: this.props.isUserMove ? (this.props.dragType === 'drag' ? 10 : 2) : 2 }), onDragStart: this.onDragStart, onMove: this.onDrag, onDragEnd: this.onDragEnd, onResizeStart: this.onResizeStart, onResizing: this.onResizing, onResizeEnd: this.onResizeEnd, x: x, y: y, w: wPx, h: hPx, isUserMove: this.props.isUserMove, bounds: bounds, handle: handle, canDrag: canDrag, canResize: canResize },
+        return (React.createElement(Dragger, { style: __assign({}, style, { width: wPx, height: hPx, position: 'absolute', transition: this.props.isUserMove ? '' : 'all .2s ease-out', zIndex: this.props.isUserMove ? (this.props.dragType === 'drag' ? 10 : 2) : 2 }), onDragStart: this.onDragStart, onMove: this.onDrag, onDragEnd: this.onDragEnd, onResizeStart: this.onResizeStart, onResizing: this.onResizing, onResizeEnd: this.onResizeEnd, x: x, y: y, w: wPx, h: hPx, isUserMove: this.props.isUserMove, bounds: bounds, handle: handle, canDrag: canDrag, canResize: canResize },
             React.createElement("div", { style: { height: '100%', width: "100%" } }, React.Children.map(this.props.children, function (child) { return child; }))));
     };
     GridItem.defaultProps = {

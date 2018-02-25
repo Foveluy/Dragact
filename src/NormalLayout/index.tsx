@@ -33,6 +33,8 @@ const Card = (props: any) => {
             <div
                 style={{ padding: 5, textAlign: 'center', color: '#595959' }}
             >
+                <span>title</span>
+                <div style={{ borderBottom: '1px solid rgba(120,120,120,0.1)' }} />
                 {item.content}
             </div>
         </div>

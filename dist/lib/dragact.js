@@ -22,8 +22,8 @@ import { compactLayout } from './util/compact';
 import { getMaxContainerHeight } from './util/sort';
 import { layoutCheck } from './util/collison';
 import { correctLayout } from './util/correction';
-import { getDataSet, stringJoin } from './utils';
-import { layoutItemForkey, syncLayout, MapLayoutTostate } from './util/initiate';
+import { stringJoin } from './utils';
+import { layoutItemForkey, syncLayout } from './util/initiate';
 import './style.css';
 var Dragact = /** @class */ (function (_super) {
     __extends(Dragact, _super);
@@ -67,10 +67,11 @@ var Dragact = /** @class */ (function (_super) {
         _this.onDrag = _this.onDrag.bind(_this);
         _this.onDragStart = _this.onDragStart.bind(_this);
         _this.onDragEnd = _this.onDragEnd.bind(_this);
-        var layout = props.layout ?
-            MapLayoutTostate(props.layout, props.children)
-            :
-                getDataSet(props.children);
+        // const layout = props.layout ?
+        //     MapLayoutTostate(props.layout, props.children)
+        //     :
+        //     getDataSet(props.children);
+        var layout = props.layout;
         _this.state = {
             GridXMoving: 0,
             GridYMoving: 0,
@@ -127,11 +128,13 @@ var Dragact = /** @class */ (function (_super) {
     Dragact.prototype.renderPlaceholder = function () {
         if (!this.state.placeholderShow)
             return null;
-        var _a = this.props, col = _a.col, width = _a.width, padding = _a.padding, rowHeight = _a.rowHeight, margin = _a.margin;
+        var _a = this.props, col = _a.col, width = _a.width, padding = _a.padding, rowHeight = _a.rowHeight, margin = _a.margin, placeholder = _a.placeholder;
         var _b = this.state, GridXMoving = _b.GridXMoving, GridYMoving = _b.GridYMoving, wMoving = _b.wMoving, hMoving = _b.hMoving, placeholderMoving = _b.placeholderMoving, dragType = _b.dragType;
+        if (!placeholder)
+            return null;
         if (!padding)
             padding = 0;
-        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s' }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }));
+        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s ease-out' }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }));
     };
     Dragact.prototype.componentWillReceiveProps = function (nextProps) {
         if (this.props.children.length > nextProps.children.length) {
@@ -200,15 +203,17 @@ var Dragact = /** @class */ (function (_super) {
             var renderItem = layoutItemForkey(mapLayout, child.key);
             if (!padding)
                 padding = 0;
-            return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: renderItem.GridX, GridY: renderItem.GridY, w: renderItem.w, h: renderItem.h, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false, UniqueKey: child.key, static: renderItem.static, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, handle: renderItem.handle, canDrag: renderItem.canDrag, canResize: renderItem.canResize }, child));
+            return (React.createElement(GridItem, __assign({}, renderItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false, UniqueKey: child.key, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, key: child.key }), this.props.children(child, renderItem.isUserMove)));
         }
     };
     Dragact.prototype.render = function () {
         var _this = this;
-        var _a = this.props, width = _a.width, className = _a.className;
+        var _a = this.props, width = _a.width, className = _a.className, layout = _a.layout, style = _a.style;
         var containerHeight = this.state.containerHeight;
-        return (React.createElement("div", { className: stringJoin('DraggerLayout', className + ''), style: { left: 100, width: width, height: containerHeight, zIndex: 1 } },
-            React.Children.map(this.props.children, function (child, index) { return _this.getGridItem(child, index); }),
+        return (React.createElement("div", { className: stringJoin('DraggerLayout', className + ''), style: __assign({}, style, { left: 100, width: width, height: containerHeight, zIndex: 1 }) },
+            layout.map(function (item, index) {
+                return _this.getGridItem(item, index);
+            }),
             this.renderPlaceholder()));
     };
     //api
