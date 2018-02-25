@@ -4,8 +4,8 @@ import { compactLayout } from './util/compact';
 import { getMaxContainerHeight } from './util/sort';
 import { layoutCheck } from './util/collison';
 import { correctLayout } from './util/correction';
-import { getDataSet, stringJoin } from './utils';
-import { layoutItemForkey, syncLayout, MapLayoutTostate } from './util/initiate';
+import { stringJoin } from './utils';
+import { layoutItemForkey, syncLayout } from './util/initiate';
 
 import './style.css';
 
@@ -24,7 +24,7 @@ export interface DragactLayoutItem {
 }
 
 export interface DragactProps {
-    layout?: DragactLayoutItem[] //暂时不推荐使用
+    layout: DragactLayoutItem[] //暂时不推荐使用
     /** 
      * 宽度切分比 
      * 这个参数会把容器的宽度平均分为col等份
@@ -82,6 +82,8 @@ export interface DragactProps {
      * layout的名字
     */
     className: number | string
+
+    placeholder?: Boolean
 }
 
 export interface mapLayout {
@@ -109,11 +111,12 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         this.onDragStart = this.onDragStart.bind(this)
         this.onDragEnd = this.onDragEnd.bind(this)
 
+        // const layout = props.layout ?
+        //     MapLayoutTostate(props.layout, props.children)
+        //     :
+        //     getDataSet(props.children);
 
-        const layout = props.layout ?
-            MapLayoutTostate(props.layout, props.children)
-            :
-            getDataSet(props.children);
+        const layout = props.layout;
 
         this.state = {
             GridXMoving: 0,
@@ -220,9 +223,10 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
     renderPlaceholder() {
         if (!this.state.placeholderShow) return null
-        var { col, width, padding, rowHeight, margin } = this.props
+        var { col, width, padding, rowHeight, margin, placeholder } = this.props
         const { GridXMoving, GridYMoving, wMoving, hMoving, placeholderMoving, dragType } = this.state
 
+        if (!placeholder) return null;
         if (!padding) padding = 0;
         return (
             <GridItem
@@ -332,8 +336,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     handle={renderItem.handle}
                     canDrag={renderItem.canDrag}
                     canResize={renderItem.canResize}
+                    key={child.key}
                 >
-                    {child}
+                    {this.props.children(child, index)}
                 </GridItem >
             )
         }
@@ -341,7 +346,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     render() {
         const {
             width,
-            className
+            className,
+            layout
         } = this.props;
         const { containerHeight } = this.state;
 
@@ -355,9 +361,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     zIndex: 1
                 }}
             >
-                {React.Children.map(this.props.children,
-                    (child, index) => this.getGridItem(child, index)
-                )}
+                {layout.map((item, index) => {
+                    return this.getGridItem(item, index)
+                })}
                 {this.renderPlaceholder()}
             </div>
         )

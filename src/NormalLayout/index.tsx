@@ -1,5 +1,5 @@
 import *as React from 'react';
-import { Dragact } from '../lib/dragact'
+import { Dragact, DragactLayoutItem } from '../lib/dragact'
 import './index.css';
 
 
@@ -16,6 +16,12 @@ const Words = [
     { content: 'I’d rather live with a good question than a bad answer.', img: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVa26cLzh6PYUwY4LMpwbHyDHFmWi_w2JuqDzeOdm1IIEbBZO0Vg' }
 ]
 
+const fakeData = () => {
+    return Words.map((item, index) => {
+        return { ...item, GridX: index * 2, GridY: 0, w: 3, h: 3, key: index + '' }
+    })
+}
+
 
 const Card = (props: any) => {
     const item: CardItem = props.item;
@@ -29,17 +35,6 @@ const Card = (props: any) => {
 
 
 export class LayoutDemo extends React.Component<{}, {}> {
-    dragactNode: Dragact;
-    state = {
-        layout: []
-    }
-
-    componentDidMount() {
-        this.setState({
-            layout: this.dragactNode.getLayout()
-        })
-    }
-
     render() {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
@@ -47,17 +42,18 @@ export class LayoutDemo extends React.Component<{}, {}> {
             col: 12,
             rowHeight: 800 / 12,
             margin: margin,
-            className: 'normal-layout'
+            className: 'normal-layout',
+            layout: fakeData()
         }
 
         return (
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <div>
                     <h1 style={{ textAlign: 'center' }}>Normal Layout Demo</h1>
-                    <Dragact {...dragactInit} ref={node => node ? this.dragactNode = node : null} >
-                        {Words.map((el, index) => {
-                            return <Card item={el} key={index} data-set={{ GridX: (index * 3) % 12, GridY: index * 2, w: 3, h: 3 }} />
-                        })}
+                    <Dragact {...dragactInit} placeholder={true}>
+                        {(item: DragactLayoutItem, index: number) => {
+                            return <Card item={item} />
+                        }}
                     </Dragact>
                 </div>
             </div>
