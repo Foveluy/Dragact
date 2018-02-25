@@ -1,4 +1,4 @@
-export const Words = [
+export var Words = [
     { content: 'You can do anything, but not everything.' },
     { content: 'Those who dare to fail miserably can achieve greatly.' },
     { content: 'You miss 100 percent of the shots you never take.' },
@@ -39,5 +39,4 @@ export const Words = [
     { content: 'You miss 100 percent of the shots you never take.' },
     { content: 'You can do anything, but not everything.' },
     { content: 'Those who dare to fail miserably can achieve greatly.' },
-
-]
+];

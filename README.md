@@ -1,4 +1,4 @@
-# Dragact?
+# Dragact
 [![npm version](https://img.shields.io/npm/v/dragact.svg)](https://www.npmjs.com/package/dragact) [![npm downloads](https://img.shields.io/npm/dm/dragact.svg)](https://www.npmjs.com/package/dragact)
 
 
@@ -18,6 +18,9 @@ Dragact 是一款React组件，他能够使你简单、快速的构建出一款�
 - [x] 静态组件([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
 - [x] 拖拽组件([Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html))
 - [x] 自动缩放组件
+- [x] 性能优异，200个挂件依然有良好的表现
+- [x] 自定义拖拽把手
+
 
 
 # 快速开始
@@ -25,16 +28,53 @@ Dragact 是一款React组件，他能够使你简单、快速的构建出一款�
 npm install --save dragact
 ```
 
-### 写一个例子🌰
+### 最简单的例子🌰
 ```javascript
 //index.js
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
 import { Dragact } from 'dragact';
-import './index.css'
+
+const fakeData = [
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '0' },
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '1' },
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '2' }
+]
+
+const blockStyle = {
+    background: 'grey',
+    height: '100%'
+};
 
 ReactDOM.render(
+    <Dragact
+        layout={fakeData}//必填项
+        col={16}//必填项
+        width={800}//必填项
+        rowHeight={40}//必填项
+        margin={[5, 5]}//必填项
+        className='plant-layout'//必填项
+        style={{ background: '#eee' }}//非必填项
+        placeholder={true}//非必填项
+    >
+        {(item, isDragging) => {
+            return <div style={blockStyle}>
+                {isDragging ? '正在抓取' : '停放'}
+            </div>
+        }}
+    </Dragact>,
+    document.getElementById('root')
+);
+```
+
+
+# 组件设计哲学
+
+### 1.依赖注入式的挂件(widget)
+
+可以从最简单的例子看出，我们渲染子组件的方式和以往有些不同。以往的React组件书写方式，采用的是类似以下写法：
+```jsx
     <Dragact
         col={8}
         width={800}
@@ -46,23 +86,51 @@ ReactDOM.render(
         <div key={1} data-set={{ GridX: 0, GridY: 0, w: 1, h: 2 }} className='layout-child'>1</div>
         <div key={2} data-set={{ GridX: 0, GridY: 0, w: 3, h: 2 }} className='layout-child'>2</div>
     </Dragact>,
-    document.getElementById('root')
-);
 ```
+这么做当然可以，但是有几个问题：
+- 子组件非常的丑，需要我们定义一大堆东西
+- 很难监听到子组件的事件，比如是否拖拽等
+- 如果有大量的数据时，就必须写对数组写一个map函数，类似:``layout.map(item=>item);`` 来帮助渲染数组
 
-```css
-/** index.css */
-.plant-layout {
-    border: 1px solid black;
-}
-.layout-child {
-    height: 100%;
-    background: #ef4;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
+为了解决这个问题，我将子组件的渲染方式进行高度抽象成为一个**构造器**，简单来说就是以下的形式：
+```jsx
+    <Dragact
+        layout={fakeData}//必填项
+        ....
+    >
+        {(item, isDragging) => {
+            return <div style={blockStyle}>
+                {isDragging ? '正在抓取' : '停放'}
+            </div>
+        }}
+    </Dragact>,
 ```
+现在，我们子元素渲染变成一个小小的**构造函数**，第一个入参是您输入数据的每一项，第二个参数就是**isDragging**，状态监听参数。
+
+这么做，轻易的实现了，组件漂亮，不用写map函数，不用写key，同时更容易监听每一个组件的拖拽状态**isDragging**.
+
+更多的依赖注入思想以及好处，请看我的知乎问答：[知乎，方正的回答：如何设计一款组件库](https://www.zhihu.com/question/266745124/answer/322998960)
+
+
+### 2.流畅的组件滑动
+
+为了保证拖拽时候的手感舒适，我通过设置元素的translate(x,y)来进行实现，并且配合CSS动画，使得每一步的移动都是那么的顺畅。
+
+你能够很轻易的看到每一个组件到底滑向哪里，到底坐落在哪里。
+
+
+### 3.数据驱动的模式
+
+>视图的改变就是数据的改变
+
+这是React给我们的一个启示，Dragact组件通过对数据的处理，达到了数据变化即视图变化。
+
+这么做的好处就是我们可以轻松的**将布局信息记录在服务器的数据库中**，下一次拿到数据的时候，就可以轻松的**恢复原来的视图位置**。
+
+通过获取dragact组件的实例，我提供了一个api ```getLayout():DragactLayout;```，用于获取当前的**布局信息**。
+
+
+
 
 
 

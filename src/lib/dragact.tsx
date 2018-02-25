@@ -83,6 +83,7 @@ export interface DragactProps {
     */
     className: number | string
 
+    /**是否有placeholder */
     placeholder?: Boolean
 
     style?: React.CSSProperties

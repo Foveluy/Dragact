@@ -12,8 +12,11 @@ interface CardItem {
 
 
 const fakeData = () => {
+    var Y = 0;
     return Words.map((item, index) => {
-        return { ...item, GridX: 2, GridY: index * 2, w: 4, h: 2, key: index + '' }
+        if (index % 4 === 0) Y++;
+
+        return { ...item, GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 2, key: index + '' }
     })
 }
 

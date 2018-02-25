@@ -198,7 +198,6 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             if (event.target.id !== 'dragact-handle') return
         }
 
-
         /**
          * 把监听事件的回掉函数，绑定在document上
          * 当设置边界的时候，用户鼠标会离开元素的范围
@@ -388,7 +387,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
     }
 
     render() {
-        
+
         var { x, y, w, h } = this.state
         var { style, className, canResize } = this.props
         if (!this.props.isUserMove) {

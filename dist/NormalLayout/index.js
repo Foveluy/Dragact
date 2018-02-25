@@ -18,17 +18,14 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 import * as React from 'react';
 import { Dragact } from '../lib/dragact';
+import { Words } from './largedata';
 import './index.css';
-var Words = [
-    { content: 'You can do anything, but not everything.' },
-    { content: 'Those who dare to fail miserably can achieve greatly.' },
-    { content: 'You miss 100 percent of the shots you never take.' },
-    { content: 'Those who believe in telekinetics, raise my hand.' },
-    { content: 'I’d rather live with a good question than a bad answer.' }
-];
 var fakeData = function () {
+    var Y = 0;
     return Words.map(function (item, index) {
-        return __assign({}, item, { GridX: index * 2, GridY: 0, w: 4, h: 2, key: index + '' });
+        if (index % 4 === 0)
+            Y++;
+        return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 2, key: index + '' });
     });
 };
 var Card = function (props) {

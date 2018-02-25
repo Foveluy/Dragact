@@ -18,6 +18,7 @@ import { LayoutDemo } from './NormalLayout/index';
 // import { AddRemove } from "./AddRemove/index";
 // import { SortableList } from "./SortableList/index";
 import './index.css';
+import { Dragact } from "./lib/dragact";
 var DemoMap = {
     normalLayout: React.createElement(LayoutDemo, null),
 };
@@ -45,4 +46,16 @@ var DemoDispatcher = /** @class */ (function (_super) {
     };
     return DemoDispatcher;
 }(React.Component));
-ReactDOM.render(React.createElement(DemoDispatcher, null), document.getElementById('root'));
+React.createElement(DemoDispatcher, null);
+var fakeData = [
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '0' },
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '1' },
+    { GridX: 0, GridY: 0, w: 4, h: 2, key: '2' }
+];
+var blockStyle = {
+    background: 'grey',
+    height: '100%'
+};
+ReactDOM.render(React.createElement(Dragact, { layout: fakeData, col: 16, width: 800, rowHeight: 40, margin: [5, 5], className: 'plant-layout', style: { background: '#eee' }, placeholder: true }, function (item, isDragging) {
+    return React.createElement("div", { style: blockStyle }, isDragging ? '正在抓取' : '停放');
+}), document.getElementById('root'));
