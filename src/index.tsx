@@ -6,7 +6,7 @@ import { SortedTableWithStatic } from "./StaticHeader/index";
 import { LayoutRestore } from "./LayoutRestore/index";
 import { HandleLayout } from "./HandleLayout/index";
 import { AddRemove } from "./AddRemove/index";
-// import { SortableList } from "./SortableList/index";
+import { SortableList } from "./SortableList/index";
 import './index.css'
 
 
@@ -18,7 +18,7 @@ const DemoMap: any = {
     LayoutRestore: <LayoutRestore />,
     HandleLayout: <HandleLayout />,
     AddRemove: <AddRemove />,
-    // SortableList: <SortableList />
+    SortableList: <SortableList />
 }
 
 class DemoDispatcher extends React.Component<{}, {}> {
