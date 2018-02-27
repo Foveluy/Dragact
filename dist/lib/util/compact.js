@@ -39,30 +39,46 @@ export var compactItem = function (finishedLayout, item) {
  * 压缩layout，使得每一个元素都会紧挨着边界或者相邻的元素
  * @param {*} layout
  */
-export var compactLayout = function (layout, movingItem) {
-    var sorted = sortLayout(layout); //把静态的放在前面
-    var needCompact = Array(layout.length);
-    var compareList = [];
-    var mapLayout = {};
-    for (var i = 0, length_1 = sorted.length; i < length_1; i++) {
-        var finished = compactItem(compareList, sorted[i]);
+export var compactLayout = function () {
+    var _cache = {};
+    return function (layout, movingItem, mapedLayout) {
         if (movingItem) {
-            if (movingItem.UniqueKey === finished.key) {
-                movingItem.GridX = finished.GridX;
-                movingItem.GridY = finished.GridY;
-                finished.isUserMove = true;
+            if (_cache.GridX === movingItem.GridX
+                && _cache.GridY === movingItem.GridY &&
+                _cache.w === movingItem.w &&
+                _cache.h === movingItem.h &&
+                _cache.UniqueKey === movingItem.UniqueKey) {
+                return {
+                    compacted: layout,
+                    mapLayout: mapedLayout
+                };
+            }
+            _cache = movingItem;
+        }
+        var sorted = sortLayout(layout); //把静态的放在前面
+        var needCompact = Array(layout.length);
+        var compareList = [];
+        var mapLayout = {};
+        for (var i = 0, length_1 = sorted.length; i < length_1; i++) {
+            var finished = compactItem(compareList, sorted[i]);
+            if (movingItem) {
+                if (movingItem.UniqueKey === finished.key) {
+                    movingItem.GridX = finished.GridX;
+                    movingItem.GridY = finished.GridY;
+                    finished.isUserMove = true;
+                }
+                else
+                    finished.isUserMove = false;
             }
             else
                 finished.isUserMove = false;
+            compareList.push(finished);
+            needCompact[i] = finished;
+            mapLayout[finished.key + ''] = finished;
         }
-        else
-            finished.isUserMove = false;
-        compareList.push(finished);
-        needCompact[i] = finished;
-        mapLayout[finished.key + ''] = finished;
-    }
-    return {
-        compacted: needCompact,
-        mapLayout: mapLayout
+        return {
+            compacted: needCompact,
+            mapLayout: mapLayout
+        };
     };
-};
+}();

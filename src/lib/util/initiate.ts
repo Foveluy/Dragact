@@ -9,15 +9,21 @@ import { GridItemEvent } from "../GridItem";
  * @param {*} GridY 
  * @param {*} isUserMove 
  */
-export const syncLayout = (layout: DragactLayoutItem[], movingItem: GridItemEvent) => {
-    for (const idx in layout) {
-        if (layout[idx].key === movingItem.UniqueKey) {
-            layout[idx].GridX = movingItem.GridX
-            layout[idx].GridY = movingItem.GridY
-            layout[idx].isUserMove = true
-            break;
-        }
-    }
+export const syncLayout = (layout: mapLayout, movingItem: GridItemEvent) => {
+    const key = movingItem.UniqueKey;
+
+    layout[key].GridX = movingItem.GridX;
+    layout[key].GridY = movingItem.GridY
+    layout[key].isUserMove = true;
+
+    // for (const idx in layout) {
+    //     if (layout[idx].key === movingItem.UniqueKey) {
+    //         layout[idx].GridX = movingItem.GridX
+    //         layout[idx].GridY = movingItem.GridY
+    //         layout[idx].isUserMove = true
+    //         break;
+    //     }
+    // }
     return layout
 }
 

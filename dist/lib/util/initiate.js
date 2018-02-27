@@ -15,14 +15,18 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
  * @param {*} isUserMove
  */
 export var syncLayout = function (layout, movingItem) {
-    for (var idx in layout) {
-        if (layout[idx].key === movingItem.UniqueKey) {
-            layout[idx].GridX = movingItem.GridX;
-            layout[idx].GridY = movingItem.GridY;
-            layout[idx].isUserMove = true;
-            break;
-        }
-    }
+    var key = movingItem.UniqueKey;
+    layout[key].GridX = movingItem.GridX;
+    layout[key].GridY = movingItem.GridY;
+    layout[key].isUserMove = true;
+    // for (const idx in layout) {
+    //     if (layout[idx].key === movingItem.UniqueKey) {
+    //         layout[idx].GridX = movingItem.GridX
+    //         layout[idx].GridY = movingItem.GridY
+    //         layout[idx].isUserMove = true
+    //         break;
+    //     }
+    // }
     return layout;
 };
 /**

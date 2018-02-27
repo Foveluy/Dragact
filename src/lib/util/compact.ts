@@ -54,7 +54,6 @@ export const compactLayout = function () {
             }
             _cache = movingItem;
         }
-
         let sorted = sortLayout(layout)//把静态的放在前面
         const needCompact = Array(layout.length)
         const compareList = []

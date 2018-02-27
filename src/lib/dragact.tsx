@@ -114,11 +114,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         this.onDragStart = this.onDragStart.bind(this)
         this.onDragEnd = this.onDragEnd.bind(this)
 
-        // const layout = props.layout ?
-        //     MapLayoutTostate(props.layout, props.children)
-        //     :
-        //     getDataSet(props.children);
-
         const layout = props.layout;
 
         this.state = {
@@ -136,17 +131,19 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
     onResizeStart = (layoutItem: GridItemEvent) => {
         const { GridX, GridY, w, h } = layoutItem
-        const sync = syncLayout(this.state.layout, layoutItem);
-        this.setState({
-            GridXMoving: GridX,
-            GridYMoving: GridY,
-            wMoving: w,
-            hMoving: h,
-            placeholderShow: true,
-            placeholderMoving: true,
-            layout: sync,
-            dragType: 'resize'
-        })
+        if (this.state.mapLayout) {
+            const newlayout = syncLayout(this.state.mapLayout, layoutItem)
+            this.setState({
+                GridXMoving: GridX,
+                GridYMoving: GridY,
+                wMoving: w,
+                hMoving: h,
+                placeholderShow: true,
+                placeholderMoving: true,
+                mapLayout: newlayout,
+                dragType: 'resize'
+            })
+        }
     }
 
     onResizing = (layoutItem: GridItemEvent) => {
@@ -178,18 +175,22 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     onDragStart(bundles: GridItemEvent) {
         const { GridX, GridY, w, h } = bundles
 
-        const newlayout = syncLayout(this.state.layout, bundles)
+        if (this.state.mapLayout) {
+            const newlayout = syncLayout(this.state.mapLayout, bundles)
 
-        this.setState({
-            GridXMoving: GridX,
-            GridYMoving: GridY,
-            wMoving: w,
-            hMoving: h,
-            placeholderShow: true,
-            placeholderMoving: true,
-            layout: newlayout,
-            dragType: 'drag'
-        })
+
+            this.setState({
+                GridXMoving: GridX,
+                GridYMoving: GridY,
+                wMoving: w,
+                hMoving: h,
+                placeholderShow: true,
+                placeholderMoving: true,
+                mapLayout: newlayout,
+                dragType: 'drag'
+            })
+        }
+
         this.props.onDragStart && this.props.onDragStart(bundles)
     }
 
@@ -284,8 +285,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 var newLayout = [...this.state.layout, dataSet]
                 newLayout = correctLayout(newLayout, this.props.col)
                 const { compacted, mapLayout } = compactLayout(newLayout, undefined, this.state.mapLayout);
-                // console.log(mapLayout)
-                // console.log(layout)
                 this.setState({
                     containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
                     layout: compacted,

@@ -117,10 +117,11 @@ export class Dragger extends React.Component<DraggerProps, {}> {
 
     move = (event: any) => {
 
-        let { lastX, lastY } = this.state
+        let { lastX, lastY } = this.state;
         /*  event.client - this.state.origin 表示的是移动的距离,
         *   elX表示的是原来已经有的位移
         */
+
 
 
         let deltaX, deltaY;
@@ -181,8 +182,16 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         deltaX = this.props.allowX ? deltaX : 0
         deltaY = this.props.allowY ? deltaY : 0
 
+
+        /**
+         * 调整手感 
+         * 无论是向上移动还是向下移动，全部都是根据重力中心
+         * */
+        const height = (this.refs['dragger'] as HTMLDivElement).getClientRects()[0].height;
+        const upNdown = this.state.y - deltaY;
+        const fixY = deltaY + (upNdown >= 0 ? 0 : height / 2);
         /**移动时回调，用于外部控制 */
-        if (this.props.onMove) this.props.onMove(event, deltaX, deltaY)
+        if (this.props.onMove) this.props.onMove(event, deltaX, fixY)
 
         this.setState({
             x: deltaX,
@@ -410,6 +419,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
         return (
             <div className={`${fixedClassName}WrapDragger`}
+                ref={'dragger'}
                 style={{
                     ...style,
                     touchAction: 'none!important',

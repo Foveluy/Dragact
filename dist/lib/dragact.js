@@ -31,46 +31,44 @@ var Dragact = /** @class */ (function (_super) {
         var _this = _super.call(this, props) || this;
         _this.onResizeStart = function (layoutItem) {
             var GridX = layoutItem.GridX, GridY = layoutItem.GridY, w = layoutItem.w, h = layoutItem.h;
-            var sync = syncLayout(_this.state.layout, layoutItem);
-            _this.setState({
-                GridXMoving: GridX,
-                GridYMoving: GridY,
-                wMoving: w,
-                hMoving: h,
-                placeholderShow: true,
-                placeholderMoving: true,
-                layout: sync,
-                dragType: 'resize'
-            });
+            if (_this.state.mapLayout) {
+                var newlayout = syncLayout(_this.state.mapLayout, layoutItem);
+                _this.setState({
+                    GridXMoving: GridX,
+                    GridYMoving: GridY,
+                    wMoving: w,
+                    hMoving: h,
+                    placeholderShow: true,
+                    placeholderMoving: true,
+                    mapLayout: newlayout,
+                    dragType: 'resize'
+                });
+            }
         };
         _this.onResizing = function (layoutItem) {
             var newLayout = layoutCheck(_this.state.layout, layoutItem, layoutItem.UniqueKey, layoutItem.UniqueKey, 0);
-            var _a = compactLayout(newLayout, layoutItem), compacted = _a.compacted, mapLayout = _a.mapLayout;
+            var _a = compactLayout(newLayout, layoutItem, _this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
             _this.setState({
                 layout: compacted,
                 wMoving: layoutItem.w,
                 hMoving: layoutItem.h,
                 mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1])
+                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight)
             });
         };
         _this.onResizeEnd = function (layoutItem) {
-            var _a = compactLayout(_this.state.layout, undefined), compacted = _a.compacted, mapLayout = _a.mapLayout;
+            var _a = compactLayout(_this.state.layout, undefined, _this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
             _this.setState({
                 placeholderShow: false,
                 layout: compacted,
                 mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1])
+                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight)
             });
             _this.props.onDragEnd && _this.props.onDragEnd(layoutItem);
         };
         _this.onDrag = _this.onDrag.bind(_this);
         _this.onDragStart = _this.onDragStart.bind(_this);
         _this.onDragEnd = _this.onDragEnd.bind(_this);
-        // const layout = props.layout ?
-        //     MapLayoutTostate(props.layout, props.children)
-        //     :
-        //     getDataSet(props.children);
         var layout = props.layout;
         _this.state = {
             GridXMoving: 0,
@@ -88,40 +86,42 @@ var Dragact = /** @class */ (function (_super) {
     }
     Dragact.prototype.onDragStart = function (bundles) {
         var GridX = bundles.GridX, GridY = bundles.GridY, w = bundles.w, h = bundles.h;
-        var newlayout = syncLayout(this.state.layout, bundles);
-        this.setState({
-            GridXMoving: GridX,
-            GridYMoving: GridY,
-            wMoving: w,
-            hMoving: h,
-            placeholderShow: true,
-            placeholderMoving: true,
-            layout: newlayout,
-            dragType: 'drag'
-        });
+        if (this.state.mapLayout) {
+            var newlayout = syncLayout(this.state.mapLayout, bundles);
+            this.setState({
+                GridXMoving: GridX,
+                GridYMoving: GridY,
+                wMoving: w,
+                hMoving: h,
+                placeholderShow: true,
+                placeholderMoving: true,
+                mapLayout: newlayout,
+                dragType: 'drag'
+            });
+        }
         this.props.onDragStart && this.props.onDragStart(bundles);
     };
     Dragact.prototype.onDrag = function (layoutItem) {
         var GridY = layoutItem.GridY, UniqueKey = layoutItem.UniqueKey;
         var moving = GridY - this.state.GridYMoving;
         var newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey, UniqueKey /*用户移动方块的key */, moving);
-        var _a = compactLayout(newLayout, layoutItem), compacted = _a.compacted, mapLayout = _a.mapLayout;
+        var _a = compactLayout(newLayout, layoutItem, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
         this.setState({
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
             layout: compacted,
             mapLayout: mapLayout,
-            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         });
         this.props.onDrag && this.props.onDrag(layoutItem);
     };
     Dragact.prototype.onDragEnd = function (layoutItem) {
-        var _a = compactLayout(this.state.layout, undefined), compacted = _a.compacted, mapLayout = _a.mapLayout;
+        var _a = compactLayout(this.state.layout, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
         this.setState({
             placeholderShow: false,
             layout: compacted,
             mapLayout: mapLayout,
-            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         });
         this.props.onDragEnd && this.props.onDragEnd(layoutItem);
     };
@@ -148,9 +148,9 @@ var Dragact = /** @class */ (function (_super) {
                     if (child.key !== key)
                         return child;
                 });
-                var _a = compactLayout(newLayout_1, undefined), compacted = _a.compacted, mapLayout = _a.mapLayout;
+                var _a = compactLayout(newLayout_1, undefined, this_1.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
                 this_1.setState({
-                    containerHeight: getMaxContainerHeight(compacted, this_1.props.rowHeight, this_1.props.margin[1]),
+                    containerHeight: getMaxContainerHeight(compacted, this_1.props.rowHeight, this_1.props.margin[1], this_1.state.containerHeight),
                     layout: compacted,
                     mapLayout: mapLayout
                 });
@@ -173,11 +173,9 @@ var Dragact = /** @class */ (function (_super) {
                 var dataSet = __assign({}, item.props['data-set'], { isUserMove: false, key: item.key });
                 var newLayout = this.state.layout.concat([dataSet]);
                 newLayout = correctLayout(newLayout, this.props.col);
-                var _a = compactLayout(newLayout, undefined), compacted = _a.compacted, mapLayout = _a.mapLayout;
-                console.log(mapLayout);
-                // console.log(layout)
+                var _a = compactLayout(newLayout, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
                 this.setState({
-                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1]),
+                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
                     layout: compacted,
                     mapLayout: mapLayout
                 });
@@ -188,11 +186,11 @@ var Dragact = /** @class */ (function (_super) {
         var _this = this;
         setTimeout(function () {
             var layout = correctLayout(_this.state.layout, _this.props.col);
-            var _a = compactLayout(layout, undefined), compacted = _a.compacted, mapLayout = _a.mapLayout;
+            var _a = compactLayout(layout, undefined, _this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
             _this.setState({
                 layout: compacted,
                 mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1])
+                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight)
             });
         }, 1);
     };

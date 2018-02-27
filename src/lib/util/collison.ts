@@ -16,6 +16,7 @@ export const collision = (a: DragactLayoutItem, b: DragactLayoutItem) => {
 
 /**获取layout中，item第一个碰撞到的物体 */
 export const getFirstCollison = (layout: DragactLayoutItem[], item: DragactLayoutItem) => {
+
     for (let i = 0, length = layout.length; i < length; i++) {
         if (collision(layout[i], item)) {
             return layout[i]
@@ -30,24 +31,20 @@ export const getFirstCollison = (layout: DragactLayoutItem[], item: DragactLayou
  */
 export const layoutCheck = function () {
 
-    const caches: any = {};
+    var caches: any = {};
 
     const _layoutCheck = function (layout: DragactLayoutItem[], layoutItem: GridItemEvent,
         key: string | number, fristItemkey: string | number, moving: number) {
 
-        if (key === caches['initKey']) {
-            if (caches['item']) {
-                if (layoutItem.GridX === caches['item'].GridX
-                    && layoutItem.GridY === caches['item'].GridY
-                    && layoutItem.w === caches['item'].w
-                    && layoutItem.h === caches['item'].h) {
-                    return layout;
-                }
-            }
-            caches['item'] = layoutItem;
-        } else {
-            caches['initKey'] = fristItemkey;
+
+        if (layoutItem.GridX === caches.GridX
+            && layoutItem.GridY === caches.GridY
+            && layoutItem.w === caches.w
+            && layoutItem.h === caches.h) {
+            return layout;
         }
+        caches = { ...layoutItem };
+
         let i: any = [], movedItem: any = []/**收集所有移动过的物体 */
         let newlayout = layout.map((item, idx) => {
             if (item.key !== key) {

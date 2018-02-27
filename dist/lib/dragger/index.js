@@ -101,9 +101,16 @@ var Dragger = /** @class */ (function (_super) {
             /**如果设置了x,y限制 */
             deltaX = _this.props.allowX ? deltaX : 0;
             deltaY = _this.props.allowY ? deltaY : 0;
+            /**
+             * 调整手感
+             * 无论是向上移动还是向下移动，全部都是根据重力中心
+             * */
+            var height = _this.refs['dragger'].getClientRects()[0].height;
+            var upNdown = _this.state.y - deltaY;
+            var fixY = deltaY + (upNdown >= 0 ? 0 : height / 2);
             /**移动时回调，用于外部控制 */
             if (_this.props.onMove)
-                _this.props.onMove(event, deltaX, deltaY);
+                _this.props.onMove(event, deltaX, fixY);
             _this.setState({
                 x: deltaX,
                 y: deltaY
@@ -306,7 +313,7 @@ var Dragger = /** @class */ (function (_super) {
         var _c = this.mixin(), dragMix = _c.dragMix, resizeMix = _c.resizeMix;
         /**主要是为了让用户定义自己的className去修改css */
         var fixedClassName = typeof className === 'undefined' ? '' : className + ' ';
-        return (React.createElement("div", __assign({ className: fixedClassName + "WrapDragger", style: __assign({}, style, { touchAction: 'none!important', transform: "translate(" + x + "px," + y + "px)", width: w, height: h }) }, dragMix),
+        return (React.createElement("div", __assign({ className: fixedClassName + "WrapDragger", ref: 'dragger', style: __assign({}, style, { touchAction: 'none!important', transform: "translate(" + x + "px," + y + "px)", width: w, height: h }) }, dragMix),
             React.Children.only(this.props.children),
             canResize !== false ?
                 React.createElement("span", __assign({}, resizeMix, { style: {

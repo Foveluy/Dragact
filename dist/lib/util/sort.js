@@ -14,13 +14,25 @@ export var sortLayout = function (layout) {
         return -1;
     });
 };
-export var getMaxContainerHeight = function (layout, elementHeight, elementMarginBottom) {
-    if (elementHeight === void 0) { elementHeight = 30; }
-    if (elementMarginBottom === void 0) { elementMarginBottom = 10; }
-    var ar = layout.map(function (item) {
-        return item.GridY + item.h;
-    });
-    var h = quickSort(ar)[ar.length - 1];
-    var height = h * (elementHeight + elementMarginBottom) + elementMarginBottom;
-    return height;
-};
+/**
+ * 这个函数带有记忆功能
+ */
+export var getMaxContainerHeight = function () {
+    var lastOneGridY = 0;
+    return function (layout, elementHeight, elementMarginBottom, currentHeight) {
+        if (elementHeight === void 0) { elementHeight = 30; }
+        if (elementMarginBottom === void 0) { elementMarginBottom = 10; }
+        var length = layout.length;
+        var currentLastOne = layout[length - 1];
+        if (currentLastOne.GridY === lastOneGridY) {
+            return currentHeight;
+        }
+        lastOneGridY = currentLastOne.GridY;
+        var ar = layout.map(function (item) {
+            return item.GridY + item.h;
+        });
+        var h = quickSort(ar)[ar.length - 1];
+        var height = h * (elementHeight + elementMarginBottom) + elementMarginBottom;
+        return height;
+    };
+}();
