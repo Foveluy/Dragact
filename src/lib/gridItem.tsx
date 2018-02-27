@@ -206,7 +206,6 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
         const { x, y } = this.calGridItemPosition(GridX, GridY)
         const { wPx, hPx } = this.calWHtoPx(w, h);
         return (
-
             <Dragger
                 style={{
                     ...style,
@@ -232,9 +231,7 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
                 canDrag={canDrag}
                 canResize={canResize}
             >
-                <div style={{ height: '100%', width: "100%" }}>
-                    {React.Children.map(this.props.children, (child) => child)}
-                </div>
+                {this.props.children}
             </Dragger>
         )
     }

@@ -179,6 +179,17 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             const newlayout = syncLayout(this.state.mapLayout, bundles)
 
 
+            // this.state = {
+            //     ...this.state,
+            //     GridXMoving: GridX,
+            //     GridYMoving: GridY,
+            //     wMoving: w,
+            //     hMoving: h,
+            //     placeholderShow: true,
+            //     placeholderMoving: true,
+            //     mapLayout: newlayout,
+            //     dragType: 'drag'
+            // }
             this.setState({
                 GridXMoving: GridX,
                 GridYMoving: GridY,

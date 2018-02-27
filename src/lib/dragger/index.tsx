@@ -429,7 +429,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
                 }}
                 {...dragMix}
             >
-                {React.Children.only(this.props.children)}
+                {this.props.children ? React.Children.only(this.props.children) : null}
                 {canResize !== false ?
                     <span
                         {...resizeMix}

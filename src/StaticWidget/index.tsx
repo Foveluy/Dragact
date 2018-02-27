@@ -22,8 +22,10 @@ const fakeData = () => {
 const Cell = (props: any) => {
     const { item } = props;
     return (
-        <div className={`layout-Cell ${item.static ? "static" : ""}`} style={{ background: item.static ? "#e8e8e8" : "" }}>
-            <div style={{ paddingLeft: 12, color: '#595959' }}>{item.content}</div>
+        <div className={`layout-Cell ${item.static ? "static" : ""}`}
+            style={{ background: item.static ? "#e8e8e8" : "", width: "100%" }}
+        >
+            <div style={{ padding:10,color: '#595959' }}>{item.content}</div>
         </div>
     )
 }
