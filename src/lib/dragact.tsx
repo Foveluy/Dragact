@@ -104,7 +104,12 @@ interface DragactState {
     containerHeight: number
     dragType: 'drag' | 'resize'
     mapLayout: mapLayout | undefined
+}
 
+export interface GridItemProvided {
+    isDragging: Boolean
+    handle: { id: 'dragact-handle' };
+    draggerProps: any;
 }
 
 export class Dragact extends React.Component<DragactProps, DragactState> {
@@ -259,7 +264,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 dragType={dragType}
                 canDrag={false}
                 canResize={false}
-            />
+            >
+                {(p: any, resizerProps: any) => <div {...p} />}
+            </GridItem>
         )
     }
 
@@ -324,6 +331,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         if (mapLayout) {
             const renderItem = layoutItemForkey(mapLayout, child.key);
             if (!padding) padding = 0;
+
             return (
                 <GridItem
                     {...renderItem}
@@ -343,7 +351,12 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     dragType={dragType}
                     key={child.key}
                 >
-                    {this.props.children(child, renderItem.isUserMove)}
+                    {(GridItemProvided, resizerProps) => this.props.children(child, {
+                        isDragging: renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false,
+                        handle: { id: 'dragact-handle' },
+                        draggerProps: GridItemProvided,
+                        resizerProps
+                    })}
                 </GridItem >
             )
         }

@@ -46,6 +46,8 @@ export interface GridItemProps {
     canDrag?: Boolean
 
     canResize?: Boolean
+
+    children: (provided: any,resizerProps:any) => any;
 }
 
 export interface GridItemEvent {
@@ -205,6 +207,7 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
         const { w, h, style, bounds, GridX, GridY, handle, canDrag, canResize } = this.props
         const { x, y } = this.calGridItemPosition(GridX, GridY)
         const { wPx, hPx } = this.calWHtoPx(w, h);
+        console.log(this.props.children)
         return (
             <Dragger
                 style={{
@@ -231,7 +234,7 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
                 canDrag={canDrag}
                 canResize={canResize}
             >
-                {this.props.children}
+                {(provided,resizerProps) =>this.props.children(provided,resizerProps)}
             </Dragger>
         )
     }

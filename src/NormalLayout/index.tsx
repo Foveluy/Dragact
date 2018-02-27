@@ -1,5 +1,5 @@
 import *as React from 'react';
-import { Dragact, DragactLayoutItem } from '../lib/dragact'
+import { Dragact, DragactLayoutItem, GridItemProvided } from '../lib/dragact'
 import { Words } from './largedata'
 import './index.css';
 
@@ -23,11 +23,18 @@ const fakeData = () => {
 
 const Card = (props: any) => {
     const item: CardItem = props.item;
-    const isDragging: Boolean = props.isDragging;
+    const provided: any = props.provided;
+    console.log(...provided.draggerProps)
     return (
         <div
             className='layout-Item'
-            style={{ background: `${isDragging ? '#eaff8f' : 'white'}` }}>
+            {...provided.draggerProps}
+            style={{
+                ...provided.draggerProps.style,
+                background: `${provided.isDragging ? '#eaff8f' : 'white'}`
+            }}
+            {...provided.handle}
+        >
             <div
                 style={{ padding: 5, textAlign: 'center', color: '#595959' }}
             >
@@ -35,6 +42,15 @@ const Card = (props: any) => {
                 <div style={{ borderBottom: '1px solid rgba(120,120,120,0.1)' }} />
                 {item.content}
             </div>
+            <span
+                {...provided.resizerProps}
+                style={{
+                    position: 'absolute',
+                    width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
+                    borderRight: '2px solid rgba(15,15,15,0.2)',
+                    borderBottom: '2px solid rgba(15,15,15,0.2)'
+                }}
+            />
         </div>
     )
 }
@@ -69,10 +85,10 @@ export class LayoutDemo extends React.Component<{}, {}> {
                             background: '#003A8C'
                         }}
                     >
-                        {(item: DragactLayoutItem, isDragging: Boolean) => {
+                        {(item: DragactLayoutItem, provided: GridItemProvided) => {
                             return <Card
                                 item={item}
-                                isDragging={isDragging}
+                                provided={provided}
                             />
                         }}
                     </Dragact>
