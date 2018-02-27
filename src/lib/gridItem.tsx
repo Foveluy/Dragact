@@ -205,7 +205,7 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
         const { w, h, style, bounds, GridX, GridY, handle, canDrag, canResize } = this.props
         const { x, y } = this.calGridItemPosition(GridX, GridY)
         const { wPx, hPx } = this.calWHtoPx(w, h);
-        console.log('渲染')
+        // console.log('渲染')
         return (
 
             <Dragger

@@ -51,6 +51,7 @@
   "dependencies": {
     "@types/react": "^16.0.38",
     "@types/react-dom": "^16.0.4",
+    "@types/reselect": "^2.2.0",
     "babel-jest": "^22.2.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
@@ -60,6 +61,7 @@
     "prop-types": "^15.5.10",
     "react": "^16.3.0-alpha.1",
     "react-dom": "^16.3.0-alpha.1",
+    "reselect": "^3.0.1",
     "typescript-babel-jest": "^1.0.5"
   }
 }

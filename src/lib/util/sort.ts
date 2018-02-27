@@ -1,5 +1,6 @@
 import { DragactLayoutItem } from "../dragact";
 
+
 export function quickSort(a: number[]): any {
     return a.length <= 1 ? a : quickSort(a.slice(1).filter(item => item <= a[0])).concat(a[0], quickSort(a.slice(1).filter(item => item > a[0])));
 }
@@ -16,12 +17,24 @@ export const sortLayout = (layout: any) => {
     })
 }
 
-export const getMaxContainerHeight = (layout: DragactLayoutItem[], elementHeight = 30, elementMarginBottom = 10) => {
-    const ar = layout.map((item) => {
-        return item.GridY + item.h
-    })
-    const h = quickSort(ar)[ar.length - 1];
-    const height = h * (elementHeight + elementMarginBottom) + elementMarginBottom
-    return height
-}
 
+/**
+ * 这个函数带有记忆功能
+ */
+export const getMaxContainerHeight = function () {
+    var lastOneGridY = 0;
+    return function (layout: DragactLayoutItem[], elementHeight = 30, elementMarginBottom = 10, currentHeight: number) {
+        const length = layout.length;
+        const currentLastOne = layout[length - 1];
+        if (currentLastOne.GridY === lastOneGridY) {
+            return currentHeight
+        }
+        lastOneGridY = currentLastOne.GridY;
+        const ar = layout.map((item) => {
+            return item.GridY + item.h
+        })
+        const h = quickSort(ar)[ar.length - 1];
+        const height = h * (elementHeight + elementMarginBottom) + elementMarginBottom
+        return height
+    }
+}();

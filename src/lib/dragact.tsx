@@ -153,24 +153,24 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
         const newLayout = layoutCheck(this.state.layout, layoutItem, layoutItem.UniqueKey, layoutItem.UniqueKey, 0);
 
-        const { compacted, mapLayout } = compactLayout(newLayout, layoutItem)
+        const { compacted, mapLayout } = compactLayout(newLayout, layoutItem, this.state.mapLayout)
 
         this.setState({
             layout: compacted,
             wMoving: layoutItem.w,
             hMoving: layoutItem.h,
             mapLayout: mapLayout,
-            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         })
     }
 
     onResizeEnd = (layoutItem: GridItemEvent) => {
-        const { compacted, mapLayout } = compactLayout(this.state.layout, undefined)
+        const { compacted, mapLayout } = compactLayout(this.state.layout, undefined, this.state.mapLayout)
         this.setState({
             placeholderShow: false,
             layout: compacted,
             mapLayout: mapLayout,
-            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         })
         this.props.onDragEnd && this.props.onDragEnd(layoutItem);
     }
@@ -199,27 +199,27 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         const moving = GridY - this.state.GridYMoving;
 
         const newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey, UniqueKey/*用户移动方块的key */, moving);
-        const { compacted, mapLayout } = compactLayout(newLayout, layoutItem);
+        const { compacted, mapLayout } = compactLayout(newLayout, layoutItem, this.state.mapLayout);
 
         this.setState({
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
             layout: compacted,
             mapLayout: mapLayout,
-            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         })
         this.props.onDrag && this.props.onDrag(layoutItem);
     }
 
     onDragEnd(layoutItem: GridItemEvent) {
 
-        const { compacted, mapLayout } = compactLayout(this.state.layout, undefined)
+        const { compacted, mapLayout } = compactLayout(this.state.layout, undefined, this.state.mapLayout)
 
         this.setState({
             placeholderShow: false,
             layout: compacted,
             mapLayout: mapLayout,
-            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         })
 
         this.props.onDragEnd && this.props.onDragEnd(layoutItem);
@@ -261,9 +261,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 const newLayout = this.state.layout.filter((child) => {
                     if (child.key !== key) return child
                 })
-                const { compacted, mapLayout } = compactLayout(newLayout, undefined);
+                const { compacted, mapLayout } = compactLayout(newLayout, undefined, this.state.mapLayout);
                 this.setState({
-                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1]),
+                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
                     layout: compacted,
                     mapLayout
                 })
@@ -283,11 +283,11 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 const dataSet = { ...item.props['data-set'], isUserMove: false, key: item.key };
                 var newLayout = [...this.state.layout, dataSet]
                 newLayout = correctLayout(newLayout, this.props.col)
-                const { compacted, mapLayout } = compactLayout(newLayout, undefined);
-                console.log(mapLayout)
+                const { compacted, mapLayout } = compactLayout(newLayout, undefined, this.state.mapLayout);
+                // console.log(mapLayout)
                 // console.log(layout)
                 this.setState({
-                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1]),
+                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
                     layout: compacted,
                     mapLayout
                 })
@@ -299,11 +299,11 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     componentDidMount() {
         setTimeout(() => {
             let layout = correctLayout(this.state.layout, this.props.col)
-            const { compacted, mapLayout } = compactLayout(layout, undefined);
+            const { compacted, mapLayout } = compactLayout(layout, undefined, this.state.mapLayout);
             this.setState({
                 layout: compacted,
                 mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1])
+                containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
             })
         }, 1);
     }

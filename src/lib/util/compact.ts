@@ -35,30 +35,51 @@ export const compactItem = (finishedLayout: DragactLayoutItem[], item: DragactLa
  * 压缩layout，使得每一个元素都会紧挨着边界或者相邻的元素
  * @param {*} layout 
  */
-export const compactLayout = (layout: DragactLayoutItem[], movingItem: GridItemEvent | undefined) => {
-    let sorted = sortLayout(layout)//把静态的放在前面
-    const needCompact = Array(layout.length)
-    const compareList = []
-    const mapLayout: mapLayout = {};
+export const compactLayout = function () {
+    var _cache: any = {
+    };
 
-    for (let i = 0, length = sorted.length; i < length; i++) {
-        let finished = compactItem(compareList, sorted[i])
+    return function (layout: DragactLayoutItem[], movingItem: GridItemEvent | undefined, mapedLayout: any) {
         if (movingItem) {
-            if (movingItem.UniqueKey === finished.key) {
-                movingItem.GridX = finished.GridX;
-                movingItem.GridY = finished.GridY;
-                finished.isUserMove = true
-            } else
-                finished.isUserMove = false
+            if (_cache.GridX === movingItem.GridX
+                && _cache.GridY === movingItem.GridY &&
+                _cache.w === movingItem.w &&
+                _cache.h === movingItem.h &&
+                _cache.UniqueKey === movingItem.UniqueKey
+            ) {
+                return {
+                    compacted: layout,
+                    mapLayout: mapedLayout
+                };
+            }
+            _cache = movingItem;
         }
-        else
-            finished.isUserMove = false
-        compareList.push(finished)
-        needCompact[i] = finished
-        mapLayout[finished.key + ''] = finished;
+
+        let sorted = sortLayout(layout)//把静态的放在前面
+        const needCompact = Array(layout.length)
+        const compareList = []
+        const mapLayout: mapLayout = {};
+
+        for (let i = 0, length = sorted.length; i < length; i++) {
+            let finished = compactItem(compareList, sorted[i])
+            if (movingItem) {
+                if (movingItem.UniqueKey === finished.key) {
+                    movingItem.GridX = finished.GridX;
+                    movingItem.GridY = finished.GridY;
+                    finished.isUserMove = true
+                } else
+                    finished.isUserMove = false
+            }
+            else
+                finished.isUserMove = false
+            compareList.push(finished)
+            needCompact[i] = finished
+            mapLayout[finished.key + ''] = finished;
+        }
+        return {
+            compacted: needCompact,
+            mapLayout
+        }
     }
-    return {
-        compacted: needCompact,
-        mapLayout
-    }
-}
+
+}()
