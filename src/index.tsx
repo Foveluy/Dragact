@@ -36,6 +36,10 @@ class DemoDispatcher extends React.Component<{}, {}> {
     render() {
         return (
             <div>
+                <iframe src="https://ghbtns.com/github-btn.html?user=215566435&repo=Dragact&type=star&count=true&size=large" 
+                frameBorder='0' scrolling="0" width="160px" height="30px"></iframe>
+                <iframe src="https://ghbtns.com/github-btn.html?user=215566435&repo=Dragact&type=fork&count=true&size=large" 
+                frameBorder="0" scrolling="0" width="158px" height="30px"></iframe>
                 <div>切换 Demos</div>
                 <div className='demo-button-layout'>
                     <button onClick={() => this.handleLayoutChange('normalLayout')}>普通布局</button>
