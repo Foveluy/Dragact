@@ -162,16 +162,32 @@ ReactDOM.render(
 
 
 再看看```dragact```优化前是怎样的
+
 ![非常长的一条块，已经拖动超出了屏幕很多才会交换方块](https://github.com/215566435/Dragact/blob/master/example/image/%E6%89%8B%E6%84%9F%E4%BC%98%E5%8C%96%E5%89%8D.gif)
 
 
 再看看优化以后的```dragact```是怎样的体验
+
 ![当长方条的中心，超过下面方块的中心的时候，就会发生移动](https://github.com/215566435/Dragact/blob/master/example/image/%E6%89%8B%E6%84%9F%E4%BC%98%E5%8C%96%E5%90%8E%20.gif)
 
 
 这样的一种优化，带来的是拖动手感的差异，我们向下拖动物块的目的，很大程度上是因为想和下方的某一物块交换位置。
 
 通过这种趋势的判断和大量实验，```dragact```选择了重力中心为移动点，更自然，手感更顺滑.
+
+### 5.性能优异
+
+让我们用直观的动图来观看性能吧！
+
+![](https://github.com/215566435/Dragact/blob/master/example/image/v.17%E4%BC%98%E5%8C%96%E5%89%8D.gif)
+
+这是一条超过300行的大量数据，在优化前，我们可以看到，会有明显的卡顿。
+
+![](https://github.com/215566435/Dragact/blob/master/example/image/v.17%E4%BC%98%E5%8C%96%E5%90%8E.gif)
+
+用过react组件的优化后，依旧是一条超过300行的大量数据。
+
+可以看到组件插入速度的明显的变化。
 
 
 

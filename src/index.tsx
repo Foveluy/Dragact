@@ -36,10 +36,10 @@ class DemoDispatcher extends React.Component<{}, {}> {
     render() {
         return (
             <div>
-                <iframe src="https://ghbtns.com/github-btn.html?user=215566435&repo=Dragact&type=star&count=true&size=large" 
-                frameBorder='0' scrolling="0" width="160px" height="30px"></iframe>
-                <iframe src="https://ghbtns.com/github-btn.html?user=215566435&repo=Dragact&type=fork&count=true&size=large" 
-                frameBorder="0" scrolling="0" width="158px" height="30px"></iframe>
+                <iframe src="https://ghbtns.com/github-btn.html?user=215566435&repo=Dragact&type=star&count=true&size=large"
+                    frameBorder='0' scrolling="0" width="160px" height="30px"></iframe>
+                <iframe src="https://ghbtns.com/github-btn.html?user=215566435&repo=Dragact&type=fork&count=true&size=large"
+                    frameBorder="0" scrolling="0" width="158px" height="30px"></iframe>
                 <div>切换 Demos</div>
                 <div className='demo-button-layout'>
                     <button onClick={() => this.handleLayoutChange('normalLayout')}>普通布局</button>
@@ -54,9 +54,9 @@ class DemoDispatcher extends React.Component<{}, {}> {
     }
 }
 
-{/* <DemoDispatcher />
+<DemoDispatcher />
 
-<Dragact/> */}
+//<Dragact/> */}
 
 // const fakeData = [
 //     { GridX: 0, GridY: 0, w: 4, h: 2, key: '0' },
@@ -69,6 +69,21 @@ class DemoDispatcher extends React.Component<{}, {}> {
 //         background: isDragging ? '#1890ff' : 'white',
 //     }
 // };
+
+// const Handle = ({ provided }: any) => {
+//     return (
+//         <div
+//             {...provided.dragHandle}
+//             style={{
+//                 ...getblockStyle(provided.isDragging),
+//                 borderBottom: '1px solid rgba(120,120,120,0.3)',
+//                 textAlign: 'center'
+//             }}
+//         >
+//             点击拖拽
+//         </div>
+//     )
+// }
 
 // ReactDOM.render(
 //     <Dragact
@@ -85,12 +100,9 @@ class DemoDispatcher extends React.Component<{}, {}> {
 //             return (
 //                 <div
 //                     {...provided.props}
-//                     {...provided.dragHandle}
-//                     style={{
-//                         ...provided.props.style,
-//                         ...getblockStyle(provided.isDragging)
-//                     }}
+//                     style={{ ...provided.props.style, background: 'white' }}
 //                 >
+//                     <Handle provided={provided} />
 //                     {provided.isDragging ? '正在抓取' : '停放'}
 //                 </div>
 //             )
