@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { LayoutDemo } from './NormalLayout/index';
-import { SortedTableWithStatic } from "./StaticWidget/index";
-import { LayoutRestore } from "./LayoutRestore/index";
-import { HandleLayout } from "./HandleLayout/index";
+import { LayoutDemo } from '../example/NormalLayout/index';
+import { SortedTableWithStatic } from "../example/StaticWidget/index";
+import { LayoutRestore } from "../example/LayoutRestore/index";
+import { HandleLayout } from "../example/HandleLayout/index";
 // import { AddRemove } from "./AddRemove/index";
-import { Mobile } from "./mobileLayout/index";
+import { Mobile } from "../example/mobileLayout/index";
 import './index.css'
 
 

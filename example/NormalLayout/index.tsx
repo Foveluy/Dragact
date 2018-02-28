@@ -1,33 +1,29 @@
 import *as React from 'react';
-import { Dragact, DragactLayoutItem } from '../lib/dragact'
+import { Dragact, DragactLayoutItem, GridItemProvided } from '../../src/lib/dragact'
 import { Words } from './largedata'
 import './index.css';
-
-
-interface CardItem {
-    content: string,
-    img: string
-}
-
-
 
 const fakeData = () => {
     var Y = 0;
     return Words.map((item, index) => {
         if (index % 4 === 0) Y++;
 
-        return { ...item, GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '', canResize: false }
+        return { ...item, GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '' }
     })
 }
 
 
-const Card = (props: any) => {
-    const item: CardItem = props.item;
-    const isDragging: Boolean = props.isDragging;
+export const Card: (any: any) => any = ({ item, provided }) => {
     return (
         <div
             className='layout-Item'
-            style={{ background: `${isDragging ? '#eaff8f' : 'white'}` }}>
+            {...provided.props}
+            {...provided.dragHandle}
+            style={{
+                ...provided.props.style,
+                background: `${provided.isDragging ? '#eaff8f' : 'white'}`
+            }}
+        >
             <div
                 style={{ padding: 5, textAlign: 'center', color: '#595959' }}
             >
@@ -35,18 +31,27 @@ const Card = (props: any) => {
                 <div style={{ borderBottom: '1px solid rgba(120,120,120,0.1)' }} />
                 {item.content}
             </div>
+            <span
+                {...provided.resizeHandle}
+                style={{
+                    position: 'absolute',
+                    width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
+                    borderRight: '2px solid rgba(15,15,15,0.2)',
+                    borderBottom: '2px solid rgba(15,15,15,0.2)'
+                }}
+            />
         </div>
     )
 }
 
 
-export class Mobile extends React.Component<{}, {}> {
+export class LayoutDemo extends React.Component<{}, {}> {
     render() {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
-            width: 500,
+            width: 600,
             col: 16,
-            rowHeight: 45,
+            rowHeight: 40,
             margin: margin,
             className: 'normal-layout',
             layout: fakeData()
@@ -60,7 +65,7 @@ export class Mobile extends React.Component<{}, {}> {
             >
                 <div>
                     <h1 style={{ textAlign: 'center' }}>
-                        手机普通布局demo
+                        普通布局demo
                     </h1>
                     <Dragact
                         {...dragactInit}
@@ -69,10 +74,10 @@ export class Mobile extends React.Component<{}, {}> {
                             background: '#003A8C'
                         }}
                     >
-                        {(item: DragactLayoutItem, isDragging: Boolean) => {
+                        {(item: DragactLayoutItem, provided: GridItemProvided) => {
                             return <Card
                                 item={item}
-                                isDragging={isDragging}
+                                provided={provided}
                             />
                         }}
                     </Dragact>

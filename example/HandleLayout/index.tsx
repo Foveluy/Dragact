@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Dragact } from '../lib/dragact';
+import { Dragact } from '../../src/lib/dragact'
 
 import './index.css';
 
 const Words = [
     { content: 'You can do anything, but not everything.' },
     { content: 'Those who dare to fail miserably can achieve greatly.' },
-    { content: 'You miss 100 percent of the shots you never take.', handle: true },
+    { content: 'You miss 100 percent of the shots you never take.' },
     { content: 'Those who believe in telekinetics, raise my hand.' },
     { content: 'I’d rather live with a good question than a bad answer.' }
 ]
@@ -20,13 +20,23 @@ const fakeData = () => {
 }
 
 
-const Card = (props: any) => {
-    const item: any = props.item;
+const Card: (item: any) => any = ({ item, provided }) => {
+    const style = { padding: 5, textAlign: 'center', color: '#595959' }
+
+    if (item.key !== '3') {
+        return (
+            <div className='layout-Item' {...provided.props} {...provided.dragHandle}>
+                <div style={style}>
+                    {item.content}
+                </div>
+            </div>
+        )
+    }
     return (
-        <div className='layout-Item' >
-            <div style={{ padding: 5, textAlign: 'center', color: '#595959' }}>
-                {item.handle ? <div className='card-handle' id="dragact-handle">点我拖动
-            </div> : item.content}
+        <div className='layout-Item' {...provided.props}>
+            <div style={style}>
+                {item.content}
+                <div className='card-handle' {...provided.dragHandle} >点我拖动</div>
             </div>
         </div>
     )
@@ -52,8 +62,8 @@ export class HandleLayout extends React.Component<{}, {}> {
                     <div>
                         <h1 style={{ textAlign: 'center' }}>拖拽把手 Demo</h1>
                         <Dragact {...dragactInit}  >
-                            {(item: any, isDragging: Boolean) => {
-                                return <Card item={item} />
+                            {(item: any, provided: any) => {
+                                return <Card item={item} provided={provided} />
                             }}
                         </Dragact>
                     </div>

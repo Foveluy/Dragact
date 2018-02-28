@@ -65,7 +65,7 @@ interface DraggerProps {
 
     canResize?: Boolean;
 
-    children: (provided: any, resizeMix: any) => any;
+    children: (provided: any, resizeMix: any, dragMix: any) => any;
 }
 
 
@@ -376,24 +376,17 @@ export class Dragger extends React.Component<DraggerProps, {}> {
     }
 
     mixin = () => {
-        var dragMix = {};
-        if (this.props.canDrag === void 666 || this.props.canDrag === true) {
-            dragMix = {
-                onMouseDown: this.onDragStart,
-                onTouchStart: this.onDragStart,
-                onTouchEnd: this.onDragEnd,
-                onMouseUp: this.onDragEnd
-            }
-        }
+        var dragMix = {
+            onMouseDown: this.onDragStart,
+            onTouchStart: this.onDragStart,
+            onTouchEnd: this.onDragEnd,
+            onMouseUp: this.onDragEnd
+        };
 
-        var resizeMix = {}
-        if (this.props.canResize === void 666 || this.props.canDrag === true) {
-            resizeMix = {
-                onMouseDown: this.onResizeStart,
-                onMouseUp: this.onResizeEnd
-            }
+        var resizeMix = {
+            onMouseDown: this.onResizeStart,
+            onMouseUp: this.onResizeEnd
         }
-
         return {
             dragMix, resizeMix
         };
@@ -427,7 +420,6 @@ export class Dragger extends React.Component<DraggerProps, {}> {
 
 
         const provided = {
-            ...dragMix,
             style: {
                 ...style,
                 touchAction: 'none!important',
@@ -438,7 +430,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             ref: (node: any) => this.Ref = node
         }
 
-        return this.props.children(provided, resizeMix)
+        return this.props.children(provided, dragMix, resizeMix)
     }
 }
 

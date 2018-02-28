@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Dragact } from '../lib/dragact'
+import { Dragact } from '../../src/lib/dragact'
+import { Card } from '../NormalLayout/index';
 import './index.css';
 
 const Words = [
@@ -21,14 +22,6 @@ const fakeData = () => {
 }
 
 
-const Card = (props: any) => {
-    const item = props.item;
-    return (
-        <div className='layout-Item'>
-            <div style={{ padding: 5, textAlign: 'center', color: '#595959' }}>{item.content}</div>
-        </div>
-    )
-}
 
 
 var storeLayout: any = void 666;
@@ -66,8 +59,8 @@ export class LayoutRestore extends React.Component<{}, {}> {
                 onDragEnd={this.handleOnDragEnd}
 
             >
-                {(item: any) => {
-                    return <Card item={item} />
+                {(item: any, provided: any) => {
+                    return <Card item={item} provided={provided} />
                 }}
             </Dragact>
         )

@@ -181,20 +181,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         const { GridX, GridY, w, h } = bundles
 
         if (this.state.mapLayout) {
-            const newlayout = syncLayout(this.state.mapLayout, bundles)
-
-
-            // this.state = {
-            //     ...this.state,
-            //     GridXMoving: GridX,
-            //     GridYMoving: GridY,
-            //     wMoving: w,
-            //     hMoving: h,
-            //     placeholderShow: true,
-            //     placeholderMoving: true,
-            //     mapLayout: newlayout,
-            //     dragType: 'drag'
-            // }
             this.setState({
                 GridXMoving: GridX,
                 GridYMoving: GridY,
@@ -202,7 +188,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 hMoving: h,
                 placeholderShow: true,
                 placeholderMoving: true,
-                mapLayout: newlayout,
+                mapLayout: syncLayout(this.state.mapLayout, bundles),
                 dragType: 'drag'
             })
         }
@@ -331,7 +317,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         if (mapLayout) {
             const renderItem = layoutItemForkey(mapLayout, child.key);
             if (!padding) padding = 0;
-
             return (
                 <GridItem
                     {...renderItem}
@@ -351,11 +336,11 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     dragType={dragType}
                     key={child.key}
                 >
-                    {(GridItemProvided, resizerProps) => this.props.children(child, {
+                    {(GridItemProvided, dragHandle, resizeHandle) => this.props.children(child, {
                         isDragging: renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false,
-                        handle: { id: 'dragact-handle' },
-                        draggerProps: GridItemProvided,
-                        resizerProps
+                        props: GridItemProvided,
+                        dragHandle,
+                        resizeHandle
                     })}
                 </GridItem >
             )
