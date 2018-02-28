@@ -4,7 +4,7 @@ import { LayoutDemo } from './NormalLayout/index';
 import { SortedTableWithStatic } from "./StaticWidget/index";
 import { LayoutRestore } from "./LayoutRestore/index";
 import { HandleLayout } from "./HandleLayout/index";
-// import { AddRemove } from "./AddRemove/index";
+import { AddRemove } from "./AddRemove/index";
 import { Mobile } from "./mobileLayout/index";
 import './index.css'
 // import { Dragact } from "./lib/dragact";
@@ -114,7 +114,7 @@ class DemoDispatcher extends React.Component<{}, {}> {
 
 
 ReactDOM.render(
-    <DemoDispatcher />,
+    <AddRemove />,
     document.getElementById('root')
 );
 

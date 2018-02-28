@@ -155,7 +155,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
     onResizing = (layoutItem: GridItemEvent) => {
 
-        const newLayout = layoutCheck(this.state.layout, layoutItem, layoutItem.UniqueKey, layoutItem.UniqueKey, 0);
+        const newLayout = layoutCheck(this.state.layout, layoutItem, layoutItem.UniqueKey + '', layoutItem.UniqueKey + '', 0);
 
         const { compacted, mapLayout } = compactLayout(newLayout, layoutItem, this.state.mapLayout)
 
@@ -203,9 +203,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         const { GridY, UniqueKey } = layoutItem;
         const moving = GridY - this.state.GridYMoving;
 
-        const newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey, UniqueKey/*用户移动方块的key */, moving);
+        const newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey + '', UniqueKey + ''/*用户移动方块的key */, moving);
         const { compacted, mapLayout } = compactLayout(newLayout, layoutItem, this.state.mapLayout);
-
         this.setState({
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
@@ -259,46 +258,47 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     componentWillReceiveProps(nextProps: any) {
-        if (this.props.children.length > nextProps.children.length) { //remove
-            const mapLayoutCopy = { ...this.state.mapLayout };
-            nextProps.children.forEach((child: any) => {
-                if ((mapLayoutCopy as any)[child.key] !== void 666) delete (mapLayoutCopy as any)[child.key];
-            })
-            for (const key in mapLayoutCopy) {
-                const newLayout = this.state.layout.filter((child) => {
-                    if (child.key !== key) return child
-                })
-                const { compacted, mapLayout } = compactLayout(newLayout, undefined, this.state.mapLayout);
-                this.setState({
-                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
-                    layout: compacted,
-                    mapLayout
-                })
-            }
-        }
-
-        if (this.props.children.length < nextProps.children.length) { //add
+        // if (this.props.children.length > nextProps.children.length) { //remove
+        //     const mapLayoutCopy = { ...this.state.mapLayout };
+        //     nextProps.children.forEach((child: any) => {
+        //         if ((mapLayoutCopy as any)[child.key] !== void 666) delete (mapLayoutCopy as any)[child.key];
+        //     })
+        //     for (const key in mapLayoutCopy) {
+        //         const newLayout = this.state.layout.filter((child) => {
+        //             if (child.key !== key) return child
+        //         })
+        //         const { compacted, mapLayout } = compactLayout(newLayout, undefined, this.state.mapLayout);
+        //         this.setState({
+        //             containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
+        //             layout: compacted,
+        //             mapLayout
+        //         })
+        //     }
+        // }
+        if (this.props.layout.length < nextProps.layout.length) {//add
             var item;
-            for (const idx in nextProps.children) {
-                const i = nextProps.children[idx];
-                if (this.state.mapLayout && !this.state.mapLayout[i.key]) {
+            for (const idx in nextProps.layout) {
+                const i = nextProps.layout[idx];
+                if (this.state.mapLayout && !this.state.mapLayout[i.key + '']) {
                     item = i;
                     break;
                 }
             }
             if (item !== void 666) {
-                const dataSet = { ...item.props['data-set'], isUserMove: false, key: item.key };
+                const dataSet = { ...item, isUserMove: false, key: item.key + '' };
                 var newLayout = [...this.state.layout, dataSet]
-                newLayout = correctLayout(newLayout, this.props.col)
                 const { compacted, mapLayout } = compactLayout(newLayout, undefined, this.state.mapLayout);
                 this.setState({
-                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
+                    containerHeight: getMaxContainerHeight(compacted,
+                        this.props.rowHeight,
+                        this.props.margin[1],
+                        this.state.containerHeight,
+                        false),
                     layout: compacted,
                     mapLayout
                 })
             }
         }
-
     }
 
     componentDidMount() {
@@ -308,7 +308,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             this.setState({
                 layout: compacted,
                 mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
+                containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight, false)
             })
         }, 1);
     }
@@ -317,7 +317,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         const { dragType, mapLayout } = this.state;
         var { col, width, padding, rowHeight, margin } = this.props;
         if (mapLayout) {
-            const renderItem = layoutItemForkey(mapLayout, child.key);
+            const renderItem = layoutItemForkey(mapLayout, child.key + '');
             if (!padding) padding = 0;
             return (
                 <GridItem
@@ -331,7 +331,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     onDragStart={this.onDragStart}
                     onDragEnd={this.onDragEnd}
                     isUserMove={renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false}
-                    UniqueKey={child.key}
+                    UniqueKey={child.key + ''}
                     onResizing={this.onResizing}
                     onResizeStart={this.onResizeStart}
                     onResizeEnd={this.onResizeEnd}

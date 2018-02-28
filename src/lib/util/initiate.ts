@@ -48,7 +48,7 @@ export const MapLayoutTostate = (layout: DragactLayoutItem[], children: any[]) =
  * @param {*} layout 输入进来的布局
  * @param {*} key 
  */
-export const layoutItemForkey = (layout: mapLayout, key: number) => {
+export const layoutItemForkey = (layout: mapLayout, key: string) => {
     return layout[key]
 }
 

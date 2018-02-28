@@ -31,7 +31,7 @@ export interface GridItemProps {
 
     isUserMove: Boolean
 
-    UniqueKey?: string | number
+    UniqueKey?: string 
 
     static?: Boolean
 

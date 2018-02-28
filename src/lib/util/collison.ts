@@ -34,7 +34,7 @@ export const layoutCheck = function () {
     var caches: any = {};
 
     const _layoutCheck = function (layout: DragactLayoutItem[], layoutItem: GridItemEvent,
-        key: string | number, fristItemkey: string | number, moving: number) {
+        key: string, fristItemkey: string, moving: number) {
 
 
         if (layoutItem.GridX === caches.GridX
