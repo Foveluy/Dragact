@@ -16,7 +16,7 @@ import { getFirstCollison } from "./collison";
 export var compactItem = function (finishedLayout, item) {
     if (item.static)
         return item;
-    var newItem = __assign({}, item);
+    var newItem = __assign({}, item, { key: item.key + '' });
     if (finishedLayout.length === 0) {
         return __assign({}, newItem, { GridY: 0 });
     }

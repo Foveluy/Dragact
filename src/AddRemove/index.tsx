@@ -10,14 +10,20 @@ const Words = [
 ]
 
 
-const Card = ({ item, provided }: any) => {
-    // console.log(provided);
+const Card = ({ item, provided, onDelete }: any) => {
     return (
         <div
             className='layout-Item'
             {...provided.props}
             {...provided.dragHandle}
         >
+            <div
+                style={{
+                    position: 'absolute',
+                    width: 10, height: 10, right: 15, top: 5, cursor: 'pointer'
+                }}
+                onClick={() => onDelete(item.key)}
+            >❌</div>
             <div style={{ padding: 5, textAlign: 'center', color: '#595959' }}>{item.content}</div>
         </div>
     )
@@ -51,10 +57,14 @@ export class AddRemove extends React.Component<{}, {}> {
         })
         console.log(this.state.layout)
     }
-    handleDeleteClick = () => {
-        this.state.layout.shift()
+    hanldeOnDelete = (key: any) => {
+        const layout = this.state.layout.filter((item) => {
+            if (item.key !== key) {
+                return item;
+            }
+        })
         this.setState({
-            layout: [...this.state.layout]
+            layout: layout
         })
     }
 
@@ -66,20 +76,21 @@ export class AddRemove extends React.Component<{}, {}> {
             rowHeight: 800 / 12,
             margin: margin,
             className: 'normal-layout',
-            layout: this.state.layout
+            layout: this.state.layout,
+            placeholder: true
         }
         return (
             <div>
                 <div style={{ display: 'flex', justifyContent: 'center' }} >
                     <div>
+
                         <h1 style={{ textAlign: 'center' }}>AddRemove Demo</h1>
+                        <button onClick={this.handleClick}>新增</button>
                         <Dragact {...dragactInit} >
                             {(item, provided) => {
-                                return <Card item={item} provided={provided} />
+                                return <Card item={item} provided={provided} onDelete={this.hanldeOnDelete} />
                             }}
                         </Dragact>
-                        <button onClick={this.handleClick}>新增</button>
-                        <button onClick={this.handleDeleteClick}>删除</button>
                     </div>
                 </div>
             </div>

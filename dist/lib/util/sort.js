@@ -18,16 +18,18 @@ export var sortLayout = function (layout) {
  * 这个函数带有记忆功能
  */
 export var getMaxContainerHeight = function () {
-    var lastOneGridY = 0;
-    return function (layout, elementHeight, elementMarginBottom, currentHeight) {
+    var lastOneYNH = 0;
+    return function (layout, elementHeight, elementMarginBottom, currentHeight, useCache) {
         if (elementHeight === void 0) { elementHeight = 30; }
         if (elementMarginBottom === void 0) { elementMarginBottom = 10; }
-        var length = layout.length;
-        var currentLastOne = layout[length - 1];
-        if (currentLastOne.GridY === lastOneGridY) {
-            return currentHeight;
+        if (useCache !== false) {
+            var length_1 = layout.length;
+            var currentLastOne = layout[length_1 - 1];
+            if (currentLastOne.GridY + currentLastOne.h === lastOneYNH) {
+                return currentHeight;
+            }
+            lastOneYNH = currentLastOne.GridY + currentLastOne.h;
         }
-        lastOneGridY = currentLastOne.GridY;
         var ar = layout.map(function (item) {
             return item.GridY + item.h;
         });

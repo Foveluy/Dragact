@@ -258,23 +258,25 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     componentWillReceiveProps(nextProps: any) {
-        // if (this.props.children.length > nextProps.children.length) { //remove
-        //     const mapLayoutCopy = { ...this.state.mapLayout };
-        //     nextProps.children.forEach((child: any) => {
-        //         if ((mapLayoutCopy as any)[child.key] !== void 666) delete (mapLayoutCopy as any)[child.key];
-        //     })
-        //     for (const key in mapLayoutCopy) {
-        //         const newLayout = this.state.layout.filter((child) => {
-        //             if (child.key !== key) return child
-        //         })
-        //         const { compacted, mapLayout } = compactLayout(newLayout, undefined, this.state.mapLayout);
-        //         this.setState({
-        //             containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
-        //             layout: compacted,
-        //             mapLayout
-        //         })
-        //     }
-        // }
+        if (this.props.layout.length > nextProps.layout.length) { //remove
+            const mapLayoutCopy = { ...this.state.mapLayout };
+            nextProps.layout.forEach((child: any) => {
+                if ((mapLayoutCopy as any)[child.key + ''] !== void 666) delete (mapLayoutCopy as any)[child.key + ''];
+            })
+
+            for (const key in mapLayoutCopy) {
+                const newLayout = this.state.layout.filter((child) => {
+                    if (child.key + '' !== key + '') return child
+                })
+
+                const { compacted, mapLayout } = compactLayout(newLayout, undefined, this.state.mapLayout);
+                this.setState({
+                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
+                    layout: compacted,
+                    mapLayout
+                })
+            }
+        }
         if (this.props.layout.length < nextProps.layout.length) {//add
             var item;
             for (const idx in nextProps.layout) {
@@ -331,7 +333,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     onDragStart={this.onDragStart}
                     onDragEnd={this.onDragEnd}
                     isUserMove={renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false}
-                    UniqueKey={child.key + ''}
+                    UniqueKey={child.key}
                     onResizing={this.onResizing}
                     onResizeStart={this.onResizeStart}
                     onResizeEnd={this.onResizeEnd}

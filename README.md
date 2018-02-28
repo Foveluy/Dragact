@@ -4,8 +4,7 @@
 
 Dragact 是一款React组件，他能够使你简单、快速的构建出一款强大的 **拖拽式网格(grid)布局**.
 
-![](https://github.com/215566435/React-dragger-layout/blob/master/example/image/NormalLayoutDemo.gif)
-![](https://github.com/215566435/React-dragger-layout/blob/master/example/image/resizing.gif)
+![](https://github.com/215566435/React-dragger-layout/blob/master/example/image/dashboard.gif)
 
 # Demo地址 ✌️
 [Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html)

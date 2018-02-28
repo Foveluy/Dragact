@@ -17,7 +17,7 @@ const DemoMap: any = {
     StaticHeader: <SortedTableWithStatic />,
     LayoutRestore: <LayoutRestore />,
     HandleLayout: <HandleLayout />,
-    // AddRemove: <AddRemove />,
+    AddRemove: <AddRemove />,
     Mobile: <Mobile />
 }
 
@@ -46,6 +46,7 @@ class DemoDispatcher extends React.Component<{}, {}> {
                     <button onClick={() => this.handleLayoutChange('StaticHeader')}>静态组件</button>
                     <button onClick={() => this.handleLayoutChange('LayoutRestore')}>存储布局</button>
                     <button onClick={() => this.handleLayoutChange('HandleLayout')}>拖拽把手</button>
+                    <button onClick={() => this.handleLayoutChange('AddRemove')}>增加和删除</button>
                     <button onClick={() => this.handleLayoutChange('Mobile')}>移动端</button>
                 </div>
                 {this.state.demo}
@@ -54,7 +55,7 @@ class DemoDispatcher extends React.Component<{}, {}> {
     }
 }
 
-<DemoDispatcher />
+{/* <DemoDispatcher /> */ }
 
 //<Dragact/> */}
 
@@ -114,7 +115,7 @@ class DemoDispatcher extends React.Component<{}, {}> {
 
 
 ReactDOM.render(
-    <AddRemove />,
+    <DemoDispatcher />,
     document.getElementById('root')
 );
 

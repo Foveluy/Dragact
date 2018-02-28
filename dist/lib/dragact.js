@@ -46,7 +46,7 @@ var Dragact = /** @class */ (function (_super) {
             }
         };
         _this.onResizing = function (layoutItem) {
-            var newLayout = layoutCheck(_this.state.layout, layoutItem, layoutItem.UniqueKey, layoutItem.UniqueKey, 0);
+            var newLayout = layoutCheck(_this.state.layout, layoutItem, layoutItem.UniqueKey + '', layoutItem.UniqueKey + '', 0);
             var _a = compactLayout(newLayout, layoutItem, _this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
             _this.setState({
                 layout: compacted,
@@ -103,7 +103,7 @@ var Dragact = /** @class */ (function (_super) {
     Dragact.prototype.onDrag = function (layoutItem) {
         var GridY = layoutItem.GridY, UniqueKey = layoutItem.UniqueKey;
         var moving = GridY - this.state.GridYMoving;
-        var newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey, UniqueKey /*用户移动方块的key */, moving);
+        var newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey + '', UniqueKey + '' /*用户移动方块的key */, moving);
         var _a = compactLayout(newLayout, layoutItem, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
         this.setState({
             GridXMoving: layoutItem.GridX,
@@ -136,15 +136,15 @@ var Dragact = /** @class */ (function (_super) {
         return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s ease-out' }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }, function (p, resizerProps) { return React.createElement("div", __assign({}, p)); }));
     };
     Dragact.prototype.componentWillReceiveProps = function (nextProps) {
-        if (this.props.children.length > nextProps.children.length) {
+        if (this.props.layout.length > nextProps.layout.length) {
             var mapLayoutCopy_1 = __assign({}, this.state.mapLayout);
-            nextProps.children.forEach(function (child) {
-                if (mapLayoutCopy_1[child.key] !== void 666)
-                    delete mapLayoutCopy_1[child.key];
+            nextProps.layout.forEach(function (child) {
+                if (mapLayoutCopy_1[child.key + ''] !== void 666)
+                    delete mapLayoutCopy_1[child.key + ''];
             });
             var _loop_1 = function (key) {
                 var newLayout_1 = this_1.state.layout.filter(function (child) {
-                    if (child.key !== key)
+                    if (child.key + '' !== key + '')
                         return child;
                 });
                 var _a = compactLayout(newLayout_1, undefined, this_1.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
@@ -159,22 +159,21 @@ var Dragact = /** @class */ (function (_super) {
                 _loop_1(key);
             }
         }
-        if (this.props.children.length < nextProps.children.length) {
+        if (this.props.layout.length < nextProps.layout.length) {
             var item;
-            for (var idx in nextProps.children) {
-                var i = nextProps.children[idx];
-                if (this.state.mapLayout && !this.state.mapLayout[i.key]) {
+            for (var idx in nextProps.layout) {
+                var i = nextProps.layout[idx];
+                if (this.state.mapLayout && !this.state.mapLayout[i.key + '']) {
                     item = i;
                     break;
                 }
             }
             if (item !== void 666) {
-                var dataSet = __assign({}, item.props['data-set'], { isUserMove: false, key: item.key });
+                var dataSet = __assign({}, item, { isUserMove: false, key: item.key + '' });
                 var newLayout = this.state.layout.concat([dataSet]);
-                newLayout = correctLayout(newLayout, this.props.col);
                 var _a = compactLayout(newLayout, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
                 this.setState({
-                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
+                    containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight, false),
                     layout: compacted,
                     mapLayout: mapLayout
                 });
@@ -189,7 +188,7 @@ var Dragact = /** @class */ (function (_super) {
             _this.setState({
                 layout: compacted,
                 mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight)
+                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight, false)
             });
         }, 1);
     };
@@ -198,7 +197,7 @@ var Dragact = /** @class */ (function (_super) {
         var _a = this.state, dragType = _a.dragType, mapLayout = _a.mapLayout;
         var _b = this.props, col = _b.col, width = _b.width, padding = _b.padding, rowHeight = _b.rowHeight, margin = _b.margin;
         if (mapLayout) {
-            var renderItem_1 = layoutItemForkey(mapLayout, child.key);
+            var renderItem_1 = layoutItemForkey(mapLayout, child.key + '');
             if (!padding)
                 padding = 0;
             return (React.createElement(GridItem, __assign({}, renderItem_1, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem_1.isUserMove !== void 666 ? renderItem_1.isUserMove : false, UniqueKey: child.key, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, key: child.key }), function (GridItemProvided, dragHandle, resizeHandle) { return _this.props.children(child, {
