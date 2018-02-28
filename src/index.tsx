@@ -1,12 +1,13 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { LayoutDemo } from '../example/NormalLayout/index';
-import { SortedTableWithStatic } from "../example/StaticWidget/index";
-import { LayoutRestore } from "../example/LayoutRestore/index";
-import { HandleLayout } from "../example/HandleLayout/index";
+import { LayoutDemo } from './NormalLayout/index';
+import { SortedTableWithStatic } from "./StaticWidget/index";
+import { LayoutRestore } from "./LayoutRestore/index";
+import { HandleLayout } from "./HandleLayout/index";
 // import { AddRemove } from "./AddRemove/index";
-import { Mobile } from "../example/mobileLayout/index";
+import { Mobile } from "./mobileLayout/index";
 import './index.css'
+// import { Dragact } from "./lib/dragact";
 
 
 
@@ -49,10 +50,50 @@ class DemoDispatcher extends React.Component<{}, {}> {
     }
 }
 
-<DemoDispatcher />
+{/* <DemoDispatcher />
 
+<Dragact/> */}
 
+// const fakeData = [
+//     { GridX: 0, GridY: 0, w: 4, h: 2, key: '0' },
+//     { GridX: 0, GridY: 0, w: 4, h: 2, key: '1' },
+//     { GridX: 0, GridY: 0, w: 4, h: 2, key: '2' }
+// ]
 
+// const getblockStyle = (isDragging: Boolean) => {
+//     return {
+//         background: isDragging ? '#1890ff' : 'white',
+//     }
+// };
+
+// ReactDOM.render(
+//     <Dragact
+//         layout={fakeData}//必填项
+//         col={16}//必填项
+//         width={800}//必填项
+//         rowHeight={40}//必填项
+//         margin={[5, 5]}//必填项
+//         className='plant-layout'//必填项
+//         style={{ background: '#333' }}//非必填项
+//         placeholder={true}//非必填项
+//     >
+//         {(item: any, provided: any) => {
+//             return (
+//                 <div
+//                     {...provided.props}
+//                     {...provided.dragHandle}
+//                     style={{
+//                         ...provided.props.style,
+//                         ...getblockStyle(provided.isDragging)
+//                     }}
+//                 >
+//                     {provided.isDragging ? '正在抓取' : '停放'}
+//                 </div>
+//             )
+//         }}
+//     </Dragact>,
+//     document.getElementById('root')
+// );
 
 
 

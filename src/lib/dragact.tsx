@@ -24,7 +24,7 @@ export interface DragactLayoutItem {
 }
 
 export interface DragactProps {
-    layout: DragactLayoutItem[] //暂时不推荐使用
+    layout: DragactLayoutItem[]
     /** 
      * 宽度切分比 
      * 这个参数会把容器的宽度平均分为col等份
@@ -45,7 +45,7 @@ export interface DragactProps {
      */
     padding?: number,
 
-    children: any[] | any
+    children: (Item: DragactLayoutItem, provided: GridItemProvided) => any,
 
 
     // 
@@ -87,6 +87,7 @@ export interface DragactProps {
     placeholder?: Boolean
 
     style?: React.CSSProperties
+
 }
 
 export interface mapLayout {
@@ -108,8 +109,9 @@ interface DragactState {
 
 export interface GridItemProvided {
     isDragging: Boolean
-    handle: { id: 'dragact-handle' };
-    draggerProps: any;
+    dragHandle: any;
+    resizeHandle: any;
+    props: any;
 }
 
 export class Dragact extends React.Component<DragactProps, DragactState> {

@@ -105,7 +105,7 @@ var Dragger = /** @class */ (function (_super) {
              * 调整手感
              * 无论是向上移动还是向下移动，全部都是根据重力中心
              * */
-            var height = _this.refs['dragger'].getClientRects()[0].height;
+            var height = _this.Ref.getClientRects()[0].height;
             var upNdown = _this.state.y - deltaY;
             var fixY = deltaY + (upNdown >= 0 ? 0 : height / 2);
             /**移动时回调，用于外部控制 */
@@ -119,10 +119,7 @@ var Dragger = /** @class */ (function (_super) {
         _this.onDragStart = function (event) {
             /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
             doc.body.style.userSelect = 'none';
-            if (_this.props.handle) {
-                if (event.target.id !== 'dragact-handle')
-                    return;
-            }
+            // if (event.target.id !== 'dragact-handle') return
             /**
              * 把监听事件的回掉函数，绑定在document上
              * 当设置边界的时候，用户鼠标会离开元素的范围
@@ -233,22 +230,16 @@ var Dragger = /** @class */ (function (_super) {
             _this.props.onResizeEnd && _this.props.onResizeEnd(event, _this.state.w, _this.state.h);
         };
         _this.mixin = function () {
-            var dragMix = {};
-            if (_this.props.canDrag === void 666 || _this.props.canDrag === true) {
-                dragMix = {
-                    onMouseDown: _this.onDragStart,
-                    onTouchStart: _this.onDragStart,
-                    onTouchEnd: _this.onDragEnd,
-                    onMouseUp: _this.onDragEnd
-                };
-            }
-            var resizeMix = {};
-            if (_this.props.canResize === void 666 || _this.props.canDrag === true) {
-                resizeMix = {
-                    onMouseDown: _this.onResizeStart,
-                    onMouseUp: _this.onResizeEnd
-                };
-            }
+            var dragMix = {
+                onMouseDown: _this.onDragStart,
+                onTouchStart: _this.onDragStart,
+                onTouchEnd: _this.onDragEnd,
+                onMouseUp: _this.onDragEnd
+            };
+            var resizeMix = {
+                onMouseDown: _this.onResizeStart,
+                onMouseUp: _this.onResizeEnd
+            };
             return {
                 dragMix: dragMix, resizeMix: resizeMix
             };
@@ -294,6 +285,7 @@ var Dragger = /** @class */ (function (_super) {
         }
     };
     Dragger.prototype.render = function () {
+        var _this = this;
         var _a = this.state, x = _a.x, y = _a.y, w = _a.w, h = _a.h;
         var _b = this.props, style = _b.style, className = _b.className, canResize = _b.canResize;
         if (!this.props.isUserMove) {
@@ -312,16 +304,15 @@ var Dragger = /** @class */ (function (_super) {
         }
         var _c = this.mixin(), dragMix = _c.dragMix, resizeMix = _c.resizeMix;
         /**主要是为了让用户定义自己的className去修改css */
-        var fixedClassName = typeof className === 'undefined' ? '' : className + ' ';
-        return (React.createElement("div", __assign({ className: fixedClassName + "WrapDragger", ref: 'dragger', style: __assign({}, style, { touchAction: 'none!important', transform: "translate(" + x + "px," + y + "px)", width: w, height: h }) }, dragMix),
-            React.Children.only(this.props.children),
-            canResize !== false ?
-                React.createElement("span", __assign({}, resizeMix, { style: {
-                        position: 'absolute',
-                        width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
-                        borderRight: '2px solid rgba(15,15,15,0.2)',
-                        borderBottom: '2px solid rgba(15,15,15,0.2)'
-                    } })) : null));
+        // const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
+        resizeMix;
+        canResize;
+        className;
+        var provided = {
+            style: __assign({}, style, { touchAction: 'none!important', transform: "translate(" + x + "px," + y + "px)", width: w, height: h }),
+            ref: function (node) { return _this.Ref = node; }
+        };
+        return this.props.children(provided, dragMix, resizeMix);
     };
     /**
      * 初始变量设置
@@ -334,3 +325,20 @@ var Dragger = /** @class */ (function (_super) {
     return Dragger;
 }(React.Component));
 export { Dragger };
+// return (
+//     <div className={`${fixedClassName}WrapDragger`}
+//         ref={'dragger'}
+//     >
+//         {this.props.children(provided)}
+//         {canResize !== false ?
+//             <span
+//                 {...resizeMix}
+//                 style={{
+//                     position: 'absolute',
+//                     width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
+//                     borderRight: '2px solid rgba(15,15,15,0.2)',
+//                     borderBottom: '2px solid rgba(15,15,15,0.2)'
+//                 }}
+//             /> : null}
+//     </div>
+// )

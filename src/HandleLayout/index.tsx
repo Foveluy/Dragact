@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dragact } from '../../src/lib/dragact'
+import { Dragact, DragactLayoutItem, GridItemProvided } from '../../src/lib/dragact'
 
 import './index.css';
 
@@ -62,7 +62,7 @@ export class HandleLayout extends React.Component<{}, {}> {
                     <div>
                         <h1 style={{ textAlign: 'center' }}>拖拽把手 Demo</h1>
                         <Dragact {...dragactInit}  >
-                            {(item: any, provided: any) => {
+                            {(item: DragactLayoutItem, provided: GridItemProvided) => {
                                 return <Card item={item} provided={provided} />
                             }}
                         </Dragact>

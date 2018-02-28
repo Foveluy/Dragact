@@ -87,7 +87,6 @@ var Dragact = /** @class */ (function (_super) {
     Dragact.prototype.onDragStart = function (bundles) {
         var GridX = bundles.GridX, GridY = bundles.GridY, w = bundles.w, h = bundles.h;
         if (this.state.mapLayout) {
-            var newlayout = syncLayout(this.state.mapLayout, bundles);
             this.setState({
                 GridXMoving: GridX,
                 GridYMoving: GridY,
@@ -95,7 +94,7 @@ var Dragact = /** @class */ (function (_super) {
                 hMoving: h,
                 placeholderShow: true,
                 placeholderMoving: true,
-                mapLayout: newlayout,
+                mapLayout: syncLayout(this.state.mapLayout, bundles),
                 dragType: 'drag'
             });
         }
@@ -134,7 +133,7 @@ var Dragact = /** @class */ (function (_super) {
             return null;
         if (!padding)
             padding = 0;
-        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s ease-out' }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }));
+        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s ease-out' }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }, function (p, resizerProps) { return React.createElement("div", __assign({}, p)); }));
     };
     Dragact.prototype.componentWillReceiveProps = function (nextProps) {
         if (this.props.children.length > nextProps.children.length) {
@@ -195,13 +194,19 @@ var Dragact = /** @class */ (function (_super) {
         }, 1);
     };
     Dragact.prototype.getGridItem = function (child, index) {
+        var _this = this;
         var _a = this.state, dragType = _a.dragType, mapLayout = _a.mapLayout;
         var _b = this.props, col = _b.col, width = _b.width, padding = _b.padding, rowHeight = _b.rowHeight, margin = _b.margin;
         if (mapLayout) {
-            var renderItem = layoutItemForkey(mapLayout, child.key);
+            var renderItem_1 = layoutItemForkey(mapLayout, child.key);
             if (!padding)
                 padding = 0;
-            return (React.createElement(GridItem, __assign({}, renderItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem.isUserMove !== void 666 ? renderItem.isUserMove : false, UniqueKey: child.key, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, key: child.key }), this.props.children(child, renderItem.isUserMove)));
+            return (React.createElement(GridItem, __assign({}, renderItem_1, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem_1.isUserMove !== void 666 ? renderItem_1.isUserMove : false, UniqueKey: child.key, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, key: child.key }), function (GridItemProvided, dragHandle, resizeHandle) { return _this.props.children(child, {
+                isDragging: renderItem_1.isUserMove !== void 666 ? renderItem_1.isUserMove : false,
+                props: GridItemProvided,
+                dragHandle: dragHandle,
+                resizeHandle: resizeHandle
+            }); }));
         }
     };
     Dragact.prototype.render = function () {

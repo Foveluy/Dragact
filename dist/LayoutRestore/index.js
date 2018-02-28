@@ -17,7 +17,8 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 import * as React from 'react';
-import { Dragact } from '../lib/dragact';
+import { Dragact } from '../../src/lib/dragact';
+import { Card } from '../NormalLayout/index';
 import './index.css';
 var Words = [
     { content: 'You can do anything, but not everything.' },
@@ -33,11 +34,6 @@ var fakeData = function () {
             Y++;
         return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 2, key: index + '' });
     });
-};
-var Card = function (props) {
-    var item = props.item;
-    return (React.createElement("div", { className: 'layout-Item' },
-        React.createElement("div", { style: { padding: 5, textAlign: 'center', color: '#595959' } }, item.content)));
 };
 var storeLayout = void 666;
 var LayoutRestore = /** @class */ (function (_super) {
@@ -60,8 +56,8 @@ var LayoutRestore = /** @class */ (function (_super) {
                 layout: storeLayout ? storeLayout : fakeData(),
                 placeholder: true
             };
-            return (React.createElement(Dragact, __assign({}, dragactInit, { ref: function (node) { return node ? _this.dragactNode = node : null; }, onDragEnd: _this.handleOnDragEnd }), function (item) {
-                return React.createElement(Card, { item: item });
+            return (React.createElement(Dragact, __assign({}, dragactInit, { ref: function (node) { return node ? _this.dragactNode = node : null; }, onDragEnd: _this.handleOnDragEnd }), function (item, provided) {
+                return React.createElement(Card, { item: item, provided: provided });
             }));
         };
         return _this;
