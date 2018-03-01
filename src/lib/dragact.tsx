@@ -164,7 +164,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
     resetLayout = () => {
        const { compacted, mapLayout } = this.recalculateLayout(this.props.layout)
-       this.cachingLayout(this.state.mapLayout, this.state.layout);
+       this.cachingLayout();
        this.storeLayoutToHistory();
        this.setState({
            layout: compacted,
@@ -181,7 +181,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             return;
         }
         this.activeItem = layoutItem
-        this.cachingLayout(this.state.mapLayout, this.state.layout);
+        this.cachingLayout();
     }
 
     cacheCurrentLayoutEnd = (layoutItem: GridItemEvent) => {
@@ -195,7 +195,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         this.storeLayoutToHistory()
     }
 
-    cachingLayout = (mapLayout: mapLayout | undefined, layout: DragactLayoutItem[]) => {
+    cachingLayout = () => {
+        const { mapLayout, layout } = this.state
         this.cacheLayouts = JSON.stringify({
             mapLayout,
             layout
@@ -374,7 +375,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         }
 
     }
-    
+
     recalculateLayout = (layout: DragactLayoutItem[]) => {
         layout = correctLayout(layout, this.props.col)
         return compactLayout(layout, undefined, this.state.mapLayout);
@@ -383,11 +384,13 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     componentDidMount() {
         setTimeout(() => {
             const { compacted, mapLayout } = this.recalculateLayout(this.state.layout);
-            this.mapLayoutHistory.push(mapLayout);
             this.setState({
                 layout: compacted,
                 mapLayout: mapLayout,
                 containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight, false)
+            }, () => {
+                this.cachingLayout();
+                this.storeLayoutToHistory();
             })
         }, 1);
     }
