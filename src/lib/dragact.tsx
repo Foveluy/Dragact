@@ -88,6 +88,9 @@ export interface DragactProps {
 
     style?: React.CSSProperties
 
+    /** 是否记忆操作 */
+    history?: boolean
+
 }
 
 export interface mapLayout {
@@ -115,6 +118,9 @@ export interface GridItemProvided {
 }
 
 export class Dragact extends React.Component<DragactProps, DragactState> {
+    store : string[] = []
+    cacheMapLayout: string;
+    cacheLayout: DragactLayoutItem[];
     constructor(props: DragactProps) {
         super(props)
         this.onDrag = this.onDrag.bind(this)
@@ -122,7 +128,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         this.onDragEnd = this.onDragEnd.bind(this)
 
         const layout = props.layout;
-
         this.state = {
             GridXMoving: 0,
             GridYMoving: 0,
@@ -136,10 +141,52 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             mapLayout: undefined
         }
     }
+   
+    historyBack = () => {
+        const store = this.store;
+        if (store.length) {
+            const last = store.pop();
+            if(!last) {
+                return;
+            }
+            try {
+                const mapLayout =   JSON.parse(last);
+                this.setState({
+                    mapLayout,
+                    layout: this.cacheLayout
+                })
+            }catch (e) {
+            }
+            
+        }
+    }
+
+    cacheCurrentLayoutStart = () => {
+        if(!this.props.history) {
+            return;
+        }
+        this.cacheMapLayout = JSON.stringify(this.state.mapLayout)
+        this.cacheLayout = this.state.layout
+    }
+
+    cacheCurrentLayoutEnd = (mapLayout: mapLayout | undefined) => {
+        
+        if( this.props.history && mapLayout){
+            try{
+                const str = JSON.stringify(mapLayout)
+                if (this.cacheMapLayout.localeCompare(str) !== 0) {
+                this.store.push(this.cacheMapLayout);
+            }
+            }catch (e) {}
+        }
+    }
+
     onResizeStart = (layoutItem: GridItemEvent) => {
         const { GridX, GridY, w, h } = layoutItem
         if (this.state.mapLayout) {
+            this.cacheCurrentLayoutStart();
             const newlayout = syncLayout(this.state.mapLayout, layoutItem)
+            
             this.setState({
                 GridXMoving: GridX,
                 GridYMoving: GridY,
@@ -170,6 +217,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
     onResizeEnd = (layoutItem: GridItemEvent) => {
         const { compacted, mapLayout } = compactLayout(this.state.layout, undefined, this.state.mapLayout)
+        this.cacheCurrentLayoutEnd(mapLayout)
         this.setState({
             placeholderShow: false,
             layout: compacted,
@@ -181,8 +229,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
     onDragStart(bundles: GridItemEvent) {
         const { GridX, GridY, w, h } = bundles
-
         if (this.state.mapLayout) {
+            this.cacheCurrentLayoutStart();
             this.setState({
                 GridXMoving: GridX,
                 GridYMoving: GridY,
@@ -216,16 +264,14 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     onDragEnd(layoutItem: GridItemEvent) {
-
         const { compacted, mapLayout } = compactLayout(this.state.layout, undefined, this.state.mapLayout)
-
+        this.cacheCurrentLayoutEnd(mapLayout)
         this.setState({
             placeholderShow: false,
             layout: compacted,
             mapLayout: mapLayout,
             containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         })
-
         this.props.onDragEnd && this.props.onDragEnd(layoutItem);
     }
     renderPlaceholder() {
@@ -301,12 +347,14 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 })
             }
         }
+
     }
 
     componentDidMount() {
         setTimeout(() => {
             let layout = correctLayout(this.state.layout, this.props.col)
             const { compacted, mapLayout } = compactLayout(layout, undefined, this.state.mapLayout);
+            this.store.push(mapLayout);
             this.setState({
                 layout: compacted,
                 mapLayout: mapLayout,
@@ -350,6 +398,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             )
         }
     }
+
     render() {
         const {
             width,
@@ -361,6 +410,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
         return (
             <div
+
                 className={stringJoin('DraggerLayout', className + '')}
                 style={{
                     ...style,
