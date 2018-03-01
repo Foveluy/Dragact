@@ -76,7 +76,7 @@ var AddRemove = /** @class */ (function (_super) {
         var _this = this;
         var margin = [5, 5];
         var dragactInit = {
-            width: 800,
+            width: 600,
             col: 12,
             rowHeight: 800 / 12,
             margin: margin,

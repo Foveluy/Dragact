@@ -71,7 +71,7 @@ export class AddRemove extends React.Component<{}, {}> {
     render() {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
-            width: 800,
+            width: 600,
             col: 12,
             rowHeight: 800 / 12,
             margin: margin,
