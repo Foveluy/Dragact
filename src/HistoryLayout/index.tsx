@@ -47,7 +47,8 @@ export const Card: (any: any) => any = ({ item, provided }) => {
 }
 
 
-export class LayoutDemo extends React.Component<{}, {}> {
+export class HistoryDemo extends React.Component<{}, {}> {
+    drag: Dragact | null
     render() {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
@@ -67,11 +68,22 @@ export class LayoutDemo extends React.Component<{}, {}> {
             >
                 <div>
                     <h1 style={{ textAlign: 'center' }}>
-                        普通布局demo
+                        复原操作demo
                     </h1>
+                    <button onClick={ () => {
+                        if (this.drag) {
+                            this.drag.historyBack();
+                        }
+                    }}>back</button>
+                    <button onClick={ () => {
+                        if (this.drag) {
+                            this.drag.resetLayout();
+                        }
+                    }}>reset</button>
                     <Dragact
                         {...dragactInit}
                         placeholder={true}
+                        ref={n => this.drag = n}
                         style={{
                             background: '#003A8C'
                         }}

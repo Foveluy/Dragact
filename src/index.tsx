@@ -5,6 +5,7 @@ import { SortedTableWithStatic } from "./StaticWidget/index";
 import { LayoutRestore } from "./LayoutRestore/index";
 import { HandleLayout } from "./HandleLayout/index";
 import { AddRemove } from "./AddRemove/index";
+import { HistoryDemo } from "./HistoryLayout/index";
 import { Mobile } from "./mobileLayout/index";
 import './index.css'
 // import { Dragact } from "./lib/dragact";
@@ -18,7 +19,8 @@ const DemoMap: any = {
     LayoutRestore: <LayoutRestore />,
     HandleLayout: <HandleLayout />,
     AddRemove: <AddRemove />,
-    Mobile: <Mobile />
+    Mobile: <Mobile />,
+    HistoryLayout: <HistoryDemo />
 }
 
 class DemoDispatcher extends React.Component<{}, {}> {
@@ -45,6 +47,7 @@ class DemoDispatcher extends React.Component<{}, {}> {
                     <button onClick={() => this.handleLayoutChange('normalLayout')}>普通布局</button>
                     <button onClick={() => this.handleLayoutChange('StaticHeader')}>静态组件</button>
                     <button onClick={() => this.handleLayoutChange('LayoutRestore')}>存储布局</button>
+                    <button onClick={() => this.handleLayoutChange('HistoryLayout')}>记忆操作布局</button>
                     <button onClick={() => this.handleLayoutChange('HandleLayout')}>拖拽把手</button>
                     <button onClick={() => this.handleLayoutChange('AddRemove')}>增加和删除</button>
                     <button onClick={() => this.handleLayoutChange('Mobile')}>移动端</button>
