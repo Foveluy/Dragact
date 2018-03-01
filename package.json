@@ -1,7 +1,7 @@
 {
   "name": "dragact",
-  "version": "0.1.7",
-  "description": "",
+  "version": "0.1.8",
+  "description": "A powerful draggable layout system",
   "main": "index.js",
   "scripts": {
     "temp": "NODE_ENV=production webpack -p --config webpack.pro.config.js ",
