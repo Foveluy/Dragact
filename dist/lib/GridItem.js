@@ -114,7 +114,7 @@ var GridItem = /** @class */ (function (_super) {
             return;
         var _b = this.calGridXY(x, y), GridX = _b.GridX, GridY = _b.GridY;
         this.props.onDragStart && this.props.onDragStart({
-            event: event, GridX: GridX, GridY: GridY, w: w, h: h, UniqueKey: UniqueKey + ''
+            event: null, GridX: GridX, GridY: GridY, w: w, h: h, UniqueKey: UniqueKey + ''
         });
     };
     GridItem.prototype.onDrag = function (event, x, y) {

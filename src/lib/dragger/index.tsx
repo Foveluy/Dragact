@@ -207,6 +207,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
         doc.body.style.userSelect = 'none'
 
+       
 
         // if (event.target.id !== 'dragact-handle') return
 
@@ -243,9 +244,11 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             this.self = event.currentTarget
         }
 
+       
+
         this.props.onDragStart && this.props.onDragStart(this.state.x, this.state.y)
 
-
+        
         let originX, originY;
         if (event.type.indexOf('mouse') >= 0) {
             originX = (event as MouseEvent).clientX
@@ -254,6 +257,8 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             originX = (event as TouchEvent).touches[0].clientX
             originY = (event as TouchEvent).touches[0].clientY
         }
+
+        
 
         this.setState({
             originX: originX,
