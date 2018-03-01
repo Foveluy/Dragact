@@ -84,6 +84,7 @@ export class HistoryDemo extends React.Component<{}, {}> {
                         {...dragactInit}
                         placeholder={true}
                         ref={n => this.drag = n}
+                        history={true}
                         style={{
                             background: '#003A8C'
                         }}

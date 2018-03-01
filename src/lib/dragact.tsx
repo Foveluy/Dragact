@@ -120,8 +120,8 @@ export interface GridItemProvided {
 export class Dragact extends React.Component<DragactProps, DragactState> {
     mapLayoutHistory : string[] = []
     cacheLayouts: string;
-
     activeItem: GridItemEvent
+    
     constructor(props: DragactProps) {
         super(props)
         this.onDrag = this.onDrag.bind(this)
@@ -163,31 +163,26 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     resetLayout = () => {
-       const { compacted, mapLayout } = this.recalculateLayout(this.props.layout)
-       this.cachingLayout();
-       this.storeLayoutToHistory();
-       this.setState({
-           layout: compacted,
-           mapLayout
-       })
+       
+        const { compacted, mapLayout } = this.recalculateLayout(this.props.layout)
+        this.cachingLayout();
+        this.storeLayoutToHistory();
+        this.setState({
+            layout: compacted,
+            mapLayout
+        })
     }
 
     get isHistoryMode () {
-        return !!this.props.history == false
+        return !!this.props.history;
     }
 
     cacheCurrentLayoutStart = (layoutItem: GridItemEvent) => {
-        if(!this.isHistoryMode) {
-            return;
-        }
         this.activeItem = layoutItem
         this.cachingLayout();
     }
 
     cacheCurrentLayoutEnd = (layoutItem: GridItemEvent) => {
-        if (!this.isHistoryMode) {
-            return;
-        }
         const { GridY, GridX, h, w } = this.activeItem;
         if (GridX === layoutItem.GridX && GridY === layoutItem.GridY && h === layoutItem.h && w === layoutItem.w) {
             return;
@@ -196,6 +191,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     cachingLayout = () => {
+        if(!this.isHistoryMode) {
+            return;
+        }
         const { mapLayout, layout } = this.state
         this.cacheLayouts = JSON.stringify({
             mapLayout,
@@ -204,6 +202,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     storeLayoutToHistory = () => {
+        if(!this.isHistoryMode) {
+            return;
+        }
         this.mapLayoutHistory.push(this.cacheLayouts);
     }
 
