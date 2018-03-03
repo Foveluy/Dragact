@@ -1,9 +1,8 @@
 import *as React from 'react';
-import { Dragact, DragactLayoutItem, GridItemProvided } from '../../src/lib/dragact'
+import { DragactLayoutItem, GridItemProvided} from '../../src/lib/dragact'
+import { HistoryDragact } from './HistoryLayout'
 import { Words } from './largedata';
 import './index.css';
-
-
 
 const fakeData = () => {
     var Y = 0;
@@ -48,7 +47,7 @@ export const Card: (any: any) => any = ({ item, provided }) => {
 
 
 export class HistoryDemo extends React.Component<{}, {}> {
-    drag: Dragact | null
+    drag: HistoryDragact | null
     render() {
         const margin: [number, number] = [5, 5];
         const dragactInit = {
@@ -72,15 +71,20 @@ export class HistoryDemo extends React.Component<{}, {}> {
                     </h1>
                     <button onClick={ () => {
                         if (this.drag) {
-                            this.drag.historyBack();
+                            this.drag.goBack();
                         }
                     }}>back</button>
                     <button onClick={ () => {
                         if (this.drag) {
-                            this.drag.resetLayout();
+                            this.drag.reset();
                         }
                     }}>reset</button>
-                    <Dragact
+                    <button onClick={ () => {
+                        if (this.drag) {
+                            this.drag.clear();
+                        }
+                    }}>clear</button>
+                    <HistoryDragact
                         {...dragactInit}
                         placeholder={true}
                         ref={n => this.drag = n}
@@ -95,7 +99,7 @@ export class HistoryDemo extends React.Component<{}, {}> {
                                 provided={provided}
                             />
                         }}
-                    </Dragact>
+                    </HistoryDragact>
                 </div>
             </div>
         )

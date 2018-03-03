@@ -118,10 +118,7 @@ export interface GridItemProvided {
 }
 
 export class Dragact extends React.Component<DragactProps, DragactState> {
-    mapLayoutHistory : string[] = []
-    cacheLayouts: string;
-    activeItem: GridItemEvent
-    
+   
     constructor(props: DragactProps) {
         super(props)
         this.onDrag = this.onDrag.bind(this)
@@ -142,78 +139,11 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             mapLayout: undefined
         }
     }
-   
-    historyBack = () => {
-        const mapLayoutHistory = this.mapLayoutHistory;
-        if (mapLayoutHistory.length > 1) {
-            const last = mapLayoutHistory.pop();
-            if(!last) {
-                return;
-            }
-            try {
-                const {mapLayout, layout} = JSON.parse(last);
-                this.setState({
-                    mapLayout,
-                    layout
-                })
-            }catch (e) {
-            }
-            
-        }
-    }
-
-    resetLayout = () => {
-       
-        const { compacted, mapLayout } = this.recalculateLayout(this.props.layout)
-        this.cachingLayout();
-        this.storeLayoutToHistory();
-        this.setState({
-            layout: compacted,
-            mapLayout
-        })
-    }
-
-    get isHistoryMode () {
-        return !!this.props.history;
-    }
-
-    cacheCurrentLayoutStart = (layoutItem: GridItemEvent) => {
-        this.activeItem = layoutItem
-        this.cachingLayout();
-    }
-
-    cacheCurrentLayoutEnd = (layoutItem: GridItemEvent) => {
-        const { GridY, GridX, h, w } = this.activeItem;
-        if (GridX === layoutItem.GridX && GridY === layoutItem.GridY && h === layoutItem.h && w === layoutItem.w) {
-            return;
-        }
-        this.storeLayoutToHistory()
-    }
-
-    cachingLayout = () => {
-        if(!this.isHistoryMode) {
-            return;
-        }
-        const { mapLayout, layout } = this.state
-        this.cacheLayouts = JSON.stringify({
-            mapLayout,
-            layout
-        })
-    }
-
-    storeLayoutToHistory = () => {
-        if(!this.isHistoryMode) {
-            return;
-        }
-        this.mapLayoutHistory.push(this.cacheLayouts);
-    }
 
     onResizeStart = (layoutItem: GridItemEvent) => {
         const { GridX, GridY, w, h } = layoutItem
         if (this.state.mapLayout) {
-            this.cacheCurrentLayoutStart(layoutItem);
             const newlayout = syncLayout(this.state.mapLayout, layoutItem)
-            
             this.setState({
                 GridXMoving: GridX,
                 GridYMoving: GridY,
@@ -225,6 +155,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 dragType: 'resize'
             })
         }
+        this.props.onDragStart && this.props.onDragStart(layoutItem);
     }
 
     onResizing = (layoutItem: GridItemEvent) => {
@@ -244,7 +175,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
     onResizeEnd = (layoutItem: GridItemEvent) => {
         const { compacted, mapLayout } = compactLayout(this.state.layout, undefined, this.state.mapLayout)
-        this.cacheCurrentLayoutEnd(layoutItem)
         this.setState({
             placeholderShow: false,
             layout: compacted,
@@ -257,7 +187,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     onDragStart(bundles: GridItemEvent) {
         const { GridX, GridY, w, h } = bundles
         if (this.state.mapLayout) {
-            this.cacheCurrentLayoutStart(bundles);
             this.setState({
                 GridXMoving: GridX,
                 GridYMoving: GridY,
@@ -269,12 +198,10 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 dragType: 'drag'
             })
         }
-
-        this.props.onDragStart && this.props.onDragStart(bundles)
+        this.props.onDragStart && this.props.onDragStart(bundles);
     }
 
     onDrag(layoutItem: GridItemEvent) {
-
         const { GridY, UniqueKey } = layoutItem;
         const moving = GridY - this.state.GridYMoving;
 
@@ -292,7 +219,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
     onDragEnd(layoutItem: GridItemEvent) {
         const { compacted, mapLayout } = compactLayout(this.state.layout, undefined, this.state.mapLayout)
-        this.cacheCurrentLayoutEnd(layoutItem)
         this.setState({
             placeholderShow: false,
             layout: compacted,
@@ -301,6 +227,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         })
         this.props.onDragEnd && this.props.onDragEnd(layoutItem);
     }
+
     renderPlaceholder() {
         if (!this.state.placeholderShow) return null
         var { col, width, padding, rowHeight, margin, placeholder } = this.props
@@ -349,8 +276,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     mapLayout
                 })
             }
-        }
-        if (this.props.layout.length < nextProps.layout.length) {//add
+        }  else  if (this.props.layout.length < nextProps.layout.length) {//add
             var item;
             for (const idx in nextProps.layout) {
                 const i = nextProps.layout[idx];
@@ -373,26 +299,24 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     mapLayout
                 })
             }
+        } else {
+            this.recalculateLayout(nextProps.layout, nextProps.col);
         }
-
     }
 
-    recalculateLayout = (layout: DragactLayoutItem[]) => {
-        layout = correctLayout(layout, this.props.col)
-        return compactLayout(layout, undefined, this.state.mapLayout);
+    recalculateLayout = (layout: DragactLayoutItem[], col: number) => {
+        const corrected = correctLayout(layout, col)
+        const { compacted, mapLayout } = compactLayout(corrected, undefined, undefined);
+        this.setState({
+            layout: compacted,
+            mapLayout: mapLayout,
+            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight, false)
+        })
     }
 
     componentDidMount() {
         setTimeout(() => {
-            const { compacted, mapLayout } = this.recalculateLayout(this.state.layout);
-            this.setState({
-                layout: compacted,
-                mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight, false)
-            }, () => {
-                this.cachingLayout();
-                this.storeLayoutToHistory();
-            })
+            this.recalculateLayout(this.state.layout, this.props.col)
         }, 1);
     }
 
