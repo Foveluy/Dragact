@@ -47,7 +47,7 @@ export class HistoryDragact extends React.Component<DragactProps, HistoryDragact
           if(!last) {
               return;
           }
-          this._changeDractLayouts(last);
+          this._changeDragactLayouts(last);
       }
   }
 
@@ -58,13 +58,12 @@ export class HistoryDragact extends React.Component<DragactProps, HistoryDragact
       this._cachingLayouts(this._dragact);
       this._storeLayoutToHistory(this._cacheLayouts);
       const initiateSnapShot = this._actionsHistory[0];
-      this._changeDractLayouts(initiateSnapShot);        
+      this._changeDragactLayouts(initiateSnapShot);        
   }
   
   clear = () => {
-      const initiateSnapShot = this._actionsHistory[0];
       this._actionsHistory = this._actionsHistory.slice(0, 1);
-      this._changeDractLayouts(initiateSnapShot);
+      this._changeDragactLayouts(this._actionsHistory[0]);
   }
 
   onDragStart = (event: GridItemEvent) => {
@@ -77,7 +76,7 @@ export class HistoryDragact extends React.Component<DragactProps, HistoryDragact
       this.props.onDragEnd && this.props.onDragEnd(event)
   }
 
-  _changeDractLayouts = (snapshot: string) => {
+  _changeDragactLayouts = (snapshot: string) => {
       if(!this._dragact) {
           return;
       }
@@ -118,5 +117,5 @@ export class HistoryDragact extends React.Component<DragactProps, HistoryDragact
   render () {
       const layout = this.state.layout;
       return <Dragact ref={this._dragactRefCallback} {...this.props} layout={layout} onDragStart={this.onDragStart} onDragEnd={this.onDragEnd} />
-      }
+    }
 }

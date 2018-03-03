@@ -87,10 +87,6 @@ export interface DragactProps {
     placeholder?: Boolean
 
     style?: React.CSSProperties
-
-    /** 是否记忆操作 */
-    history?: boolean
-
 }
 
 export interface mapLayout {
