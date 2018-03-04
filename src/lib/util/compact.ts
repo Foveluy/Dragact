@@ -39,7 +39,7 @@ export const compactLayout = function () {
     var _cache: any = {
     };
 
-    return function (layout: DragactLayoutItem[], movingItem: GridItemEvent | undefined, mapedLayout: any) {
+    return function (layout: DragactLayoutItem[], movingItem: GridItemEvent | undefined, mapedLayout: mapLayout | undefined) {
         if (movingItem) {
             if (_cache.GridX === movingItem.GridX
                 && _cache.GridY === movingItem.GridY &&
