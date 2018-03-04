@@ -15,6 +15,7 @@ import { SortedTableWithStatic } from "./StaticWidget/index";
 import { LayoutRestore } from "./LayoutRestore/index";
 import { HandleLayout } from "./HandleLayout/index";
 import { AddRemove } from "./AddRemove/index";
+import { HistoryDemo } from "./HistoryLayout/index";
 import { Mobile } from "./mobileLayout/index";
 import './index.css';
 // import { Dragact } from "./lib/dragact";
@@ -25,7 +26,8 @@ var DemoMap = {
     LayoutRestore: React.createElement(LayoutRestore, null),
     HandleLayout: React.createElement(HandleLayout, null),
     AddRemove: React.createElement(AddRemove, null),
-    Mobile: React.createElement(Mobile, null)
+    Mobile: React.createElement(Mobile, null),
+    HistoryLayout: React.createElement(HistoryDemo, null)
 };
 var DemoDispatcher = /** @class */ (function (_super) {
     __extends(DemoDispatcher, _super);
@@ -51,6 +53,7 @@ var DemoDispatcher = /** @class */ (function (_super) {
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('normalLayout'); } }, "\u666E\u901A\u5E03\u5C40"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('StaticHeader'); } }, "\u9759\u6001\u7EC4\u4EF6"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('LayoutRestore'); } }, "\u5B58\u50A8\u5E03\u5C40"),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('HistoryLayout'); } }, "\u8BB0\u5FC6\u64CD\u4F5C\u5E03\u5C40"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('HandleLayout'); } }, "\u62D6\u62FD\u628A\u624B"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('AddRemove'); } }, "\u589E\u52A0\u548C\u5220\u9664"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('Mobile'); } }, "\u79FB\u52A8\u7AEF")),

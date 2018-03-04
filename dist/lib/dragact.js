@@ -44,6 +44,7 @@ var Dragact = /** @class */ (function (_super) {
                     dragType: 'resize'
                 });
             }
+            _this.props.onDragStart && _this.props.onDragStart(layoutItem);
         };
         _this.onResizing = function (layoutItem) {
             var newLayout = layoutCheck(_this.state.layout, layoutItem, layoutItem.UniqueKey + '', layoutItem.UniqueKey + '', 0);
@@ -65,6 +66,15 @@ var Dragact = /** @class */ (function (_super) {
                 containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight)
             });
             _this.props.onDragEnd && _this.props.onDragEnd(layoutItem);
+        };
+        _this.recalculateLayout = function (layout, col) {
+            var corrected = correctLayout(layout, col);
+            var _a = compactLayout(corrected, undefined, undefined), compacted = _a.compacted, mapLayout = _a.mapLayout;
+            _this.setState({
+                layout: compacted,
+                mapLayout: mapLayout,
+                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight, false)
+            });
         };
         _this.onDrag = _this.onDrag.bind(_this);
         _this.onDragStart = _this.onDragStart.bind(_this);
@@ -159,7 +169,7 @@ var Dragact = /** @class */ (function (_super) {
                 _loop_1(key);
             }
         }
-        if (this.props.layout.length < nextProps.layout.length) {
+        else if (this.props.layout.length < nextProps.layout.length) {
             var item;
             for (var idx in nextProps.layout) {
                 var i = nextProps.layout[idx];
@@ -179,17 +189,14 @@ var Dragact = /** @class */ (function (_super) {
                 });
             }
         }
+        else {
+            this.recalculateLayout(nextProps.layout, nextProps.col);
+        }
     };
     Dragact.prototype.componentDidMount = function () {
         var _this = this;
         setTimeout(function () {
-            var layout = correctLayout(_this.state.layout, _this.props.col);
-            var _a = compactLayout(layout, undefined, _this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
-            _this.setState({
-                layout: compacted,
-                mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight, false)
-            });
+            _this.recalculateLayout(_this.state.layout, _this.props.col);
         }, 1);
     };
     Dragact.prototype.getGridItem = function (child, index) {
