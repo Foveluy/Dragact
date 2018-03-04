@@ -114,7 +114,7 @@ var GridItem = /** @class */ (function (_super) {
             return;
         var _b = this.calGridXY(x, y), GridX = _b.GridX, GridY = _b.GridY;
         this.props.onDragStart && this.props.onDragStart({
-            event: event, GridX: GridX, GridY: GridY, w: w, h: h, UniqueKey: UniqueKey + ''
+            event: null, GridX: GridX, GridY: GridY, w: w, h: h, UniqueKey: UniqueKey + ''
         });
     };
     GridItem.prototype.onDrag = function (event, x, y) {
@@ -133,11 +133,11 @@ var GridItem = /** @class */ (function (_super) {
             this.props.onDragEnd({ GridX: GridX, GridY: GridY, w: w, h: h, UniqueKey: UniqueKey + '', event: event });
     };
     GridItem.prototype.render = function () {
+        var _this = this;
         var _a = this.props, w = _a.w, h = _a.h, style = _a.style, bounds = _a.bounds, GridX = _a.GridX, GridY = _a.GridY, handle = _a.handle, canDrag = _a.canDrag, canResize = _a.canResize;
         var _b = this.calGridItemPosition(GridX, GridY), x = _b.x, y = _b.y;
         var _c = this.calWHtoPx(w, h), wPx = _c.wPx, hPx = _c.hPx;
-        return (React.createElement(Dragger, { style: __assign({}, style, { width: wPx, height: hPx, position: 'absolute', transition: this.props.isUserMove ? '' : 'all .2s ease-out', zIndex: this.props.isUserMove ? (this.props.dragType === 'drag' ? 10 : 2) : 2 }), onDragStart: this.onDragStart, onMove: this.onDrag, onDragEnd: this.onDragEnd, onResizeStart: this.onResizeStart, onResizing: this.onResizing, onResizeEnd: this.onResizeEnd, x: x, y: y, w: wPx, h: hPx, isUserMove: this.props.isUserMove, bounds: bounds, handle: handle, canDrag: canDrag, canResize: canResize },
-            React.createElement("div", { style: { height: '100%', width: "100%" } }, React.Children.map(this.props.children, function (child) { return child; }))));
+        return (React.createElement(Dragger, { style: __assign({}, style, { width: wPx, height: hPx, position: 'absolute', transition: this.props.isUserMove ? '' : 'all .2s ease-out', zIndex: this.props.isUserMove ? (this.props.dragType === 'drag' ? 10 : 2) : 2 }), onDragStart: this.onDragStart, onMove: this.onDrag, onDragEnd: this.onDragEnd, onResizeStart: this.onResizeStart, onResizing: this.onResizing, onResizeEnd: this.onResizeEnd, x: x, y: y, w: wPx, h: hPx, isUserMove: this.props.isUserMove, bounds: bounds, handle: handle, canDrag: canDrag, canResize: canResize }, function (provided, draggerProps, resizerProps) { return _this.props.children(provided, draggerProps, resizerProps); }));
     };
     GridItem.defaultProps = {
         col: 12,

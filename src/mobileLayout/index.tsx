@@ -1,33 +1,29 @@
 import *as React from 'react';
-import { Dragact, DragactLayoutItem } from '../lib/dragact'
+import { Dragact, DragactLayoutItem } from '../../src/lib/dragact'
 import { Words } from './largedata'
 import './index.css';
-
-
-interface CardItem {
-    content: string,
-    img: string
-}
-
-
 
 const fakeData = () => {
     var Y = 0;
     return Words.map((item, index) => {
         if (index % 4 === 0) Y++;
 
-        return { ...item, GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '', canResize: false }
+        return { ...item, GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '' }
     })
 }
 
 
-const Card = (props: any) => {
-    const item: CardItem = props.item;
-    const isDragging: Boolean = props.isDragging;
+const Card: (any: any) => any = ({ item, provided }) => {
     return (
         <div
             className='layout-Item'
-            style={{ background: `${isDragging ? '#eaff8f' : 'white'}` }}>
+            {...provided.props}
+            {...provided.dragHandle}
+            style={{
+                ...provided.props.style,
+                background: `${provided.isDragging ? '#eaff8f' : 'white'}`
+            }}
+        >
             <div
                 style={{ padding: 5, textAlign: 'center', color: '#595959' }}
             >
@@ -38,7 +34,6 @@ const Card = (props: any) => {
         </div>
     )
 }
-
 
 export class Mobile extends React.Component<{}, {}> {
     render() {
@@ -69,10 +64,10 @@ export class Mobile extends React.Component<{}, {}> {
                             background: '#003A8C'
                         }}
                     >
-                        {(item: DragactLayoutItem, isDragging: Boolean) => {
+                        {(item: DragactLayoutItem, provided: any) => {
                             return <Card
                                 item={item}
-                                isDragging={isDragging}
+                                provided={provided}
                             />
                         }}
                     </Dragact>

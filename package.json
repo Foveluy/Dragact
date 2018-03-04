@@ -1,7 +1,7 @@
 {
   "name": "dragact",
-  "version": "0.1.6",
-  "description": "",
+  "version": "0.1.8",
+  "description": "A powerful draggable layout system",
   "main": "index.js",
   "scripts": {
     "temp": "NODE_ENV=production webpack -p --config webpack.pro.config.js ",
@@ -56,12 +56,14 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-plugin-transform-runtime": "^6.23.0",
+    "highlightjs": "^9.10.0",
     "jest": "^22.3.0",
     "power-assert": "^1.4.4",
     "prop-types": "^15.5.10",
     "react": "^16.3.0-alpha.1",
     "react-dom": "^16.3.0-alpha.1",
     "reselect": "^3.0.1",
+    "showdown": "^1.8.6",
     "typescript-babel-jest": "^1.0.5"
   }
 }

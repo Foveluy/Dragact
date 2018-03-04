@@ -28,7 +28,7 @@ export const correctLayout = (layout: DragactLayoutItem[], col: number) => {
         correctItem(copy[i + 1], col);
 
         if (collision(copy[i], copy[i + 1])) {
-            copy = layoutCheck(copy, <GridItemEvent>copy[i], (<GridItemEvent>copy[i]).UniqueKey, (<GridItemEvent>copy[i]).UniqueKey, 0)
+            copy = layoutCheck(copy, <GridItemEvent>copy[i], (<GridItemEvent>copy[i]).UniqueKey + '', (<GridItemEvent>copy[i]).UniqueKey + '', 0)
         }
     }
 

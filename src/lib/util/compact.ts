@@ -10,7 +10,7 @@ import { GridItemEvent } from "../GridItem";
  */
 export const compactItem = (finishedLayout: DragactLayoutItem[], item: DragactLayoutItem) => {
     if (item.static) return item;
-    const newItem = { ...item }
+    const newItem = { ...item, key: item.key + '' }
     if (finishedLayout.length === 0) {
         return { ...newItem, GridY: 0 }
     }
@@ -39,7 +39,7 @@ export const compactLayout = function () {
     var _cache: any = {
     };
 
-    return function (layout: DragactLayoutItem[], movingItem: GridItemEvent | undefined, mapedLayout: any) {
+    return function (layout: DragactLayoutItem[], movingItem: GridItemEvent | undefined, mapedLayout: mapLayout | undefined) {
         if (movingItem) {
             if (_cache.GridX === movingItem.GridX
                 && _cache.GridY === movingItem.GridY &&
@@ -58,6 +58,7 @@ export const compactLayout = function () {
         const needCompact = Array(layout.length)
         const compareList = []
         const mapLayout: mapLayout = {};
+
 
         for (let i = 0, length = sorted.length; i < length; i++) {
             let finished = compactItem(compareList, sorted[i])

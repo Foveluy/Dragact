@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Dragact } from '../lib/dragact'
+import { Dragact } from '../../src/lib/dragact'
 import './index.css'
 
 const Words = [
@@ -19,13 +19,15 @@ const fakeData = () => {
     })
 }
 
-const Cell = (props: any) => {
-    const { item } = props;
+const Cell: (any: any) => any = ({ item, provided }) => {
     return (
-        <div className={`layout-Cell ${item.static ? "static" : ""}`}
-            style={{ background: item.static ? "#e8e8e8" : "", width: "100%" }}
+        <div
+            {...provided.props}
+            {...provided.dragHandle}
+            className={`layout-Cell ${item.static ? "static" : ""}`}
+            style={{ ...provided.props.style, background: item.static ? "#e8e8e8" : "" }}
         >
-            <div style={{ padding:10,color: '#595959' }}>{item.content}</div>
+            <div style={{ padding: 10, color: '#595959' }}>{item.content}</div>
         </div>
     )
 }
@@ -44,8 +46,8 @@ export const SortedTableWithStatic = () => {
                     layout={fakeData()}
                     placeholder={true}
                 >
-                    {(item: any, isDragging: number) => {
-                        return <Cell item={item} />
+                    {(item: any, provided: any) => {
+                        return <Cell item={item} provided={provided} />
                     }}
                 </Dragact>
             </div>

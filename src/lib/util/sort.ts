@@ -22,19 +22,22 @@ export const sortLayout = (layout: any) => {
  * 这个函数带有记忆功能
  */
 export const getMaxContainerHeight = function () {
-    var lastOneGridY = 0;
-    return function (layout: DragactLayoutItem[], elementHeight = 30, elementMarginBottom = 10, currentHeight: number) {
-        const length = layout.length;
-        const currentLastOne = layout[length - 1];
-        if (currentLastOne.GridY === lastOneGridY) {
-            return currentHeight
+    var lastOneYNH = 0;
+    return function (layout: DragactLayoutItem[], elementHeight = 30, elementMarginBottom = 10, currentHeight: number, useCache?: Boolean) {
+        if (useCache !== false) {
+            const length = layout.length;
+            const currentLastOne = layout[length - 1];
+            if (currentLastOne.GridY + currentLastOne.h === lastOneYNH) {
+                return currentHeight
+            }
+            lastOneYNH = currentLastOne.GridY + currentLastOne.h;
         }
-        lastOneGridY = currentLastOne.GridY;
         const ar = layout.map((item) => {
             return item.GridY + item.h
         })
         const h = quickSort(ar)[ar.length - 1];
         const height = h * (elementHeight + elementMarginBottom) + elementMarginBottom
+
         return height
     }
 }();

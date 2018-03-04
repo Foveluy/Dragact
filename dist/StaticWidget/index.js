@@ -7,7 +7,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 import * as React from 'react';
-import { Dragact } from '../lib/dragact';
+import { Dragact } from '../../src/lib/dragact';
 import './index.css';
 var Words = [
     { content: 'Sorry I just can not move in any circumstances', static: true },
@@ -24,16 +24,16 @@ var fakeData = function () {
         return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 4, key: index + '', canResize: false });
     });
 };
-var Cell = function (props) {
-    var item = props.item;
-    return (React.createElement("div", { className: "layout-Cell " + (item.static ? "static" : ""), style: { background: item.static ? "#e8e8e8" : "" } },
-        React.createElement("div", { style: { paddingLeft: 12, color: '#595959' } }, item.content)));
+var Cell = function (_a) {
+    var item = _a.item, provided = _a.provided;
+    return (React.createElement("div", __assign({}, provided.props, provided.dragHandle, { className: "layout-Cell " + (item.static ? "static" : ""), style: __assign({}, provided.props.style, { background: item.static ? "#e8e8e8" : "" }) }),
+        React.createElement("div", { style: { padding: 10, color: '#595959' } }, item.content)));
 };
 export var SortedTableWithStatic = function () {
     return (React.createElement("div", { style: { display: 'flex', justifyContent: 'center' } },
         React.createElement("div", null,
             React.createElement("h1", { style: { textAlign: 'center' } }, "\u9759\u6001\u7EC4\u4EF6 Demo"),
-            React.createElement(Dragact, { width: 600, col: 16, rowHeight: 30, margin: [2, 2], className: 'normal-layout', layout: fakeData(), placeholder: true }, function (item, isDragging) {
-                return React.createElement(Cell, { item: item });
+            React.createElement(Dragact, { width: 600, col: 16, rowHeight: 30, margin: [2, 2], className: 'normal-layout', layout: fakeData(), placeholder: true }, function (item, provided) {
+                return React.createElement(Cell, { item: item, provided: provided });
             }))));
 };

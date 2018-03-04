@@ -17,12 +17,12 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 import * as React from 'react';
-import { Dragact } from '../lib/dragact';
+import { Dragact } from '../../src/lib/dragact';
 import './index.css';
 var Words = [
     { content: 'You can do anything, but not everything.' },
     { content: 'Those who dare to fail miserably can achieve greatly.' },
-    { content: 'You miss 100 percent of the shots you never take.', handle: true },
+    { content: 'You miss 100 percent of the shots you never take.' },
     { content: 'Those who believe in telekinetics, raise my hand.' },
     { content: 'I’d rather live with a good question than a bad answer.' }
 ];
@@ -34,10 +34,17 @@ var fakeData = function () {
         return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 2, key: index + '' });
     });
 };
-var Card = function (props) {
-    var item = props.item;
-    return (React.createElement("div", { className: 'layout-Item' },
-        React.createElement("div", { style: { padding: 5, textAlign: 'center', color: '#595959' } }, item.handle ? React.createElement("div", { className: 'card-handle', id: "dragact-handle" }, "\u70B9\u6211\u62D6\u52A8") : item.content)));
+var Card = function (_a) {
+    var item = _a.item, provided = _a.provided;
+    var style = { padding: 5, textAlign: 'center', color: '#595959' };
+    if (item.key !== '3') {
+        return (React.createElement("div", __assign({ className: 'layout-Item' }, provided.props, provided.dragHandle),
+            React.createElement("div", { style: style }, item.content)));
+    }
+    return (React.createElement("div", __assign({ className: 'layout-Item' }, provided.props),
+        React.createElement("div", { style: style },
+            item.content,
+            React.createElement("div", __assign({ className: 'card-handle' }, provided.dragHandle), "\u70B9\u6211\u62D6\u52A8"))));
 };
 var HandleLayout = /** @class */ (function (_super) {
     __extends(HandleLayout, _super);
@@ -59,8 +66,8 @@ var HandleLayout = /** @class */ (function (_super) {
             React.createElement("div", { style: { display: 'flex', justifyContent: 'center' } },
                 React.createElement("div", null,
                     React.createElement("h1", { style: { textAlign: 'center' } }, "\u62D6\u62FD\u628A\u624B Demo"),
-                    React.createElement(Dragact, __assign({}, dragactInit), function (item, isDragging) {
-                        return React.createElement(Card, { item: item });
+                    React.createElement(Dragact, __assign({}, dragactInit), function (item, provided) {
+                        return React.createElement(Card, { item: item, provided: provided });
                     })))));
     };
     return HandleLayout;

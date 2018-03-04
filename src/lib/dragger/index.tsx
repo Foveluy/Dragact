@@ -64,11 +64,15 @@ interface DraggerProps {
     canDrag?: Boolean;
 
     canResize?: Boolean;
+
+    children: (provided: any, resizeMix: any, dragMix: any) => any;
 }
+
 
 export class Dragger extends React.Component<DraggerProps, {}> {
     parent: any;
     self: any;
+    Ref: any;
 
     constructor(props: DraggerProps) {
         super(props)
@@ -187,7 +191,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
          * 调整手感 
          * 无论是向上移动还是向下移动，全部都是根据重力中心
          * */
-        const height = (this.refs['dragger'] as HTMLDivElement).getClientRects()[0].height;
+        const height = (this.Ref as HTMLDivElement).getClientRects()[0].height;
         const upNdown = this.state.y - deltaY;
         const fixY = deltaY + (upNdown >= 0 ? 0 : height / 2);
         /**移动时回调，用于外部控制 */
@@ -203,9 +207,10 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
         doc.body.style.userSelect = 'none'
 
-        if (this.props.handle) {
-            if (event.target.id !== 'dragact-handle') return
-        }
+       
+
+        // if (event.target.id !== 'dragact-handle') return
+
 
         /**
          * 把监听事件的回掉函数，绑定在document上
@@ -239,9 +244,11 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             this.self = event.currentTarget
         }
 
+       
+
         this.props.onDragStart && this.props.onDragStart(this.state.x, this.state.y)
 
-
+        
         let originX, originY;
         if (event.type.indexOf('mouse') >= 0) {
             originX = (event as MouseEvent).clientX
@@ -250,6 +257,8 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             originX = (event as TouchEvent).touches[0].clientX
             originY = (event as TouchEvent).touches[0].clientY
         }
+
+        
 
         this.setState({
             originX: originX,
@@ -372,24 +381,17 @@ export class Dragger extends React.Component<DraggerProps, {}> {
     }
 
     mixin = () => {
-        var dragMix = {};
-        if (this.props.canDrag === void 666 || this.props.canDrag === true) {
-            dragMix = {
-                onMouseDown: this.onDragStart,
-                onTouchStart: this.onDragStart,
-                onTouchEnd: this.onDragEnd,
-                onMouseUp: this.onDragEnd
-            }
-        }
+        var dragMix = {
+            onMouseDown: this.onDragStart,
+            onTouchStart: this.onDragStart,
+            onTouchEnd: this.onDragEnd,
+            onMouseUp: this.onDragEnd
+        };
 
-        var resizeMix = {}
-        if (this.props.canResize === void 666 || this.props.canDrag === true) {
-            resizeMix = {
-                onMouseDown: this.onResizeStart,
-                onMouseUp: this.onResizeEnd
-            }
+        var resizeMix = {
+            onMouseDown: this.onResizeStart,
+            onMouseUp: this.onResizeEnd
         }
-
         return {
             dragMix, resizeMix
         };
@@ -416,31 +418,42 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         const { dragMix, resizeMix } = this.mixin();
 
         /**主要是为了让用户定义自己的className去修改css */
-        const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
-        return (
-            <div className={`${fixedClassName}WrapDragger`}
-                ref={'dragger'}
-                style={{
-                    ...style,
-                    touchAction: 'none!important',
-                    transform: `translate(${x}px,${y}px)`,
-                    width: w,
-                    height: h,
-                }}
-                {...dragMix}
-            >
-                {this.props.children ? React.Children.only(this.props.children) : null}
-                {canResize !== false ?
-                    <span
-                        {...resizeMix}
-                        style={{
-                            position: 'absolute',
-                            width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
-                            borderRight: '2px solid rgba(15,15,15,0.2)',
-                            borderBottom: '2px solid rgba(15,15,15,0.2)'
-                        }}
-                    /> : null}
-            </div>
-        )
+        // const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
+        resizeMix;
+        canResize;
+        className;
+
+
+        const provided = {
+            style: {
+                ...style,
+                touchAction: 'none!important',
+                transform: `translate(${x}px,${y}px)`,
+                width: w,
+                height: h,
+            },
+            ref: (node: any) => this.Ref = node
+        }
+
+        return this.props.children(provided, dragMix, resizeMix)
     }
 }
+
+
+// return (
+//     <div className={`${fixedClassName}WrapDragger`}
+//         ref={'dragger'}
+//     >
+//         {this.props.children(provided)}
+//         {canResize !== false ?
+//             <span
+//                 {...resizeMix}
+//                 style={{
+//                     position: 'absolute',
+//                     width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
+//                     borderRight: '2px solid rgba(15,15,15,0.2)',
+//                     borderBottom: '2px solid rgba(15,15,15,0.2)'
+//                 }}
+//             /> : null}
+//     </div>
+// )

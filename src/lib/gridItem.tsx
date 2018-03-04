@@ -31,7 +31,7 @@ export interface GridItemProps {
 
     isUserMove: Boolean
 
-    UniqueKey?: string | number
+    UniqueKey?: string
 
     static?: Boolean
 
@@ -46,6 +46,8 @@ export interface GridItemProps {
     canDrag?: Boolean
 
     canResize?: Boolean
+
+    children: (provided: any, draggerProps: any, resizerProps: any) => any;
 }
 
 export interface GridItemEvent {
@@ -161,12 +163,13 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
 
     onDragStart(x: number, y: number) {
         const { w, h, UniqueKey } = this.props;
+
         if (this.props.static) return;
 
         const { GridX, GridY } = this.calGridXY(x, y)
 
         this.props.onDragStart && this.props.onDragStart({
-            event, GridX, GridY, w, h, UniqueKey: UniqueKey + ''
+            event: null, GridX, GridY, w, h, UniqueKey: UniqueKey + ''
         })
     }
     onDrag(event: any, x: number, y: number) {
@@ -231,7 +234,7 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
                 canDrag={canDrag}
                 canResize={canResize}
             >
-                {this.props.children}
+                {(provided, draggerProps, resizerProps) => this.props.children(provided, draggerProps, resizerProps)}
             </Dragger>
         )
     }

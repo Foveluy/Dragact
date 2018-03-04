@@ -24,7 +24,7 @@ export var correctLayout = function (layout, col) {
         correctItem(copy[i], col);
         correctItem(copy[i + 1], col);
         if (collision(copy[i], copy[i + 1])) {
-            copy = layoutCheck(copy, copy[i], copy[i].UniqueKey, copy[i].UniqueKey, 0);
+            copy = layoutCheck(copy, copy[i], copy[i].UniqueKey + '', copy[i].UniqueKey + '', 0);
         }
     }
     return copy;

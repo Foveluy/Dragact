@@ -17,7 +17,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 import * as React from 'react';
-import { Dragact } from '../lib/dragact';
+import { Dragact } from '../../src/lib/dragact';
 import { Words } from './largedata';
 import './index.css';
 var fakeData = function () {
@@ -25,13 +25,12 @@ var fakeData = function () {
     return Words.map(function (item, index) {
         if (index % 4 === 0)
             Y++;
-        return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '', canResize: false });
+        return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '' });
     });
 };
-var Card = function (props) {
-    var item = props.item;
-    var isDragging = props.isDragging;
-    return (React.createElement("div", { className: 'layout-Item', style: { background: "" + (isDragging ? '#eaff8f' : 'white') } },
+var Card = function (_a) {
+    var item = _a.item, provided = _a.provided;
+    return (React.createElement("div", __assign({ className: 'layout-Item' }, provided.props, provided.dragHandle, { style: __assign({}, provided.props.style, { background: "" + (provided.isDragging ? '#eaff8f' : 'white') }) }),
         React.createElement("div", { style: { padding: 5, textAlign: 'center', color: '#595959' } },
             React.createElement("span", null, "title"),
             React.createElement("div", { style: { borderBottom: '1px solid rgba(120,120,120,0.1)' } }),
@@ -60,8 +59,8 @@ var Mobile = /** @class */ (function (_super) {
                 React.createElement("h1", { style: { textAlign: 'center' } }, "\u624B\u673A\u666E\u901A\u5E03\u5C40demo"),
                 React.createElement(Dragact, __assign({}, dragactInit, { placeholder: true, style: {
                         background: '#003A8C'
-                    } }), function (item, isDragging) {
-                    return React.createElement(Card, { item: item, isDragging: isDragging });
+                    } }), function (item, provided) {
+                    return React.createElement(Card, { item: item, provided: provided });
                 }))));
     };
     return Mobile;

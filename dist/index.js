@@ -14,16 +14,17 @@ import { LayoutDemo } from './NormalLayout/index';
 import { SortedTableWithStatic } from "./StaticWidget/index";
 import { LayoutRestore } from "./LayoutRestore/index";
 import { HandleLayout } from "./HandleLayout/index";
-// import { AddRemove } from "./AddRemove/index";
+import { AddRemove } from "./AddRemove/index";
 import { Mobile } from "./mobileLayout/index";
 import './index.css';
+// import { Dragact } from "./lib/dragact";
 var DemoMap = {
     normalLayout: React.createElement(LayoutDemo, null),
     // SortedTable: <SortedTable />,
     StaticHeader: React.createElement(SortedTableWithStatic, null),
     LayoutRestore: React.createElement(LayoutRestore, null),
     HandleLayout: React.createElement(HandleLayout, null),
-    // AddRemove: <AddRemove />,
+    AddRemove: React.createElement(AddRemove, null),
     Mobile: React.createElement(Mobile, null)
 };
 var DemoDispatcher = /** @class */ (function (_super) {
@@ -43,17 +44,70 @@ var DemoDispatcher = /** @class */ (function (_super) {
     DemoDispatcher.prototype.render = function () {
         var _this = this;
         return (React.createElement("div", null,
+            React.createElement("iframe", { src: "https://ghbtns.com/github-btn.html?user=215566435&repo=Dragact&type=star&count=true&size=large", frameBorder: '0', scrolling: "0", width: "160px", height: "30px" }),
+            React.createElement("iframe", { src: "https://ghbtns.com/github-btn.html?user=215566435&repo=Dragact&type=fork&count=true&size=large", frameBorder: "0", scrolling: "0", width: "158px", height: "30px" }),
             React.createElement("div", null, "\u5207\u6362 Demos"),
             React.createElement("div", { className: 'demo-button-layout' },
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('normalLayout'); } }, "\u666E\u901A\u5E03\u5C40"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('StaticHeader'); } }, "\u9759\u6001\u7EC4\u4EF6"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('LayoutRestore'); } }, "\u5B58\u50A8\u5E03\u5C40"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('HandleLayout'); } }, "\u62D6\u62FD\u628A\u624B"),
+                React.createElement("button", { onClick: function () { return _this.handleLayoutChange('AddRemove'); } }, "\u589E\u52A0\u548C\u5220\u9664"),
                 React.createElement("button", { onClick: function () { return _this.handleLayoutChange('Mobile'); } }, "\u79FB\u52A8\u7AEF")),
             this.state.demo));
     };
     return DemoDispatcher;
 }(React.Component));
-React.createElement(DemoDispatcher, null);
+{ }
+//<Dragact/> */}
+// const fakeData = [
+//     { GridX: 0, GridY: 0, w: 4, h: 2, key: '0' },
+//     { GridX: 0, GridY: 0, w: 4, h: 2, key: '1' },
+//     { GridX: 0, GridY: 0, w: 4, h: 2, key: '2' }
+// ]
+// const getblockStyle = (isDragging: Boolean) => {
+//     return {
+//         background: isDragging ? '#1890ff' : 'white',
+//     }
+// };
+// const Handle = ({ provided }: any) => {
+//     return (
+//         <div
+//             {...provided.dragHandle}
+//             style={{
+//                 ...getblockStyle(provided.isDragging),
+//                 borderBottom: '1px solid rgba(120,120,120,0.3)',
+//                 textAlign: 'center'
+//             }}
+//         >
+//             点击拖拽
+//         </div>
+//     )
+// }
+// ReactDOM.render(
+//     <Dragact
+//         layout={fakeData}//必填项
+//         col={16}//必填项
+//         width={800}//必填项
+//         rowHeight={40}//必填项
+//         margin={[5, 5]}//必填项
+//         className='plant-layout'//必填项
+//         style={{ background: '#333' }}//非必填项
+//         placeholder={true}//非必填项
+//     >
+//         {(item: any, provided: any) => {
+//             return (
+//                 <div
+//                     {...provided.props}
+//                     style={{ ...provided.props.style, background: 'white' }}
+//                 >
+//                     <Handle provided={provided} />
+//                     {provided.isDragging ? '正在抓取' : '停放'}
+//                 </div>
+//             )
+//         }}
+//     </Dragact>,
+//     document.getElementById('root')
+// );
 ReactDOM.render(React.createElement(DemoDispatcher, null), document.getElementById('root'));
 document.addEventListener('touchmove', function (e) { e.preventDefault(); }, false);
