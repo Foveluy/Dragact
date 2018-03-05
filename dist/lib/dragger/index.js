@@ -23,6 +23,7 @@ var Dragger = /** @class */ (function (_super) {
     __extends(Dragger, _super);
     function Dragger(props) {
         var _this = _super.call(this, props) || this;
+        _this.mQue = 0;
         _this.state = {
             /** x轴位移，单位是px */
             x: _this.props.x || 0,
@@ -229,6 +230,17 @@ var Dragger = /** @class */ (function (_super) {
             doc.removeEventListener('mouseup', _this.onResizeEnd);
             _this.props.onResizeEnd && _this.props.onResizeEnd(event, _this.state.w, _this.state.h);
         };
+        _this.movePerFrame = function (delt) {
+            _this.setState({
+                y: _this.state.y + delt
+            });
+            _this.mQue++;
+            if (_this.mQue >= 10) {
+                _this.mQue = 0;
+                return;
+            }
+            requestAnimationFrame(function () { return _this.movePerFrame(delt); });
+        };
         _this.mixin = function () {
             var dragMix = {
                 onMouseDown: _this.onDragStart,
@@ -250,19 +262,6 @@ var Dragger = /** @class */ (function (_super) {
         _this.self = null;
         return _this;
     }
-    Dragger.prototype.componentDidMount = function () {
-        /**
-         * 这个函数只会调用一次
-         * 这个只是一个临时的解决方案，因为这样会使得元素进行两次刷新
-        */
-        // if (typeof this.props.x === 'number' &&
-        //     typeof this.props.y === 'number') {
-        //     this.setState({
-        //         x: this.props.x,
-        //         y: this.props.y
-        //     })
-        // }
-    };
     Dragger.prototype.componentWillReceiveProps = function (nextProps) {
         /**
          * 外部props 改变的时候更新元素的内部位置
@@ -274,8 +273,8 @@ var Dragger = /** @class */ (function (_super) {
             if (typeof nextProps.x === 'number' &&
                 typeof nextProps.y === 'number') {
                 this.setState({
-                    x: nextProps.x,
                     y: nextProps.y,
+                    x: nextProps.x,
                     lastX: nextProps.x,
                     lastY: nextProps.y,
                     w: nextProps.w,
@@ -287,7 +286,7 @@ var Dragger = /** @class */ (function (_super) {
     Dragger.prototype.render = function () {
         var _this = this;
         var _a = this.state, x = _a.x, y = _a.y, w = _a.w, h = _a.h;
-        var _b = this.props, style = _b.style, className = _b.className, canResize = _b.canResize;
+        var style = this.props.style;
         if (!this.props.isUserMove) {
             /**当外部设置其props的x,y初始属性的时候，我们在这里设置元素的初始位移 */
             x = this.props.x ? this.props.x : 0;
@@ -302,12 +301,7 @@ var Dragger = /** @class */ (function (_super) {
             w = w === 0 ? style.width : w;
             h = h === 0 ? style.height : h;
         }
-        var _c = this.mixin(), dragMix = _c.dragMix, resizeMix = _c.resizeMix;
-        /**主要是为了让用户定义自己的className去修改css */
-        // const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
-        resizeMix;
-        canResize;
-        className;
+        var _b = this.mixin(), dragMix = _b.dragMix, resizeMix = _b.resizeMix;
         var provided = {
             style: __assign({}, style, { touchAction: 'none!important', transform: "translate(" + x + "px," + y + "px)", width: w, height: h }),
             ref: function (node) { return _this.Ref = node; }
@@ -325,20 +319,3 @@ var Dragger = /** @class */ (function (_super) {
     return Dragger;
 }(React.Component));
 export { Dragger };
-// return (
-//     <div className={`${fixedClassName}WrapDragger`}
-//         ref={'dragger'}
-//     >
-//         {this.props.children(provided)}
-//         {canResize !== false ?
-//             <span
-//                 {...resizeMix}
-//                 style={{
-//                     position: 'absolute',
-//                     width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
-//                     borderRight: '2px solid rgba(15,15,15,0.2)',
-//                     borderBottom: '2px solid rgba(15,15,15,0.2)'
-//                 }}
-//             /> : null}
-//     </div>
-// )

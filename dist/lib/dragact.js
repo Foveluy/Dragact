@@ -25,6 +25,7 @@ import { correctLayout } from './util/correction';
 import { stringJoin } from './utils';
 import { layoutItemForkey, syncLayout } from './util/initiate';
 import './style.css';
+var wins = window;
 var Dragact = /** @class */ (function (_super) {
     __extends(Dragact, _super);
     function Dragact(props) {
@@ -76,6 +77,15 @@ var Dragact = /** @class */ (function (_super) {
                 containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight, false)
             });
         };
+        _this.onWindowResize = function (event) {
+            console.log(window.innerWidth);
+            var _a = _this.state.responsiveState, originWidth = _a.originWidth, lastWindowWidth = _a.lastWindowWidth;
+            var windowProportion = wins.innerWidth / lastWindowWidth;
+            _this.props.onWindowResize && _this.props.onWindowResize(_this.state.responsiveState);
+            _this.setState({
+                responsiveState: __assign({}, _this.state.responsiveState, { width: originWidth * windowProportion })
+            });
+        };
         _this.onDrag = _this.onDrag.bind(_this);
         _this.onDragStart = _this.onDragStart.bind(_this);
         _this.onDragEnd = _this.onDragEnd.bind(_this);
@@ -90,7 +100,12 @@ var Dragact = /** @class */ (function (_super) {
             layout: layout,
             containerHeight: 500,
             dragType: 'drag',
-            mapLayout: undefined
+            mapLayout: undefined,
+            responsiveState: {
+                width: props.width,
+                originWidth: props.width,
+                lastWindowWidth: wins.innerWidth
+            }
         };
         return _this;
     }
@@ -137,13 +152,13 @@ var Dragact = /** @class */ (function (_super) {
     Dragact.prototype.renderPlaceholder = function () {
         if (!this.state.placeholderShow)
             return null;
-        var _a = this.props, col = _a.col, width = _a.width, padding = _a.padding, rowHeight = _a.rowHeight, margin = _a.margin, placeholder = _a.placeholder;
-        var _b = this.state, GridXMoving = _b.GridXMoving, GridYMoving = _b.GridYMoving, wMoving = _b.wMoving, hMoving = _b.hMoving, placeholderMoving = _b.placeholderMoving, dragType = _b.dragType;
+        var _a = this.props, col = _a.col, padding = _a.padding, rowHeight = _a.rowHeight, margin = _a.margin, placeholder = _a.placeholder;
+        var _b = this.state, GridXMoving = _b.GridXMoving, GridYMoving = _b.GridYMoving, wMoving = _b.wMoving, hMoving = _b.hMoving, placeholderMoving = _b.placeholderMoving, dragType = _b.dragType, responsiveState = _b.responsiveState;
         if (!placeholder)
             return null;
         if (!padding)
             padding = 0;
-        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s ease-out' }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }, function (p, resizerProps) { return React.createElement("div", __assign({}, p)); }));
+        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: responsiveState.width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s ease-out' }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }, function (p, resizerProps) { return React.createElement("div", __assign({}, p)); }));
     };
     Dragact.prototype.componentWillReceiveProps = function (nextProps) {
         if (this.props.layout.length > nextProps.layout.length) {
@@ -198,16 +213,24 @@ var Dragact = /** @class */ (function (_super) {
         setTimeout(function () {
             _this.recalculateLayout(_this.state.layout, _this.props.col);
         }, 1);
+        if (this.props.responsive === void 666 || this.props.responsive === true) {
+            wins.addEventListener('resize', this.onWindowResize);
+        }
+    };
+    Dragact.prototype.componentWillUnmount = function () {
+        if (this.props.responsive === void 666 || this.props.responsive === true) {
+            wins.removeEventListener('resize', this.onWindowResize);
+        }
     };
     Dragact.prototype.getGridItem = function (child, index) {
         var _this = this;
-        var _a = this.state, dragType = _a.dragType, mapLayout = _a.mapLayout;
-        var _b = this.props, col = _b.col, width = _b.width, padding = _b.padding, rowHeight = _b.rowHeight, margin = _b.margin;
+        var _a = this.state, dragType = _a.dragType, mapLayout = _a.mapLayout, responsiveState = _a.responsiveState;
+        var _b = this.props, col = _b.col, padding = _b.padding, rowHeight = _b.rowHeight, margin = _b.margin;
         if (mapLayout) {
             var renderItem_1 = layoutItemForkey(mapLayout, child.key + '');
             if (!padding)
                 padding = 0;
-            return (React.createElement(GridItem, __assign({}, renderItem_1, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem_1.isUserMove !== void 666 ? renderItem_1.isUserMove : false, UniqueKey: child.key, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, key: child.key }), function (GridItemProvided, dragHandle, resizeHandle) { return _this.props.children(child, {
+            return (React.createElement(GridItem, __assign({}, renderItem_1, { margin: margin, col: col, containerWidth: responsiveState.width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem_1.isUserMove !== void 666 ? renderItem_1.isUserMove : false, UniqueKey: child.key, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, key: child.key }), function (GridItemProvided, dragHandle, resizeHandle) { return _this.props.children(child, {
                 isDragging: renderItem_1.isUserMove !== void 666 ? renderItem_1.isUserMove : false,
                 props: GridItemProvided,
                 dragHandle: dragHandle,
@@ -217,9 +240,9 @@ var Dragact = /** @class */ (function (_super) {
     };
     Dragact.prototype.render = function () {
         var _this = this;
-        var _a = this.props, width = _a.width, className = _a.className, layout = _a.layout, style = _a.style;
-        var containerHeight = this.state.containerHeight;
-        return (React.createElement("div", { className: stringJoin('DraggerLayout', className + ''), style: __assign({}, style, { left: 100, width: width, height: containerHeight, zIndex: 1 }) },
+        var _a = this.props, className = _a.className, layout = _a.layout, style = _a.style;
+        var _b = this.state, containerHeight = _b.containerHeight, responsiveState = _b.responsiveState;
+        return (React.createElement("div", { className: stringJoin('DraggerLayout', className + ''), style: __assign({}, style, { left: 100, width: responsiveState.width, height: containerHeight, zIndex: 1 }) },
             layout.map(function (item, index) {
                 return _this.getGridItem(item, index);
             }),
