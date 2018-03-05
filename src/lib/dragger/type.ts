@@ -53,6 +53,7 @@ export interface DraggerProps {
     onResizing?: (event: MouseEvent | TouchEvent, x: number, y: number) => void
     onResizeEnd?: (event: MouseEvent | TouchEvent, x: number, y: number) => void
 
+
     style?: React.CSSProperties,
 
     w?: number,
@@ -63,4 +64,6 @@ export interface DraggerProps {
     canDrag?: Boolean;
 
     canResize?: Boolean;
+
+    children: (provided: any, resizeMix: any, dragMix: any) => any;
 }
