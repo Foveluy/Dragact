@@ -1,6 +1,6 @@
 import { sortLayout } from "./sort";
 import { getFirstCollison } from "./collison";
-import { DragactLayoutItem, mapLayout } from "../dragact";
+import { DragactLayoutItem, mapLayout } from "../dragact-type";
 import { GridItemEvent } from "../GridItem";
 
 /**

@@ -8,6 +8,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
     parent: any;
     self: any;
     Ref: any;
+    mQue: number = 0;
 
     constructor(props: DraggerProps) {
         super(props)
@@ -60,8 +61,6 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         /*  event.client - this.state.origin 表示的是移动的距离,
         *   elX表示的是原来已经有的位移
         */
-
-
 
         let deltaX, deltaY;
         if (event.type.indexOf('mouse') >= 0) {
@@ -278,19 +277,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         this.props.onResizeEnd && this.props.onResizeEnd(event, this.state.w, this.state.h);
     }
 
-    componentDidMount() {
-        /** 
-         * 这个函数只会调用一次 
-         * 这个只是一个临时的解决方案，因为这样会使得元素进行两次刷新
-        */
-        // if (typeof this.props.x === 'number' &&
-        //     typeof this.props.y === 'number') {
-        //     this.setState({
-        //         x: this.props.x,
-        //         y: this.props.y
-        //     })
-        // }
-    }
+
 
     componentWillReceiveProps(nextProps: DraggerProps) {
         /**
@@ -300,12 +287,11 @@ export class Dragger extends React.Component<DraggerProps, {}> {
          */
         const { isUserMove } = nextProps
         if (!isUserMove) {
-
             if (typeof nextProps.x === 'number' &&
                 typeof nextProps.y === 'number') {
                 this.setState({
-                    x: nextProps.x,
                     y: nextProps.y,
+                    x: nextProps.x,
                     lastX: nextProps.x,
                     lastY: nextProps.y,
                     w: nextProps.w,
@@ -313,6 +299,19 @@ export class Dragger extends React.Component<DraggerProps, {}> {
                 })
             }
         }
+    }
+
+    movePerFrame = (delt: number) => {
+
+        this.setState({
+            y: this.state.y + delt
+        })
+        this.mQue++;
+        if (this.mQue >= 10) {
+            this.mQue = 0;
+            return
+        }
+        requestAnimationFrame(() => this.movePerFrame(delt))
     }
 
     mixin = () => {
@@ -335,7 +334,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
     render() {
 
         var { x, y, w, h } = this.state
-        var { style, className, canResize } = this.props
+        var { style } = this.props
         if (!this.props.isUserMove) {
             /**当外部设置其props的x,y初始属性的时候，我们在这里设置元素的初始位移 */
             x = this.props.x ? this.props.x : 0;
@@ -352,13 +351,6 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         }
         const { dragMix, resizeMix } = this.mixin();
 
-        /**主要是为了让用户定义自己的className去修改css */
-        // const fixedClassName = typeof className === 'undefined' ? '' : className + ' '
-        resizeMix;
-        canResize;
-        className;
-
-
         const provided = {
             style: {
                 ...style,
@@ -374,21 +366,3 @@ export class Dragger extends React.Component<DraggerProps, {}> {
     }
 }
 
-
-// return (
-//     <div className={`${fixedClassName}WrapDragger`}
-//         ref={'dragger'}
-//     >
-//         {this.props.children(provided)}
-//         {canResize !== false ?
-//             <span
-//                 {...resizeMix}
-//                 style={{
-//                     position: 'absolute',
-//                     width: 10, height: 10, right: 2, bottom: 2, cursor: 'se-resize',
-//                     borderRight: '2px solid rgba(15,15,15,0.2)',
-//                     borderBottom: '2px solid rgba(15,15,15,0.2)'
-//                 }}
-//             /> : null}
-//     </div>
-// )

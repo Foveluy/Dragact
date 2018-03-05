@@ -1,6 +1,9 @@
 v0.2.0
 - 版本跳跃
 - 添加增加add/remove
+- 新增记忆布局demo
+- 响应式布局，开启后会按照window进行缩放
+- 更新col,width,rowHeight以后，会动态进行更新
 
 v0.1.7
 - 优化性能-使用reselect的原理

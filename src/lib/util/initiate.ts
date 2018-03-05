@@ -1,4 +1,4 @@
-import { DragactLayoutItem, mapLayout } from "../dragact";
+import { DragactLayoutItem, mapLayout } from "../dragact-type";
 import { GridItemEvent } from "../GridItem";
 
 /**

@@ -1,5 +1,5 @@
 import *as React from 'react';
-import { DragactLayoutItem, GridItemProvided} from '../../src/lib/dragact'
+import { DragactLayoutItem, GridItemProvided } from '../../src/lib/dragact-type'
 import { HistoryDragact } from './HistoryLayout'
 import { Words } from './largedata';
 import './index.css';
@@ -69,17 +69,17 @@ export class HistoryDemo extends React.Component<{}, {}> {
                     <h1 style={{ textAlign: 'center' }}>
                         复原操作demo
                     </h1>
-                    <button onClick={ () => {
+                    <button onClick={() => {
                         if (this.drag) {
                             this.drag.goBack();
                         }
                     }}>back</button>
-                    <button onClick={ () => {
+                    <button onClick={() => {
                         if (this.drag) {
                             this.drag.reset();
                         }
                     }}>reset</button>
-                    <button onClick={ () => {
+                    <button onClick={() => {
                         if (this.drag) {
                             this.drag.clear();
                         }

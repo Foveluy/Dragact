@@ -1,5 +1,5 @@
 import { collision, layoutCheck } from "./collison";
-import { DragactLayoutItem } from "../dragact";
+import { DragactLayoutItem } from "../dragact-type";
 import { GridItemEvent } from "../gridItem";
 
 

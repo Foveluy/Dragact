@@ -1,4 +1,4 @@
-import { DragactLayoutItem } from "../dragact";
+import { DragactLayoutItem } from "../dragact-type";
 import { GridItemEvent } from "../gridItem";
 
 export const collision = (a: DragactLayoutItem, b: DragactLayoutItem) => {

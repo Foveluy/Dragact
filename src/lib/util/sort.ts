@@ -1,4 +1,4 @@
-import { DragactLayoutItem } from "../dragact";
+import { DragactLayoutItem } from "../dragact-type";
 
 
 export function quickSort(a: number[]): any {

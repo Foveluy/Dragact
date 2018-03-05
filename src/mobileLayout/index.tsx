@@ -1,5 +1,6 @@
 import *as React from 'react';
-import { Dragact, DragactLayoutItem } from '../../src/lib/dragact'
+import { Dragact } from '../../src/lib/dragact'
+import { DragactLayoutItem } from '../../src/lib/dragact-type'
 import { Words } from './largedata'
 import './index.css';
 

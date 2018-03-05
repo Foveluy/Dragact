@@ -139,7 +139,11 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
             this.props.GridY !== props.GridY ||
             this.props.isUserMove !== props.isUserMove ||
             this.props.w !== props.w ||
-            this.props.h !== props.h
+            this.props.h !== props.h ||
+            this.props.containerWidth !== props.containerWidth ||
+            this.props.col !== props.col ||
+            this.props.rowHeight !== this.props.rowHeight
+
     }
 
     /**宽和高计算成为px */
@@ -205,9 +209,10 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
         this.props.onResizeEnd && this.props.onResizeEnd({ GridX, GridY, w, h, UniqueKey: UniqueKey + '', event })
     }
     render() {
-        const { w, h, style, bounds, GridX, GridY, handle, canDrag, canResize } = this.props
-        const { x, y } = this.calGridItemPosition(GridX, GridY)
+        const { w, h, style, bounds, GridX, GridY, handle, canDrag, canResize } = this.props;
+        const { x, y } = this.calGridItemPosition(GridX, GridY);
         const { wPx, hPx } = this.calWHtoPx(w, h);
+       
         return (
             <Dragger
                 style={{
