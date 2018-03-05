@@ -114,7 +114,7 @@ export interface GridItemProvided {
 }
 
 export class Dragact extends React.Component<DragactProps, DragactState> {
-   
+
     constructor(props: DragactProps) {
         super(props)
         this.onDrag = this.onDrag.bind(this)
@@ -272,7 +272,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     mapLayout
                 })
             }
-        }  else  if (this.props.layout.length < nextProps.layout.length) {//add
+        } else if (this.props.layout.length < nextProps.layout.length) {//add
             var item;
             for (const idx in nextProps.layout) {
                 const i = nextProps.layout[idx];
@@ -314,6 +314,9 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         setTimeout(() => {
             this.recalculateLayout(this.state.layout, this.props.col)
         }, 1);
+        window.addEventListener('resize', (e) => {
+            console.log(window.innerWidth);
+        })
     }
 
     getGridItem(child: any, index: number) {
