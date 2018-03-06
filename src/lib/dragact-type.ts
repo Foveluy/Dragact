@@ -63,13 +63,6 @@ export interface DragactProps {
      */
     onDragEnd?: (event: GridItemEvent) => void
 
-
-    /**
-     * 响应式回掉
-     * 关闭responsive后，不会触发
-     */
-    onWindowResize?: (event: ResponsiveState) => void
-
     /**
      * 每个元素的margin,第一个参数是左右，第二个参数是上下
      */
@@ -83,20 +76,11 @@ export interface DragactProps {
     /**是否有placeholder */
     placeholder?: Boolean
 
-    /**是否响应式 */
-    responsive?: Boolean
-
     style?: React.CSSProperties
 }
 
 export interface mapLayout {
     [key: string]: DragactLayoutItem
-}
-
-interface ResponsiveState {
-    width: number
-    originWidth: number
-    lastWindowWidth: number
 }
 
 export interface DragactState {
@@ -110,7 +94,6 @@ export interface DragactState {
     containerHeight: number
     dragType: 'drag' | 'resize'
     mapLayout: mapLayout | undefined
-    responsiveState: ResponsiveState
 }
 
 export interface GridItemProvided {

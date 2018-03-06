@@ -10,7 +10,6 @@ import { DragactProps, DragactState, DragactLayoutItem } from "./dragact-type";
 
 import './style.css';
 
-const wins = window;
 
 export class Dragact extends React.Component<DragactProps, DragactState> {
 
@@ -21,6 +20,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         this.onDragEnd = this.onDragEnd.bind(this)
 
         const layout = props.layout;
+
+
         this.state = {
             GridXMoving: 0,
             GridYMoving: 0,
@@ -31,12 +32,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             layout: layout,
             containerHeight: 500,
             dragType: 'drag',
-            mapLayout: undefined,
-            responsiveState: {
-                width: props.width,
-                originWidth: props.width,
-                lastWindowWidth: wins.innerWidth
-            }
+            mapLayout: undefined
         }
     }
 
@@ -130,8 +126,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
 
     renderPlaceholder() {
         if (!this.state.placeholderShow) return null
-        var { col, padding, rowHeight, margin, placeholder } = this.props
-        const { GridXMoving, GridYMoving, wMoving, hMoving, placeholderMoving, dragType, responsiveState } = this.state
+        var { col, padding, rowHeight, margin, placeholder, width } = this.props
+        const { GridXMoving, GridYMoving, wMoving, hMoving, placeholderMoving, dragType } = this.state
 
         if (!placeholder) return null;
         if (!padding) padding = 0;
@@ -139,7 +135,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             <GridItem
                 margin={margin}
                 col={col}
-                containerWidth={responsiveState.width}
+                containerWidth={width}
                 containerPadding={[padding, padding]}
                 rowHeight={rowHeight}
                 GridX={GridXMoving}
@@ -219,30 +215,11 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             this.recalculateLayout(this.state.layout, this.props.col)
         }, 1);
 
-        if (this.props.responsive === void 666 || this.props.responsive === true) {
-            wins.addEventListener('resize', this.onWindowResize)
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.props.responsive === void 666 || this.props.responsive === true) {
-            wins.removeEventListener('resize', this.onWindowResize);
-        }
-    }
-
-    onWindowResize = (event: UIEvent) => {
-        const { originWidth, lastWindowWidth } = this.state.responsiveState;
-        const windowProportion = wins.innerWidth / lastWindowWidth;
-
-        this.props.onWindowResize && this.props.onWindowResize(this.state.responsiveState)
-        this.setState({
-            responsiveState: { ...this.state.responsiveState, width: originWidth * windowProportion }
-        })
     }
 
     getGridItem(child: any, index: number) {
-        const { dragType, mapLayout, responsiveState } = this.state;
-        var { col, padding, rowHeight, margin } = this.props;
+        const { dragType, mapLayout } = this.state;
+        var { col, padding, rowHeight, margin, width } = this.props;
         if (mapLayout) {
             const renderItem = layoutItemForkey(mapLayout, child.key + '');
             if (!padding) padding = 0;
@@ -251,7 +228,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     {...renderItem}
                     margin={margin}
                     col={col}
-                    containerWidth={responsiveState.width}
+                    containerWidth={width}
                     containerPadding={[padding, padding]}
                     rowHeight={rowHeight}
                     onDrag={this.onDrag}
@@ -280,9 +257,10 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
         const {
             className,
             layout,
-            style
+            style,
+            width
         } = this.props;
-        const { containerHeight, responsiveState } = this.state;
+        const { containerHeight } = this.state;
 
         return (
             <div
@@ -291,7 +269,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 style={{
                     ...style,
                     left: 100,
-                    width: responsiveState.width,
+                    width: width,
                     height: containerHeight,
                     zIndex: 1
                 }}
