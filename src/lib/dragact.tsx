@@ -231,7 +231,6 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
     }
 
     onWindowResize = (event: UIEvent) => {
-        console.log(window.innerWidth);
         const { originWidth, lastWindowWidth } = this.state.responsiveState;
         const windowProportion = wins.innerWidth / lastWindowWidth;
 

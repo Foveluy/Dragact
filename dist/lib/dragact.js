@@ -78,7 +78,6 @@ var Dragact = /** @class */ (function (_super) {
             });
         };
         _this.onWindowResize = function (event) {
-            console.log(window.innerWidth);
             var _a = _this.state.responsiveState, originWidth = _a.originWidth, lastWindowWidth = _a.lastWindowWidth;
             var windowProportion = wins.innerWidth / lastWindowWidth;
             _this.props.onWindowResize && _this.props.onWindowResize(_this.state.responsiveState);
