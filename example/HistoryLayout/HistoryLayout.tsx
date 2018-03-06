@@ -1,8 +1,8 @@
 import * as React from 'react';
 
-import { DragactProps, DragactLayoutItem } from '../lib/dragact-type';
-import { GridItemEvent } from '../lib/GridItem';
-import { Dragact } from '../lib/dragact';
+import { DragactProps, DragactLayoutItem } from '../../src/lib/dragact-type';
+import { GridItemEvent } from '../../src/lib/GridItem';
+import { Dragact } from '../../src/lib/dragact';
 
 interface HistoryDragactState {
     layout: DragactLayoutItem[]

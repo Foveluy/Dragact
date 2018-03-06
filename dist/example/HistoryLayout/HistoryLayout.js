@@ -17,7 +17,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     return t;
 };
 import * as React from 'react';
-import { Dragact } from '../lib/dragact';
+import { Dragact } from '../../src/lib/dragact';
 var HistoryDragact = /** @class */ (function (_super) {
     __extends(HistoryDragact, _super);
     function HistoryDragact(props) {

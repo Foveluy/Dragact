@@ -10,13 +10,13 @@ var __extends = (this && this.__extends) || (function () {
 })();
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { LayoutDemo } from './NormalLayout/index';
-import { SortedTableWithStatic } from "./StaticWidget/index";
-import { LayoutRestore } from "./LayoutRestore/index";
-import { HandleLayout } from "./HandleLayout/index";
-import { AddRemove } from "./AddRemove/index";
-import { HistoryDemo } from "./HistoryLayout/index";
-import { Mobile } from "./mobileLayout/index";
+import { LayoutDemo } from '../example/NormalLayout/index';
+import { SortedTableWithStatic } from "../example/StaticWidget/index";
+import { LayoutRestore } from "../example/LayoutRestore/index";
+import { HandleLayout } from "../example/HandleLayout/index";
+import { AddRemove } from "../example/AddRemove/index";
+import { HistoryDemo } from "../example/HistoryLayout/index";
+import { Mobile } from "../example/mobileLayout/index";
 import './index.css';
 // import { Dragact } from "./lib/dragact";
 var DemoMap = {
