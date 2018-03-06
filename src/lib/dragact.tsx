@@ -51,7 +51,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 dragType: 'resize'
             })
         }
-        this.props.onDragStart && this.props.onDragStart(layoutItem);
+        this.props.onDragStart && this.props.onDragStart(layoutItem, this.state.layout);
     }
 
     onResizing = (layoutItem: GridItemEvent) => {
@@ -77,7 +77,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             mapLayout: mapLayout,
             containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         })
-        this.props.onDragEnd && this.props.onDragEnd(layoutItem);
+        this.props.onDragEnd && this.props.onDragEnd(layoutItem, compacted);
     }
 
     onDragStart(bundles: GridItemEvent) {
@@ -94,7 +94,7 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 dragType: 'drag'
             })
         }
-        this.props.onDragStart && this.props.onDragStart(bundles);
+        this.props.onDragStart && this.props.onDragStart(bundles, this.state.layout);
     }
 
     onDrag(layoutItem: GridItemEvent) {
@@ -110,18 +110,19 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
             mapLayout: mapLayout,
             containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         })
-        this.props.onDrag && this.props.onDrag(layoutItem);
+        this.props.onDrag && this.props.onDrag(layoutItem, compacted);
     }
 
     onDragEnd(layoutItem: GridItemEvent) {
-        const { compacted, mapLayout } = compactLayout(this.state.layout, undefined, this.state.mapLayout)
+        const { compacted, mapLayout } = compactLayout(this.state.layout, undefined, this.state.mapLayout);
+
         this.setState({
             placeholderShow: false,
             layout: compacted,
             mapLayout: mapLayout,
             containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         })
-        this.props.onDragEnd && this.props.onDragEnd(layoutItem);
+        this.props.onDragEnd && this.props.onDragEnd(layoutItem, compacted);
     }
 
     renderPlaceholder() {

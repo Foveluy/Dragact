@@ -51,17 +51,17 @@ export interface DragactProps {
     /**
      * 拖动开始的回调
      */
-    onDragStart?: (event: GridItemEvent) => void
+    onDragStart?: (event: GridItemEvent, currentLayout: DragactLayoutItem[]) => void
 
     /**
      * 拖动中的回调
      */
-    onDrag?: (event: GridItemEvent) => void
+    onDrag?: (event: GridItemEvent, currentLayout: DragactLayoutItem[]) => void
 
     /**
      * 拖动结束的回调
      */
-    onDragEnd?: (event: GridItemEvent) => void
+    onDragEnd?: (event: GridItemEvent, currentLayout: DragactLayoutItem[]) => void
 
     /**
      * 每个元素的margin,第一个参数是左右，第二个参数是上下

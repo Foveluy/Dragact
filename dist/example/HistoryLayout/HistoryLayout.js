@@ -66,13 +66,13 @@ var HistoryDragact = /** @class */ (function (_super) {
             _this._actionsHistory = _this._actionsHistory.slice(0, 1);
             _this._changeDragactLayouts(_this._actionsHistory[0]);
         };
-        _this.onDragStart = function (event) {
+        _this.onDragStart = function (event, currentLayout) {
             _this._cacheCurrentLayoutStart(event);
-            _this.props.onDragStart && _this.props.onDragStart(event);
+            _this.props.onDragStart && _this.props.onDragStart(event, currentLayout);
         };
-        _this.onDragEnd = function (event) {
+        _this.onDragEnd = function (event, currentLayout) {
             _this._cacheCurrentLayoutEnd(event);
-            _this.props.onDragEnd && _this.props.onDragEnd(event);
+            _this.props.onDragEnd && _this.props.onDragEnd(event, currentLayout);
         };
         _this._changeDragactLayouts = function (snapshot) {
             if (!_this._dragact) {

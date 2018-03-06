@@ -3,7 +3,6 @@ import { Dragger } from './dragger/index'
 import { checkInContainer } from './util/correction';
 import { Bound } from './utils';
 
-
 export interface GridItemProps {
     /**外部容器属性 */
     col: number,

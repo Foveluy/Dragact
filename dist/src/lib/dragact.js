@@ -44,7 +44,7 @@ var Dragact = /** @class */ (function (_super) {
                     dragType: 'resize'
                 });
             }
-            _this.props.onDragStart && _this.props.onDragStart(layoutItem);
+            _this.props.onDragStart && _this.props.onDragStart(layoutItem, _this.state.layout);
         };
         _this.onResizing = function (layoutItem) {
             var newLayout = layoutCheck(_this.state.layout, layoutItem, layoutItem.UniqueKey + '', layoutItem.UniqueKey + '', 0);
@@ -65,7 +65,7 @@ var Dragact = /** @class */ (function (_super) {
                 mapLayout: mapLayout,
                 containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight)
             });
-            _this.props.onDragEnd && _this.props.onDragEnd(layoutItem);
+            _this.props.onDragEnd && _this.props.onDragEnd(layoutItem, compacted);
         };
         _this.recalculateLayout = function (layout, col) {
             var corrected = correctLayout(layout, col);
@@ -108,7 +108,7 @@ var Dragact = /** @class */ (function (_super) {
                 dragType: 'drag'
             });
         }
-        this.props.onDragStart && this.props.onDragStart(bundles);
+        this.props.onDragStart && this.props.onDragStart(bundles, this.state.layout);
     };
     Dragact.prototype.onDrag = function (layoutItem) {
         var GridY = layoutItem.GridY, UniqueKey = layoutItem.UniqueKey;
@@ -122,7 +122,7 @@ var Dragact = /** @class */ (function (_super) {
             mapLayout: mapLayout,
             containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         });
-        this.props.onDrag && this.props.onDrag(layoutItem);
+        this.props.onDrag && this.props.onDrag(layoutItem, compacted);
     };
     Dragact.prototype.onDragEnd = function (layoutItem) {
         var _a = compactLayout(this.state.layout, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
@@ -132,7 +132,7 @@ var Dragact = /** @class */ (function (_super) {
             mapLayout: mapLayout,
             containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         });
-        this.props.onDragEnd && this.props.onDragEnd(layoutItem);
+        this.props.onDragEnd && this.props.onDragEnd(layoutItem, compacted);
     };
     Dragact.prototype.renderPlaceholder = function () {
         if (!this.state.placeholderShow)

@@ -67,14 +67,14 @@ export class HistoryDragact extends React.Component<DragactProps, HistoryDragact
         this._changeDragactLayouts(this._actionsHistory[0]);
     }
 
-    onDragStart = (event: GridItemEvent) => {
+    onDragStart = (event: GridItemEvent, currentLayout: DragactLayoutItem[]) => {
         this._cacheCurrentLayoutStart(event)
-        this.props.onDragStart && this.props.onDragStart(event)
+        this.props.onDragStart && this.props.onDragStart(event, currentLayout)
     }
 
-    onDragEnd = (event: GridItemEvent) => {
+    onDragEnd = (event: GridItemEvent, currentLayout: DragactLayoutItem[]) => {
         this._cacheCurrentLayoutEnd(event);
-        this.props.onDragEnd && this.props.onDragEnd(event)
+        this.props.onDragEnd && this.props.onDragEnd(event, currentLayout)
     }
 
     _changeDragactLayouts = (snapshot: string) => {
