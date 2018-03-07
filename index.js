@@ -1,4 +1,3 @@
-var Dragact = require('./dist/lib/dragact').Dragact;
+var Dragact = require('./dist/src/lib/dragact').Dragact
 
-
-exports.Dragact = Dragact;
+exports.Dragact = Dragact
