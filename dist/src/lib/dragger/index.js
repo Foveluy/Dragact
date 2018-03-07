@@ -24,6 +24,7 @@ var Dragger = /** @class */ (function (_super) {
     function Dragger(props) {
         var _this = _super.call(this, props) || this;
         _this.mQue = 0;
+        _this._ismounted = false;
         _this.state = {
             /** x轴位移，单位是px */
             x: _this.props.x || 0,
@@ -181,9 +182,11 @@ var Dragger = /** @class */ (function (_super) {
                 doc.removeEventListener('touchmove', _this.move);
                 doc.removeEventListener('touchend', _this.onDragEnd);
             }
-            _this.setState({
-                zIndex: 1
-            });
+            if (_this._ismounted) {
+                _this.setState({
+                    zIndex: 1
+                });
+            }
             _this.props.onDragEnd && _this.props.onDragEnd(event, _this.state.x, _this.state.y);
         };
         _this.onResizeStart = function (event) {
@@ -262,6 +265,12 @@ var Dragger = /** @class */ (function (_super) {
         _this.self = null;
         return _this;
     }
+    Dragger.prototype.componentDidMount = function () {
+        this._ismounted = true;
+    };
+    Dragger.prototype.componentWillUnmount = function () {
+        this._ismounted = false;
+    };
     Dragger.prototype.componentWillReceiveProps = function (nextProps) {
         /**
          * 外部props 改变的时候更新元素的内部位置
