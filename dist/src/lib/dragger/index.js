@@ -16,7 +16,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import * as React from "react";
+import * as React from 'react';
 import { int, innerHeight, innerWidth, outerHeight, outerWidth, parseBounds } from '../utils';
 var doc = document;
 var Dragger = /** @class */ (function (_super) {
@@ -55,14 +55,20 @@ var Dragger = /** @class */ (function (_super) {
                 deltaY = event.clientY - _this.state.originY + lastY;
             }
             else {
-                deltaX = event.touches[0].clientX - _this.state.originX + lastX;
-                deltaY = event.touches[0].clientY - _this.state.originY + lastY;
+                deltaX =
+                    event.touches[0].clientX -
+                        _this.state.originX +
+                        lastX;
+                deltaY =
+                    event.touches[0].clientY -
+                        _this.state.originY +
+                        lastY;
             }
             var bounds = _this.props.bounds;
             if (bounds) {
                 /**
-                * 如果用户指定一个边界，那么在这里处理
-                */
+                 * 如果用户指定一个边界，那么在这里处理
+                 */
                 var NewBounds = typeof bounds !== 'string' ? parseBounds(bounds) : bounds;
                 /**
                  * 网格式移动范围设定，永远移动 n 的倍数
@@ -75,12 +81,22 @@ var Dragger = /** @class */ (function (_super) {
                 }
                 if (_this.props.bounds === 'parent') {
                     NewBounds = {
-                        left: int(_this.parent.style.paddingLeft) + int(_this.self.style.marginLeft) - _this.self.offsetLeft,
-                        top: int(_this.parent.style.paddingTop) + int(_this.self.style.marginTop) - _this.self.offsetTop,
-                        right: innerWidth(_this.parent) - outerWidth(_this.self) - _this.self.offsetLeft +
-                            int(_this.parent.style.paddingRight) - int(_this.self.style.marginRight),
-                        bottom: innerHeight(_this.parent) - outerHeight(_this.self) - _this.self.offsetTop +
-                            int(_this.parent.style.paddingBottom) - int(_this.self.style.marginBottom)
+                        left: int(_this.parent.style.paddingLeft) +
+                            int(_this.self.style.marginLeft) -
+                            _this.self.offsetLeft,
+                        top: int(_this.parent.style.paddingTop) +
+                            int(_this.self.style.marginTop) -
+                            _this.self.offsetTop,
+                        right: innerWidth(_this.parent) -
+                            outerWidth(_this.self) -
+                            _this.self.offsetLeft +
+                            int(_this.parent.style.paddingRight) -
+                            int(_this.self.style.marginRight),
+                        bottom: innerHeight(_this.parent) -
+                            outerHeight(_this.self) -
+                            _this.self.offsetTop +
+                            int(_this.parent.style.paddingBottom) -
+                            int(_this.self.style.marginBottom)
                     };
                 }
                 /**
@@ -151,7 +167,8 @@ var Dragger = /** @class */ (function (_super) {
                  */
                 _this.self = event.currentTarget;
             }
-            _this.props.onDragStart && _this.props.onDragStart(_this.state.x, _this.state.y);
+            _this.props.onDragStart &&
+                _this.props.onDragStart(_this.state.x, _this.state.y);
             var originX, originY;
             if (event.type.indexOf('mouse') >= 0) {
                 originX = event.clientX;
@@ -187,7 +204,8 @@ var Dragger = /** @class */ (function (_super) {
                     zIndex: 1
                 });
             }
-            _this.props.onDragEnd && _this.props.onDragEnd(event, _this.state.x, _this.state.y);
+            _this.props.onDragEnd &&
+                _this.props.onDragEnd(event, _this.state.x, _this.state.y);
         };
         _this.onResizeStart = function (event) {
             /** 保证用户在移动元素的时候不会选择到元素内部的东西 */
@@ -197,7 +215,8 @@ var Dragger = /** @class */ (function (_super) {
             var originX, originY;
             originX = event.clientX;
             originY = event.clientY;
-            _this.props.onResizeStart && _this.props.onResizeStart(event, _this.state.w, _this.state.h);
+            _this.props.onResizeStart &&
+                _this.props.onResizeStart(event, _this.state.w, _this.state.h);
             _this.setState({
                 originX: originX,
                 originY: originY,
@@ -217,11 +236,14 @@ var Dragger = /** @class */ (function (_super) {
                 deltaY = event.clientY - _this.state.originY;
             }
             else {
-                deltaX = event.touches[0].clientX - _this.state.originX;
-                deltaY = event.touches[0].clientY - _this.state.originY;
+                deltaX =
+                    event.touches[0].clientX - _this.state.originX;
+                deltaY =
+                    event.touches[0].clientY - _this.state.originY;
             }
             /**移动时回调，用于外部控制 */
-            _this.props.onResizing && _this.props.onResizing(event, _this.state.w, _this.state.h);
+            _this.props.onResizing &&
+                _this.props.onResizing(event, _this.state.w, _this.state.h);
             _this.setState({
                 w: deltaX + _this.state.lastW,
                 h: deltaY + _this.state.lastH
@@ -231,7 +253,8 @@ var Dragger = /** @class */ (function (_super) {
             doc.body.style.userSelect = '';
             doc.removeEventListener('mousemove', _this.onResizing);
             doc.removeEventListener('mouseup', _this.onResizeEnd);
-            _this.props.onResizeEnd && _this.props.onResizeEnd(event, _this.state.w, _this.state.h);
+            _this.props.onResizeEnd &&
+                _this.props.onResizeEnd(event, _this.state.w, _this.state.h);
         };
         _this.movePerFrame = function (delt) {
             _this.setState({
@@ -256,7 +279,8 @@ var Dragger = /** @class */ (function (_super) {
                 onMouseUp: _this.onResizeEnd
             };
             return {
-                dragMix: dragMix, resizeMix: resizeMix
+                dragMix: dragMix,
+                resizeMix: resizeMix
             };
         };
         // this.move = this.move.bind(this)
@@ -313,7 +337,7 @@ var Dragger = /** @class */ (function (_super) {
         var _b = this.mixin(), dragMix = _b.dragMix, resizeMix = _b.resizeMix;
         var provided = {
             style: __assign({}, style, { touchAction: 'none!important', transform: "translate(" + x + "px," + y + "px)", width: w, height: h }),
-            ref: function (node) { return _this.Ref = node; }
+            ref: function (node) { return (_this.Ref = node); }
         };
         return this.props.children(provided, dragMix, resizeMix);
     };
