@@ -76,7 +76,8 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 compacted,
                 this.props.rowHeight,
                 this.props.margin[1],
-                this.state.containerHeight
+                this.state.containerHeight,
+                false
             )
         })
     }
@@ -220,61 +221,63 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                     delete (mapLayoutCopy as any)[child.key + '']
             })
 
-            for (const key in mapLayoutCopy) {
-                const newLayout = this.state.layout.filter(child => {
-                    if (child.key + '' !== key + '') return child
-                })
+            const copyed: any = { ...this.state.mapLayout }
+            const newLayout = nextProps.layout.map((item: any) => {
+                const { w, h, GridX, GridY, key, ...others } = item
 
-                const { compacted, mapLayout } = compactLayout(
-                    newLayout,
-                    undefined,
-                    this.state.mapLayout
-                )
-                this.setState({
-                    containerHeight: getMaxContainerHeight(
-                        compacted,
-                        this.props.rowHeight,
-                        this.props.margin[1],
-                        this.state.containerHeight
-                    ),
-                    layout: compacted,
-                    mapLayout
-                })
-            }
+                return {
+                    ...copyed[item.key],
+                    others
+                }
+            })
+            const { compacted, mapLayout } = compactLayout(
+                newLayout,
+                undefined,
+                this.state.mapLayout
+            )
+            this.setState({
+                containerHeight: getMaxContainerHeight(
+                    compacted,
+                    this.props.rowHeight,
+                    this.props.margin[1],
+                    this.state.containerHeight
+                ),
+                layout: compacted,
+                mapLayout
+            })
         } else if (this.props.layout.length < nextProps.layout.length) {
             //add
-            var item
-            for (const idx in nextProps.layout) {
-                const i = nextProps.layout[idx]
-                if (this.state.mapLayout && !this.state.mapLayout[i.key + '']) {
-                    item = i
-                    break
+            const copyed: any = { ...this.state.mapLayout }
+            var newLayout = nextProps.layout.map((v: any) => {
+                if (copyed[v.key]) {
+                    return {
+                        ...v,
+                        ...copyed[v.key]
+                    }
                 }
-            }
-            if (item !== void 666) {
-                const dataSet = {
-                    ...item,
+                return {
+                    ...v,
                     isUserMove: false,
-                    key: item.key + ''
+                    key: v.key + ''
                 }
-                var newLayout = [...this.state.layout, dataSet]
-                const { compacted, mapLayout } = compactLayout(
-                    newLayout,
-                    undefined,
-                    this.state.mapLayout
-                )
-                this.setState({
-                    containerHeight: getMaxContainerHeight(
-                        compacted,
-                        this.props.rowHeight,
-                        this.props.margin[1],
-                        this.state.containerHeight,
-                        false
-                    ),
-                    layout: compacted,
-                    mapLayout
-                })
-            }
+            })
+
+            const { compacted, mapLayout } = compactLayout(
+                newLayout,
+                undefined,
+                this.state.mapLayout
+            )
+            this.setState({
+                containerHeight: getMaxContainerHeight(
+                    compacted,
+                    this.props.rowHeight,
+                    this.props.margin[1],
+                    this.state.containerHeight,
+                    false
+                ),
+                layout: compacted,
+                mapLayout
+            })
         } else {
             this.recalculateLayout(nextProps.layout, nextProps.col)
         }

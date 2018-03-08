@@ -16,7 +16,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-import * as React from "react";
+import * as React from 'react';
 import GridItem from './GridItem';
 import { compactLayout } from './util/compact';
 import { getMaxContainerHeight } from './util/sort';
@@ -44,7 +44,8 @@ var Dragact = /** @class */ (function (_super) {
                     dragType: 'resize'
                 });
             }
-            _this.props.onDragStart && _this.props.onDragStart(layoutItem, _this.state.layout);
+            _this.props.onDragStart &&
+                _this.props.onDragStart(layoutItem, _this.state.layout);
         };
         _this.onResizing = function (layoutItem) {
             var newLayout = layoutCheck(_this.state.layout, layoutItem, layoutItem.UniqueKey + '', layoutItem.UniqueKey + '', 0);
@@ -108,7 +109,8 @@ var Dragact = /** @class */ (function (_super) {
                 dragType: 'drag'
             });
         }
-        this.props.onDragStart && this.props.onDragStart(bundles, this.state.layout);
+        this.props.onDragStart &&
+            this.props.onDragStart(bundles, this.state.layout);
     };
     Dragact.prototype.onDrag = function (layoutItem) {
         var GridY = layoutItem.GridY, UniqueKey = layoutItem.UniqueKey;
@@ -143,33 +145,38 @@ var Dragact = /** @class */ (function (_super) {
             return null;
         if (!padding)
             padding = 0;
-        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: { background: 'rgba(15,15,15,0.3)', zIndex: dragType === 'drag' ? 1 : 10, transition: ' all .15s ease-out' }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }, function (p, resizerProps) { return React.createElement("div", __assign({}, p)); }));
+        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: {
+                background: 'rgba(15,15,15,0.3)',
+                zIndex: dragType === 'drag' ? 1 : 10,
+                transition: ' all .15s ease-out'
+            }, isUserMove: !placeholderMoving, dragType: dragType, canDrag: false, canResize: false }, function (p, resizerProps) { return React.createElement("div", __assign({}, p)); }));
     };
     Dragact.prototype.componentWillReceiveProps = function (nextProps) {
+        var _this = this;
         if (this.props.layout.length > nextProps.layout.length) {
+            //remove
             var mapLayoutCopy_1 = __assign({}, this.state.mapLayout);
             nextProps.layout.forEach(function (child) {
                 if (mapLayoutCopy_1[child.key + ''] !== void 666)
                     delete mapLayoutCopy_1[child.key + ''];
             });
-            var _loop_1 = function (key) {
-                var newLayout_1 = this_1.state.layout.filter(function (child) {
-                    if (child.key + '' !== key + '')
-                        return child;
-                });
-                var _a = compactLayout(newLayout_1, undefined, this_1.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
-                this_1.setState({
-                    containerHeight: getMaxContainerHeight(compacted, this_1.props.rowHeight, this_1.props.margin[1], this_1.state.containerHeight),
-                    layout: compacted,
-                    mapLayout: mapLayout
-                });
-            };
-            var this_1 = this;
-            for (var key in mapLayoutCopy_1) {
-                _loop_1(key);
-            }
+            // for (const key in mapLayoutCopy) {
+            //     // const newLayout = this.state.layout.filter(child => {
+            //     //     if (child.key + '' !== key + '') return child
+            //     // })
+            // }
+            var newLayout_1 = nextProps.layout.map(function (item) {
+                return __assign({}, _this.state.mapLayout[item.key], item);
+            });
+            var _a = compactLayout(newLayout_1, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
+            this.setState({
+                containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
+                layout: compacted,
+                mapLayout: mapLayout
+            });
         }
         else if (this.props.layout.length < nextProps.layout.length) {
+            //add
             var item;
             for (var idx in nextProps.layout) {
                 var i = nextProps.layout[idx];
@@ -181,7 +188,7 @@ var Dragact = /** @class */ (function (_super) {
             if (item !== void 666) {
                 var dataSet = __assign({}, item, { isUserMove: false, key: item.key + '' });
                 var newLayout = this.state.layout.concat([dataSet]);
-                var _a = compactLayout(newLayout, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
+                var _b = compactLayout(newLayout, undefined, this.state.mapLayout), compacted = _b.compacted, mapLayout = _b.mapLayout;
                 this.setState({
                     containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight, false),
                     layout: compacted,
@@ -207,12 +214,18 @@ var Dragact = /** @class */ (function (_super) {
             var renderItem_1 = layoutItemForkey(mapLayout, child.key + '');
             if (!padding)
                 padding = 0;
-            return (React.createElement(GridItem, __assign({}, renderItem_1, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem_1.isUserMove !== void 666 ? renderItem_1.isUserMove : false, UniqueKey: child.key, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, key: child.key }), function (GridItemProvided, dragHandle, resizeHandle) { return _this.props.children(child, {
-                isDragging: renderItem_1.isUserMove !== void 666 ? renderItem_1.isUserMove : false,
-                props: GridItemProvided,
-                dragHandle: dragHandle,
-                resizeHandle: resizeHandle
-            }); }));
+            return (React.createElement(GridItem, __assign({}, renderItem_1, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem_1.isUserMove !== void 666
+                    ? renderItem_1.isUserMove
+                    : false, UniqueKey: child.key, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, key: child.key }), function (GridItemProvided, dragHandle, resizeHandle) {
+                return _this.props.children(child, {
+                    isDragging: renderItem_1.isUserMove !== void 666
+                        ? renderItem_1.isUserMove
+                        : false,
+                    props: GridItemProvided,
+                    dragHandle: dragHandle,
+                    resizeHandle: resizeHandle
+                });
+            }));
         }
     };
     Dragact.prototype.render = function () {
@@ -230,8 +243,7 @@ var Dragact = /** @class */ (function (_super) {
         return this.state.layout;
     };
     //api
-    Dragact.prototype.deleteItem = function (key) {
-    };
+    Dragact.prototype.deleteItem = function (key) { };
     return Dragact;
 }(React.Component));
 export { Dragact };

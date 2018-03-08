@@ -1,6 +1,6 @@
 {
   "name": "dragact",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "description": "A powerful draggable layout system",
   "main": "index.js",
   "scripts": {
