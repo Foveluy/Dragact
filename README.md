@@ -156,19 +156,14 @@ ReactDOM.render(
 这意味着当我们拖动一个widget的时候更加得心应手和自然。
 
 
->让我们举例说明，看看一款非常著名和出色的jQuery插件实是怎么做的
+看看```dragact```优化前是怎样的
 
-![非常标准的做法](https://github.com/215566435/Dragact/blob/master/example/image/%E6%89%8B%E6%84%9F%E4%BC%98%E5%8C%96%E5%89%8D%60%60.gif)
-
-
-再看看```dragact```优化前是怎样的
-
-![非常长的一条块，已经拖动超出了屏幕很多才会交换方块](https://github.com/215566435/Dragact/blob/master/example/image/%E6%89%8B%E6%84%9F%E4%BC%98%E5%8C%96%E5%89%8D.gif)
+![非常长的一条块，已经拖动超出了屏幕很多才会交换方块](https://pic2.zhimg.com/v2-9180ee016a4d01834565de5c126263c1_b.gif)
 
 
 再看看优化以后的```dragact```是怎样的体验
 
-![当长方条的中心，超过下面方块的中心的时候，就会发生移动](https://github.com/215566435/Dragact/blob/master/example/image/%E6%89%8B%E6%84%9F%E4%BC%98%E5%8C%96%E5%90%8E%20.gif)
+![当长方条的中心，超过下面方块的中心的时候，就会发生移动](https://pic3.zhimg.com/v2-0f6ac6fe7b7980ad07b9af78625fca4d_b.gif)
 
 
 这样的一种优化，带来的是拖动手感的差异，我们向下拖动物块的目的，很大程度上是因为想和下方的某一物块交换位置。
@@ -179,11 +174,11 @@ ReactDOM.render(
 
 让我们用直观的动图来观看性能吧！
 
-![](https://github.com/215566435/Dragact/blob/master/example/image/v.17%E4%BC%98%E5%8C%96%E5%89%8D.gif)
+![](https://pic3.zhimg.com/v2-3a9a1c2894ccbf4bbf791b9aa82912b2_b.gif)
 
 这是一条超过300行的大量数据，在优化前，我们可以看到，会有明显的卡顿。
 
-![](https://github.com/215566435/Dragact/blob/master/example/image/v.17%E4%BC%98%E5%8C%96%E5%90%8E.gif)
+![](https://pic3.zhimg.com/v2-4d11298ef72730d686172a149f1f135d_b.gif)
 
 用过react组件的优化后，依旧是一条超过300行的大量数据。
 
