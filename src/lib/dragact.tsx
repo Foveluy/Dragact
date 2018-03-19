@@ -252,16 +252,20 @@ export class Dragact extends React.Component<DragactProps, DragactState> {
                 if (copyed[v.key]) {
                     return {
                         ...v,
-                        ...copyed[v.key]
+                        GridX:copyed[v.key].GridX,
+                        GridY:copyed[v.key].GridY,
+                        w:copyed[v.key].w,
+                        h:copyed[v.key].h,
+                        key:copyed[v.key].key
                     }
                 }
+
                 return {
                     ...v,
                     isUserMove: false,
                     key: v.key + ''
                 }
             })
-
             const { compacted, mapLayout } = compactLayout(
                 newLayout,
                 undefined,

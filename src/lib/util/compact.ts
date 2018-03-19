@@ -58,8 +58,8 @@ export const compactLayout = function () {
         const needCompact = Array(layout.length)
         const compareList = []
         const mapLayout: mapLayout = {};
-
-
+        
+        
         for (let i = 0, length = sorted.length; i < length; i++) {
             let finished = compactItem(compareList, sorted[i])
             if (movingItem) {
@@ -76,6 +76,7 @@ export const compactLayout = function () {
             needCompact[i] = finished
             mapLayout[finished.key + ''] = finished;
         }
+        
         return {
             compacted: needCompact,
             mapLayout

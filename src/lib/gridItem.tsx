@@ -134,15 +134,22 @@ export default class GridItem extends React.Component<GridItemProps, {}> {
 
     shouldComponentUpdate(props: GridItemProps, state: any) {
 
-        return this.props.GridX !== props.GridX ||
-            this.props.GridY !== props.GridY ||
-            this.props.isUserMove !== props.isUserMove ||
-            this.props.w !== props.w ||
-            this.props.h !== props.h ||
-            this.props.containerWidth !== props.containerWidth ||
-            this.props.col !== props.col ||
-            this.props.rowHeight !== this.props.rowHeight
+        let isUpdate = false
+        Object.keys(props).forEach((key)=>{
+            if((props as any)[key] !== (this.props as any)[key]){
+                isUpdate = true
+            }
+        })
+        return isUpdate
 
+        // return this.props.GridX !== props.GridX ||
+        //     this.props.GridY !== props.GridY ||
+        //     this.props.isUserMove !== props.isUserMove ||
+        //     this.props.w !== props.w ||
+        //     this.props.h !== props.h ||
+        //     this.props.containerWidth !== props.containerWidth ||
+        //     this.props.col !== props.col ||
+        //     this.props.rowHeight !== props.rowHeight
     }
 
     /**宽和高计算成为px */
