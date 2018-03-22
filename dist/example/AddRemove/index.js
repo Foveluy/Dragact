@@ -27,10 +27,14 @@ var Words = [
 ];
 var Card = function (_a) {
     var item = _a.item, provided = _a.provided, onDelete = _a.onDelete;
-    return (React.createElement("div", __assign({ className: 'layout-Item' }, provided.props, provided.dragHandle),
+    return (React.createElement("div", __assign({ className: "layout-Item" }, provided.props, provided.dragHandle),
         React.createElement("div", { style: {
                 position: 'absolute',
-                width: 10, height: 10, right: 15, top: 5, cursor: 'pointer'
+                width: 10,
+                height: 10,
+                right: 15,
+                top: 5,
+                cursor: 'pointer'
             }, onClick: function () { return onDelete(item.key); } }, "\u274C"),
         React.createElement("div", { style: { padding: 5, textAlign: 'center', color: '#595959' } }, item.content)));
 };
@@ -39,7 +43,7 @@ var fakeData = function () {
     return Words.map(function (item, index) {
         if (index % 4 === 0)
             Y++;
-        return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index });
+        return __assign({}, item, { GridX: (index % 4) * 4, GridY: Y * 4, w: 4, h: 3, key: index });
     });
 };
 var makeOne = function () {
@@ -53,10 +57,12 @@ var AddRemove = /** @class */ (function (_super) {
             layout: fakeData()
         };
         _this.handleClick = function () {
-            _this.setState({
-                layout: _this.state.layout.concat([makeOne()])
+            var change = _this.state.layout.map(function (item) {
+                return __assign({}, item, { content: '21312' });
             });
-            console.log(_this.state.layout);
+            _this.setState({
+                layout: change.concat([makeOne()])
+            });
         };
         _this.hanldeOnDelete = function (key) {
             var layout = _this.state.layout.filter(function (item) {
@@ -70,8 +76,7 @@ var AddRemove = /** @class */ (function (_super) {
         };
         return _this;
     }
-    AddRemove.prototype.componentDidMount = function () {
-    };
+    AddRemove.prototype.componentDidMount = function () { };
     AddRemove.prototype.render = function () {
         var _this = this;
         var margin = [5, 5];
@@ -88,9 +93,10 @@ var AddRemove = /** @class */ (function (_super) {
             React.createElement("div", { style: { display: 'flex', justifyContent: 'center' } },
                 React.createElement("div", null,
                     React.createElement("h1", { style: { textAlign: 'center' } }, "AddRemove Demo"),
+                    React.createElement("h3", { style: { textAlign: 'center' } }, "\u5728\u8FD9\u4E2A\u5E03\u5C40\u4E2D\uFF0C\u65B0\u589E\u4E00\u4E2A\u5E03\u5C40\uFF0C\u4F1A\u65B0\u52A0\u5165\u4E00\u4E2A\u5E03\u5C40"),
                     React.createElement("button", { onClick: this.handleClick }, "\u65B0\u589E"),
                     React.createElement(Dragact, __assign({}, dragactInit), function (item, provided) {
-                        return React.createElement(Card, { item: item, provided: provided, onDelete: _this.hanldeOnDelete });
+                        return (React.createElement(Card, { item: item, provided: provided, onDelete: _this.hanldeOnDelete }));
                     })))));
     };
     return AddRemove;

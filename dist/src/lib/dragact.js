@@ -185,7 +185,7 @@ var Dragact = /** @class */ (function (_super) {
             var copyed_2 = __assign({}, this.state.mapLayout);
             var newLayout = nextProps.layout.map(function (v) {
                 if (copyed_2[v.key]) {
-                    return __assign({}, v, copyed_2[v.key]);
+                    return __assign({}, v, { GridX: copyed_2[v.key].GridX, GridY: copyed_2[v.key].GridY, w: copyed_2[v.key].w, h: copyed_2[v.key].h, key: copyed_2[v.key].key });
                 }
                 return __assign({}, v, { isUserMove: false, key: v.key + '' });
             });

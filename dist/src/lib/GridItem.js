@@ -87,14 +87,22 @@ var GridItem = /** @class */ (function (_super) {
         };
     };
     GridItem.prototype.shouldComponentUpdate = function (props, state) {
-        return this.props.GridX !== props.GridX ||
-            this.props.GridY !== props.GridY ||
-            this.props.isUserMove !== props.isUserMove ||
-            this.props.w !== props.w ||
-            this.props.h !== props.h ||
-            this.props.containerWidth !== props.containerWidth ||
-            this.props.col !== props.col ||
-            this.props.rowHeight !== this.props.rowHeight;
+        var _this = this;
+        var isUpdate = false;
+        Object.keys(props).forEach(function (key) {
+            if (props[key] !== _this.props[key]) {
+                isUpdate = true;
+            }
+        });
+        return isUpdate;
+        // return this.props.GridX !== props.GridX ||
+        //     this.props.GridY !== props.GridY ||
+        //     this.props.isUserMove !== props.isUserMove ||
+        //     this.props.w !== props.w ||
+        //     this.props.h !== props.h ||
+        //     this.props.containerWidth !== props.containerWidth ||
+        //     this.props.col !== props.col ||
+        //     this.props.rowHeight !== props.rowHeight
     };
     /**宽和高计算成为px */
     GridItem.prototype.calWHtoPx = function (w, h) {
