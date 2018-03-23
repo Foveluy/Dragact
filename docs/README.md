@@ -24,7 +24,7 @@ Dragact 是一款React组件，他能够使你简单、快速的构建出一款�
 
 
 # 快速开始
-```
+```bash
 npm install --save dragact
 ```
 
@@ -295,7 +295,7 @@ getLayout():DragactLayout;
 
 
 # 测试
-```
+```bash
 git clone https://github.com/215566435/Dragact.git
 cd Dragact
 npm install 
