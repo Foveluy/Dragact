@@ -6,9 +6,11 @@ Dragact 是一款React组件，他能够使你简单、快速的构建出一款�
 
 ![](https://github.com/215566435/Dragact/blob/master/static/image/dashboard.gif?raw=true)
 
+<br/>
 # Demo地址 ✌️
 [Live Demo(预览地址)](http://htmlpreview.github.io/?https://github.com/215566435/React-dragger-layout/blob/master/build/index.html)
 
+<br/>
 # 特点 
 
 - [x] 自动布局的网格系统
@@ -22,12 +24,12 @@ Dragact 是一款React组件，他能够使你简单、快速的构建出一款�
 - [x] 响应式布局
 
 
-
+<br/>
 # 快速开始
 ```bash
 npm install --save dragact
 ```
-
+<br/>
 ### 最简单的例子🌰
 ```javascript
 //index.js
@@ -131,14 +133,14 @@ ReactDOM.render(
 
 更多的依赖注入思想以及好处，请看我的知乎问答：[知乎，方正的回答：如何设计一款组件库](https://www.zhihu.com/question/266745124/answer/322998960)
 
-
+<br/>
 ### 2.流畅的组件滑动
 
 为了保证拖拽时候的手感舒适，我通过设置元素的translate(x,y)来进行实现，并且配合CSS动画，使得每一步的移动都是那么的顺畅。
 
 你能够很轻易的看到每一个组件到底滑向哪里，到底坐落在哪里。
 
-
+<br/>
 ### 3.数据驱动的模式
 
 >视图的改变就是数据的改变
@@ -149,7 +151,7 @@ ReactDOM.render(
 
 通过获取dragact组件的实例，我提供了一个api ```getLayout():DragactLayout;```，用于获取当前的**布局信息**。
 
-
+<br/>
 ### 4.滑动中心
 经过不断的努力和尝试，现在所有的widget移动都是依赖重力中心去移动的。
 
@@ -170,6 +172,7 @@ ReactDOM.render(
 
 通过这种趋势的判断和大量实验，```dragact```选择了重力中心为移动点，更自然，手感更顺滑.
 
+<br/>
 ### 5.性能优异
 
 让我们用直观的动图来观看性能吧！
@@ -189,7 +192,7 @@ ReactDOM.render(
 
 
 
-
+<br/>
 # Dragact 提供的属性
 
 ### 数据属性
@@ -208,7 +211,7 @@ h:number//必填，挂件布局中高度，整数
 key:number|string//必填，挂件在布局中的唯一id
 ```
 
-
+<br/>
 ### 组件属性
 ```ts
 export interface DragactProps {
@@ -293,7 +296,7 @@ getLayout():DragactLayout;
 
 
 
-
+<br/>
 # 测试
 ```bash
 git clone https://github.com/215566435/Dragact.git
@@ -302,17 +305,17 @@ npm install
 npm run test
 ```
 
-
+<br/>
 # 贡献
-
+<br/>
 ### 想要一个新的特色、功能？
 1. 如果你想添加一些新功能或者一些非常棒的点子，请发起issue告诉我，谢谢！
 2. 如果你已经阅读过源代码，并且添加了一些非常牛X🐂的点子，请发起你的PR.
-
+<br/>
 ### 有bug?
 如果你发现了本项目的Bug，请务必马上告诉我。添加一个issue，并且帮忙给出最最简单重现的例子，这能让我快速定位到Bug帮你解决，谢谢！
 
-
+<br/>
 # LICENSE
 
 MIT
