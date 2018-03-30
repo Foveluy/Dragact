@@ -389,7 +389,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             style: {
                 ...style,
                 touchAction: 'none!important',
-                transform: `translate(${x}px,${y}px)`,
+                transform: `translate3d(${x}px,${y}px,0px)`,
                 width: w,
                 height: h
             },
