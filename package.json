@@ -52,6 +52,7 @@
     "@types/react": "^16.0.38",
     "@types/react-dom": "^16.0.4",
     "@types/reselect": "^2.2.0",
+    "agentframework": "^0.9.9",
     "babel-jest": "^22.2.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-jsx": "^6.24.1",
