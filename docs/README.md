@@ -206,7 +206,7 @@ h: number //必填，挂件布局中高度，整数
 key: number | string //必填，挂件在布局中的唯一id
 ```
 
-<br/>
+
 ### 组件属性
 ```ts
 export interface DragactProps {
@@ -276,7 +276,7 @@ export interface DragactProps {
 
 }
 
-````
+```
 # Ref Api
 
 获取到组件的 ref，就可以使用其 api
