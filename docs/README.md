@@ -34,8 +34,8 @@ npm install --save dragact
 
 ```javascript
 //index.js
-import * as React from 'react'
-import * as ReactDOM from 'react-dom'
+import React from 'react'
+import ReactDOM from 'react-dom'
 
 import { Dragact } from 'dragact'
 
@@ -62,7 +62,6 @@ ReactDOM.render(
         style={{ background: '#333' }} //非必填项
         placeholder={true}
     >
-        //非必填项
         {(item, provided) => {
             return (
                 <div
