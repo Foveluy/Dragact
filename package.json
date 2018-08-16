@@ -1,6 +1,6 @@
 {
   "name": "dragact",
-  "version": "0.2.8",
+  "version": "0.2.9",
   "description": "A powerful draggable layout system",
   "main": "index.js",
   "scripts": {
@@ -49,7 +49,7 @@
     ]
   },
   "dependencies": {
-    "@types/react": "^16.0.38",
+    "@types/react": "^16.4.11",
     "@types/react-dom": "^16.0.4",
     "@types/reselect": "^2.2.0",
     "agentframework": "^0.9.9",

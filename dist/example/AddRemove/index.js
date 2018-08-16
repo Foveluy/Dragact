@@ -1,23 +1,31 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
-import * as React from 'react';
-import { Dragact } from '../../src/lib/dragact';
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = require("react");
+var dragact_1 = require("../../src/lib/dragact");
 var Words = [
     { content: 'You can do anything, but not everything.' },
     { content: 'Those who dare to fail miserably can achieve greatly.' },
@@ -95,10 +103,10 @@ var AddRemove = /** @class */ (function (_super) {
                     React.createElement("h1", { style: { textAlign: 'center' } }, "AddRemove Demo"),
                     React.createElement("h3", { style: { textAlign: 'center' } }, "\u5728\u8FD9\u4E2A\u5E03\u5C40\u4E2D\uFF0C\u65B0\u589E\u4E00\u4E2A\u5E03\u5C40\uFF0C\u4F1A\u65B0\u52A0\u5165\u4E00\u4E2A\u5E03\u5C40"),
                     React.createElement("button", { onClick: this.handleClick }, "\u65B0\u589E"),
-                    React.createElement(Dragact, __assign({}, dragactInit), function (item, provided) {
+                    React.createElement(dragact_1.Dragact, __assign({}, dragactInit), function (item, provided) {
                         return (React.createElement(Card, { item: item, provided: provided, onDelete: _this.hanldeOnDelete }));
                     })))));
     };
     return AddRemove;
 }(React.Component));
-export { AddRemove };
+exports.AddRemove = AddRemove;

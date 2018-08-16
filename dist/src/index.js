@@ -1,40 +1,45 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-import * as React from "react";
-import * as ReactDOM from "react-dom";
-import { LayoutDemo } from '../example/NormalLayout/index';
-import { SortedTableWithStatic } from "../example/StaticWidget/index";
-import { LayoutRestore } from "../example/LayoutRestore/index";
-import { HandleLayout } from "../example/HandleLayout/index";
-import { AddRemove } from "../example/AddRemove/index";
-import { HistoryDemo } from "../example/HistoryLayout/index";
-import { Mobile } from "../example/mobileLayout/index";
-import './index.css';
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = require("react");
+var ReactDOM = require("react-dom");
+var index_1 = require("../example/NormalLayout/index");
+var index_2 = require("../example/StaticWidget/index");
+var index_3 = require("../example/LayoutRestore/index");
+var index_4 = require("../example/HandleLayout/index");
+var index_5 = require("../example/AddRemove/index");
+var index_6 = require("../example/HistoryLayout/index");
+var index_7 = require("../example/mobileLayout/index");
+require("./index.css");
 // import { Dragact } from "./lib/dragact";
 var DemoMap = {
-    normalLayout: React.createElement(LayoutDemo, null),
+    normalLayout: React.createElement(index_1.LayoutDemo, null),
     // SortedTable: <SortedTable />,
-    StaticHeader: React.createElement(SortedTableWithStatic, null),
-    LayoutRestore: React.createElement(LayoutRestore, null),
-    HandleLayout: React.createElement(HandleLayout, null),
-    AddRemove: React.createElement(AddRemove, null),
-    Mobile: React.createElement(Mobile, null),
-    HistoryLayout: React.createElement(HistoryDemo, null)
+    StaticHeader: React.createElement(index_2.SortedTableWithStatic, null),
+    LayoutRestore: React.createElement(index_3.LayoutRestore, null),
+    HandleLayout: React.createElement(index_4.HandleLayout, null),
+    AddRemove: React.createElement(index_5.AddRemove, null),
+    Mobile: React.createElement(index_7.Mobile, null),
+    HistoryLayout: React.createElement(index_6.HistoryDemo, null)
 };
 var DemoDispatcher = /** @class */ (function (_super) {
     __extends(DemoDispatcher, _super);
     function DemoDispatcher() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.state = {
-            demo: React.createElement(LayoutDemo, null)
+            demo: React.createElement(index_1.LayoutDemo, null)
         };
         _this.handleLayoutChange = function (demoName) {
             _this.setState({
@@ -61,7 +66,7 @@ var DemoDispatcher = /** @class */ (function (_super) {
     };
     return DemoDispatcher;
 }(React.Component));
-{ }
+{ /* <DemoDispatcher /> */ }
 //<Dragact/> */}
 // const fakeData = [
 //     { GridX: 0, GridY: 0, w: 4, h: 2, key: '0' },

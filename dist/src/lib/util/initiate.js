@@ -1,11 +1,16 @@
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+"use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 /**
  * 把用户移动的块，标记为true
  * @param {*} layout
@@ -14,7 +19,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
  * @param {*} GridY
  * @param {*} isUserMove
  */
-export var syncLayout = function (layout, movingItem) {
+exports.syncLayout = function (layout, movingItem) {
     var key = movingItem.UniqueKey;
     layout[key].GridX = movingItem.GridX;
     layout[key].GridY = movingItem.GridY;
@@ -36,7 +41,7 @@ export var syncLayout = function (layout, movingItem) {
  * @param {*} layout
  * @param {*} children
  */
-export var MapLayoutTostate = function (layout, children) {
+exports.MapLayoutTostate = function (layout, children) {
     return layout.map(function (child, index) {
         var newChild = __assign({}, child, { isUserMove: true, key: children[index].key, static: children[index].static });
         return newChild;
@@ -47,6 +52,6 @@ export var MapLayoutTostate = function (layout, children) {
  * @param {*} layout 输入进来的布局
  * @param {*} key
  */
-export var layoutItemForkey = function (layout, key) {
+exports.layoutItemForkey = function (layout, key) {
     return layout[key];
 };

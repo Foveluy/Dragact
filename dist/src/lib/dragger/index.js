@@ -1,23 +1,31 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
-import * as React from 'react';
-import { int, innerHeight, innerWidth, outerHeight, outerWidth, parseBounds } from '../utils';
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = require("react");
+var utils_1 = require("../utils");
 var doc = document;
 var Dragger = /** @class */ (function (_super) {
     __extends(Dragger, _super);
@@ -69,7 +77,7 @@ var Dragger = /** @class */ (function (_super) {
                 /**
                  * 如果用户指定一个边界，那么在这里处理
                  */
-                var NewBounds = typeof bounds !== 'string' ? parseBounds(bounds) : bounds;
+                var NewBounds = typeof bounds !== 'string' ? utils_1.parseBounds(bounds) : bounds;
                 /**
                  * 网格式移动范围设定，永远移动 n 的倍数
                  * 注意:设定移动范围的时候，一定要在判断bounds之前，否则会造成bounds不对齐
@@ -81,22 +89,22 @@ var Dragger = /** @class */ (function (_super) {
                 }
                 if (_this.props.bounds === 'parent') {
                     NewBounds = {
-                        left: int(_this.parent.style.paddingLeft) +
-                            int(_this.self.style.marginLeft) -
+                        left: utils_1.int(_this.parent.style.paddingLeft) +
+                            utils_1.int(_this.self.style.marginLeft) -
                             _this.self.offsetLeft,
-                        top: int(_this.parent.style.paddingTop) +
-                            int(_this.self.style.marginTop) -
+                        top: utils_1.int(_this.parent.style.paddingTop) +
+                            utils_1.int(_this.self.style.marginTop) -
                             _this.self.offsetTop,
-                        right: innerWidth(_this.parent) -
-                            outerWidth(_this.self) -
+                        right: utils_1.innerWidth(_this.parent) -
+                            utils_1.outerWidth(_this.self) -
                             _this.self.offsetLeft +
-                            int(_this.parent.style.paddingRight) -
-                            int(_this.self.style.marginRight),
-                        bottom: innerHeight(_this.parent) -
-                            outerHeight(_this.self) -
+                            utils_1.int(_this.parent.style.paddingRight) -
+                            utils_1.int(_this.self.style.marginRight),
+                        bottom: utils_1.innerHeight(_this.parent) -
+                            utils_1.outerHeight(_this.self) -
                             _this.self.offsetTop +
-                            int(_this.parent.style.paddingBottom) -
-                            int(_this.self.style.marginBottom)
+                            utils_1.int(_this.parent.style.paddingBottom) -
+                            utils_1.int(_this.self.style.marginBottom)
                     };
                 }
                 /**
@@ -336,7 +344,7 @@ var Dragger = /** @class */ (function (_super) {
         }
         var _b = this.mixin(), dragMix = _b.dragMix, resizeMix = _b.resizeMix;
         var provided = {
-            style: __assign({}, style, { touchAction: 'none!important', transform: "translate(" + x + "px," + y + "px)", width: w, height: h }),
+            style: __assign({}, style, { touchAction: 'none!important', transform: "translate3d(" + x + "px," + y + "px,0px)", width: w, height: h }),
             ref: function (node) { return (_this.Ref = node); }
         };
         return this.props.children(provided, dragMix, resizeMix);
@@ -351,4 +359,4 @@ var Dragger = /** @class */ (function (_super) {
     };
     return Dragger;
 }(React.Component));
-export { Dragger };
+exports.Dragger = Dragger;

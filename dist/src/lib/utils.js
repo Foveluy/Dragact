@@ -1,46 +1,51 @@
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+"use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
-export var int = function (number) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.int = function (number) {
     if (number === '' || number === null) {
         return 0;
     }
     return parseInt(number, 10);
 };
-export var innerWidth = function (node) {
+exports.innerWidth = function (node) {
     var width = node.clientWidth;
     var computedStyle = node.style;
-    width -= int(computedStyle.paddingLeft);
-    width -= int(computedStyle.paddingRight);
+    width -= exports.int(computedStyle.paddingLeft);
+    width -= exports.int(computedStyle.paddingRight);
     return width;
 };
-export var outerWidth = function (node) {
+exports.outerWidth = function (node) {
     var width = node.clientWidth;
     var computedStyle = node.style;
-    width += int(computedStyle.borderLeftWidth);
-    width += int(computedStyle.borderRightWidth);
+    width += exports.int(computedStyle.borderLeftWidth);
+    width += exports.int(computedStyle.borderRightWidth);
     return width;
 };
-export var innerHeight = function (node) {
+exports.innerHeight = function (node) {
     var height = node.clientHeight;
     var computedStyle = node.style;
-    height -= int(computedStyle.paddingTop);
-    height -= int(computedStyle.paddingBottom);
+    height -= exports.int(computedStyle.paddingTop);
+    height -= exports.int(computedStyle.paddingBottom);
     return height;
 };
-export var outerHeight = function (node) {
+exports.outerHeight = function (node) {
     var height = node.clientHeight;
     var computedStyle = node.style;
-    height += int(computedStyle.borderTopWidth);
-    height += int(computedStyle.borderBottomWidth);
+    height += exports.int(computedStyle.borderTopWidth);
+    height += exports.int(computedStyle.borderBottomWidth);
     return height;
 };
-export var parseBounds = function (bounds) {
+exports.parseBounds = function (bounds) {
     return {
         left: bounds.left,
         top: bounds.top,
@@ -48,14 +53,14 @@ export var parseBounds = function (bounds) {
         bottom: bounds.bottom
     };
 };
-export var isNumber = function (things) {
+exports.isNumber = function (things) {
     return typeof things === 'number' ? true : false;
 };
-export var getDataSet = function (children) {
+exports.getDataSet = function (children) {
     return children.map(function (child) {
         return __assign({}, child.props['data-set'], { isUserMove: true, key: child.key });
     });
 };
-export var stringJoin = function (source, join) {
+exports.stringJoin = function (source, join) {
     return source + (join ? " " + join : '');
 };

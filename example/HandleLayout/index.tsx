@@ -1,8 +1,8 @@
-import * as React from 'react';
+import * as React from 'react'
 import { Dragact } from '../../src/lib/dragact'
 import { DragactLayoutItem, GridItemProvided } from '../../src/lib/dragact-type'
 
-import './index.css';
+import './index.css'
 
 const Words = [
     { content: 'You can do anything, but not everything.' },
@@ -13,41 +13,55 @@ const Words = [
 ]
 
 const fakeData = () => {
-    var Y = 0;
+    var Y = 0
     return Words.map((item, index) => {
-        if (index % 4 === 0) Y++;
-        return { ...item, GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 2, key: index + '' }
+        if (index % 4 === 0) Y++
+        return {
+            ...item,
+            GridX: (index % 4) * 4,
+            GridY: Y * 4,
+            w: 4,
+            h: 2,
+            key: index + ''
+        }
     })
 }
 
-
 const Card: (item: any) => any = ({ item, provided }) => {
-    const style = { padding: 5, textAlign: 'center', color: '#595959' }
-
     if (item.key !== '3') {
         return (
-            <div className='layout-Item' {...provided.props} {...provided.dragHandle}>
-                <div style={style}>
+            <div
+                className="layout-Item"
+                {...provided.props}
+                {...provided.dragHandle}
+            >
+                <div
+                    style={{
+                        padding: 5,
+                        textAlign: 'center',
+                        color: '#595959'
+                    }}
+                >
                     {item.content}
                 </div>
             </div>
         )
     }
     return (
-        <div className='layout-Item' {...provided.props}>
-            <div style={style}>
+        <div className="layout-Item" {...provided.props}>
+            <div style={{ padding: 5, textAlign: 'center', color: '#595959' }}>
                 {item.content}
-                <div className='card-handle' {...provided.dragHandle} >点我拖动</div>
+                <div className="card-handle" {...provided.dragHandle}>
+                    点我拖动
+                </div>
             </div>
         </div>
     )
 }
 
-
 export class HandleLayout extends React.Component<{}, {}> {
-
     render() {
-        const margin: [number, number] = [5, 5];
+        const margin: [number, number] = [5, 5]
         const dragactInit = {
             width: 600,
             col: 12,
@@ -59,11 +73,14 @@ export class HandleLayout extends React.Component<{}, {}> {
         }
         return (
             <div>
-                <div style={{ display: 'flex', justifyContent: 'center' }} >
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
                     <div>
                         <h1 style={{ textAlign: 'center' }}>拖拽把手 Demo</h1>
-                        <Dragact {...dragactInit}  >
-                            {(item: DragactLayoutItem, provided: GridItemProvided) => {
+                        <Dragact {...dragactInit}>
+                            {(
+                                item: DragactLayoutItem,
+                                provided: GridItemProvided
+                            ) => {
                                 return <Card item={item} provided={provided} />
                             }}
                         </Dragact>

@@ -1,4 +1,6 @@
-export var Words = [
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Words = [
     { content: 'You can do anything, but not everything.' },
     { content: 'Those who dare to fail miserably can achieve greatly.' },
     { content: 'You miss 100 percent of the shots you never take.' },

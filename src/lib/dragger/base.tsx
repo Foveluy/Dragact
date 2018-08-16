@@ -425,14 +425,14 @@ export class Dragger extends React.Component<DraggerProps, {}> {
             x = this.props.x ? this.props.x : 0;
             y = this.props.y ? this.props.y : 0;
             if (style) {
-                w = style.width ? style.width : w;
-                h = style.height ? style.height : h;
+                w = (style as any).width ? (style as any).width : w;
+                h = (style as any).height ? (style as any).height : h;
             }
         }
         if (style) {
             //使得初始化的时候，不会有从0-1缩放动画
-            w = w === 0 ? style.width : w;
-            h = h === 0 ? style.height : h;
+            w = w === 0 ? (style as any).width : w;
+            h = h === 0 ? (style as any).height : h;
         }
         const { dragMix, resizeMix } = this.mixin();
 

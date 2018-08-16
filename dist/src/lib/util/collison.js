@@ -1,12 +1,17 @@
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+"use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
-export var collision = function (a, b) {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.collision = function (a, b) {
     if (a.GridX === b.GridX && a.GridY === b.GridY &&
         a.w === b.w && a.h === b.h) {
         return true;
@@ -22,9 +27,9 @@ export var collision = function (a, b) {
     return true;
 };
 /**获取layout中，item第一个碰撞到的物体 */
-export var getFirstCollison = function (layout, item) {
+exports.getFirstCollison = function (layout, item) {
     for (var i = 0, length_1 = layout.length; i < length_1; i++) {
-        if (collision(layout[i], item)) {
+        if (exports.collision(layout[i], item)) {
             return layout[i];
         }
     }
@@ -33,7 +38,7 @@ export var getFirstCollison = function (layout, item) {
 /**
  * 这个函数带有记忆功能
  */
-export var layoutCheck = function () {
+exports.layoutCheck = function () {
     var caches = {};
     var _layoutCheck = function (layout, layoutItem, key, fristItemkey, moving) {
         if (layoutItem.GridX === caches.GridX
@@ -49,7 +54,7 @@ export var layoutCheck = function () {
                 if (item.static) {
                     return item;
                 }
-                if (collision(item, layoutItem)) {
+                if (exports.collision(item, layoutItem)) {
                     i.push(item.key);
                     /**
                      * 这里就是奇迹发生的地方，如果向上移动，那么必须注意的是

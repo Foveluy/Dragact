@@ -369,19 +369,20 @@ export class Dragger extends React.Component<DraggerProps, {}> {
     render() {
         var { x, y, w, h } = this.state
         var { style } = this.props
+
         if (!this.props.isUserMove) {
             /**当外部设置其props的x,y初始属性的时候，我们在这里设置元素的初始位移 */
             x = this.props.x ? this.props.x : 0
             y = this.props.y ? this.props.y : 0
             if (style) {
-                w = style.width ? style.width : w
-                h = style.height ? style.height : h
+                w = (style as any).width ? (style as any).width : w
+                h = (style as any).height ? (style as any).height : h
             }
         }
         if (style) {
             //使得初始化的时候，不会有从0-1缩放动画
-            w = w === 0 ? style.width : w
-            h = h === 0 ? style.height : h
+            w = w === 0 ? (style as any).width : w
+            h = h === 0 ? (style as any).height : h
         }
         const { dragMix, resizeMix } = this.mixin()
 

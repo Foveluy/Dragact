@@ -1,20 +1,27 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 var __rest = (this && this.__rest) || function (s, e) {
     var t = {};
@@ -25,15 +32,16 @@ var __rest = (this && this.__rest) || function (s, e) {
             t[p[i]] = s[p[i]];
     return t;
 };
-import * as React from 'react';
-import GridItem from './GridItem';
-import { compactLayout } from './util/compact';
-import { getMaxContainerHeight } from './util/sort';
-import { layoutCheck } from './util/collison';
-import { correctLayout } from './util/correction';
-import { stringJoin } from './utils';
-import { layoutItemForkey, syncLayout } from './util/initiate';
-import './style.css';
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = require("react");
+var GridItem_1 = require("./GridItem");
+var compact_1 = require("./util/compact");
+var sort_1 = require("./util/sort");
+var collison_1 = require("./util/collison");
+var correction_1 = require("./util/correction");
+var utils_1 = require("./utils");
+var initiate_1 = require("./util/initiate");
+require("./style.css");
 var Dragact = /** @class */ (function (_super) {
     __extends(Dragact, _super);
     function Dragact(props) {
@@ -41,7 +49,7 @@ var Dragact = /** @class */ (function (_super) {
         _this.onResizeStart = function (layoutItem) {
             var GridX = layoutItem.GridX, GridY = layoutItem.GridY, w = layoutItem.w, h = layoutItem.h;
             if (_this.state.mapLayout) {
-                var newlayout = syncLayout(_this.state.mapLayout, layoutItem);
+                var newlayout = initiate_1.syncLayout(_this.state.mapLayout, layoutItem);
                 _this.setState({
                     GridXMoving: GridX,
                     GridYMoving: GridY,
@@ -57,33 +65,33 @@ var Dragact = /** @class */ (function (_super) {
                 _this.props.onDragStart(layoutItem, _this.state.layout);
         };
         _this.onResizing = function (layoutItem) {
-            var newLayout = layoutCheck(_this.state.layout, layoutItem, layoutItem.UniqueKey + '', layoutItem.UniqueKey + '', 0);
-            var _a = compactLayout(newLayout, layoutItem, _this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
+            var newLayout = collison_1.layoutCheck(_this.state.layout, layoutItem, layoutItem.UniqueKey + '', layoutItem.UniqueKey + '', 0);
+            var _a = compact_1.compactLayout(newLayout, layoutItem, _this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
             _this.setState({
                 layout: compacted,
                 wMoving: layoutItem.w,
                 hMoving: layoutItem.h,
                 mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight, false)
+                containerHeight: sort_1.getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight, false)
             });
         };
         _this.onResizeEnd = function (layoutItem) {
-            var _a = compactLayout(_this.state.layout, undefined, _this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
+            var _a = compact_1.compactLayout(_this.state.layout, undefined, _this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
             _this.setState({
                 placeholderShow: false,
                 layout: compacted,
                 mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight)
+                containerHeight: sort_1.getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight)
             });
             _this.props.onDragEnd && _this.props.onDragEnd(layoutItem, compacted);
         };
         _this.recalculateLayout = function (layout, col) {
-            var corrected = correctLayout(layout, col);
-            var _a = compactLayout(corrected, undefined, undefined), compacted = _a.compacted, mapLayout = _a.mapLayout;
+            var corrected = correction_1.correctLayout(layout, col);
+            var _a = compact_1.compactLayout(corrected, undefined, undefined), compacted = _a.compacted, mapLayout = _a.mapLayout;
             _this.setState({
                 layout: compacted,
                 mapLayout: mapLayout,
-                containerHeight: getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight, false)
+                containerHeight: sort_1.getMaxContainerHeight(compacted, _this.props.rowHeight, _this.props.margin[1], _this.state.containerHeight, false)
             });
         };
         _this.onDrag = _this.onDrag.bind(_this);
@@ -114,7 +122,7 @@ var Dragact = /** @class */ (function (_super) {
                 hMoving: h,
                 placeholderShow: true,
                 placeholderMoving: true,
-                mapLayout: syncLayout(this.state.mapLayout, bundles),
+                mapLayout: initiate_1.syncLayout(this.state.mapLayout, bundles),
                 dragType: 'drag'
             });
         }
@@ -124,24 +132,24 @@ var Dragact = /** @class */ (function (_super) {
     Dragact.prototype.onDrag = function (layoutItem) {
         var GridY = layoutItem.GridY, UniqueKey = layoutItem.UniqueKey;
         var moving = GridY - this.state.GridYMoving;
-        var newLayout = layoutCheck(this.state.layout, layoutItem, UniqueKey + '', UniqueKey + '' /*用户移动方块的key */, moving);
-        var _a = compactLayout(newLayout, layoutItem, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
+        var newLayout = collison_1.layoutCheck(this.state.layout, layoutItem, UniqueKey + '', UniqueKey + '' /*用户移动方块的key */, moving);
+        var _a = compact_1.compactLayout(newLayout, layoutItem, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
         this.setState({
             GridXMoving: layoutItem.GridX,
             GridYMoving: layoutItem.GridY,
             layout: compacted,
             mapLayout: mapLayout,
-            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
+            containerHeight: sort_1.getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         });
         this.props.onDrag && this.props.onDrag(layoutItem, compacted);
     };
     Dragact.prototype.onDragEnd = function (layoutItem) {
-        var _a = compactLayout(this.state.layout, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
+        var _a = compact_1.compactLayout(this.state.layout, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
         this.setState({
             placeholderShow: false,
             layout: compacted,
             mapLayout: mapLayout,
-            containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
+            containerHeight: sort_1.getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight)
         });
         this.props.onDragEnd && this.props.onDragEnd(layoutItem, compacted);
     };
@@ -154,7 +162,7 @@ var Dragact = /** @class */ (function (_super) {
             return null;
         if (!padding)
             padding = 0;
-        return (React.createElement(GridItem, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: {
+        return (React.createElement(GridItem_1.default, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, GridX: GridXMoving, GridY: GridYMoving, w: wMoving, h: hMoving, style: {
                 background: 'rgba(15,15,15,0.3)',
                 zIndex: dragType === 'drag' ? 1 : 10,
                 transition: ' all .15s ease-out'
@@ -173,9 +181,9 @@ var Dragact = /** @class */ (function (_super) {
                 var w = item.w, h = item.h, GridX = item.GridX, GridY = item.GridY, key = item.key, others = __rest(item, ["w", "h", "GridX", "GridY", "key"]);
                 return __assign({}, copyed_1[item.key], { others: others });
             });
-            var _a = compactLayout(newLayout_1, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
+            var _a = compact_1.compactLayout(newLayout_1, undefined, this.state.mapLayout), compacted = _a.compacted, mapLayout = _a.mapLayout;
             this.setState({
-                containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
+                containerHeight: sort_1.getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight),
                 layout: compacted,
                 mapLayout: mapLayout
             });
@@ -189,9 +197,9 @@ var Dragact = /** @class */ (function (_super) {
                 }
                 return __assign({}, v, { isUserMove: false, key: v.key + '' });
             });
-            var _b = compactLayout(newLayout, undefined, this.state.mapLayout), compacted = _b.compacted, mapLayout = _b.mapLayout;
+            var _b = compact_1.compactLayout(newLayout, undefined, this.state.mapLayout), compacted = _b.compacted, mapLayout = _b.mapLayout;
             this.setState({
-                containerHeight: getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight, false),
+                containerHeight: sort_1.getMaxContainerHeight(compacted, this.props.rowHeight, this.props.margin[1], this.state.containerHeight, false),
                 layout: compacted,
                 mapLayout: mapLayout
             });
@@ -211,10 +219,10 @@ var Dragact = /** @class */ (function (_super) {
         var _a = this.state, dragType = _a.dragType, mapLayout = _a.mapLayout;
         var _b = this.props, col = _b.col, padding = _b.padding, rowHeight = _b.rowHeight, margin = _b.margin, width = _b.width;
         if (mapLayout) {
-            var renderItem_1 = layoutItemForkey(mapLayout, child.key + '');
+            var renderItem_1 = initiate_1.layoutItemForkey(mapLayout, child.key + '');
             if (!padding)
                 padding = 0;
-            return (React.createElement(GridItem, __assign({}, renderItem_1, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem_1.isUserMove !== void 666
+            return (React.createElement(GridItem_1.default, __assign({}, renderItem_1, { margin: margin, col: col, containerWidth: width, containerPadding: [padding, padding], rowHeight: rowHeight, onDrag: this.onDrag, onDragStart: this.onDragStart, onDragEnd: this.onDragEnd, isUserMove: renderItem_1.isUserMove !== void 666
                     ? renderItem_1.isUserMove
                     : false, UniqueKey: child.key, onResizing: this.onResizing, onResizeStart: this.onResizeStart, onResizeEnd: this.onResizeEnd, dragType: dragType, key: child.key }), function (GridItemProvided, dragHandle, resizeHandle) {
                 return _this.props.children(child, {
@@ -232,7 +240,7 @@ var Dragact = /** @class */ (function (_super) {
         var _this = this;
         var _a = this.props, className = _a.className, layout = _a.layout, style = _a.style, width = _a.width;
         var containerHeight = this.state.containerHeight;
-        return (React.createElement("div", { className: stringJoin('DraggerLayout', className + ''), style: __assign({}, style, { left: 100, width: width, height: containerHeight, zIndex: 1 }) },
+        return (React.createElement("div", { className: utils_1.stringJoin('DraggerLayout', className + ''), style: __assign({}, style, { left: 100, width: width, height: containerHeight, zIndex: 1 }) },
             layout.map(function (item, index) {
                 return _this.getGridItem(item, index);
             }),
@@ -246,4 +254,4 @@ var Dragact = /** @class */ (function (_super) {
     Dragact.prototype.deleteItem = function (key) { };
     return Dragact;
 }(React.Component));
-export { Dragact };
+exports.Dragact = Dragact;

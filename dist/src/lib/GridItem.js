@@ -1,24 +1,32 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
-import * as React from "react";
-import { Dragger } from './dragger/index';
-import { checkInContainer } from './util/correction';
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = require("react");
+var index_1 = require("./dragger/index");
+var correction_1 = require("./util/correction");
 var checkWidthHeight = function (GridX, w, h, col) {
     var newW = w;
     var newH = h;
@@ -72,7 +80,7 @@ var GridItem = /** @class */ (function (_super) {
         var GridX = Math.round(x / containerWidth * col);
         var GridY = Math.round(y / (rowHeight + (margin ? margin[1] : 0)));
         // /**防止元素出container */
-        return checkInContainer(GridX, GridY, col, w);
+        return correction_1.checkInContainer(GridX, GridY, col, w);
     };
     /**给予一个grid的位置，算出元素具体的在容器中位置在哪里，单位是px */
     GridItem.prototype.calGridItemPosition = function (GridX, GridY) {
@@ -148,7 +156,7 @@ var GridItem = /** @class */ (function (_super) {
         var _a = this.props, w = _a.w, h = _a.h, style = _a.style, bounds = _a.bounds, GridX = _a.GridX, GridY = _a.GridY, handle = _a.handle, canDrag = _a.canDrag, canResize = _a.canResize;
         var _b = this.calGridItemPosition(GridX, GridY), x = _b.x, y = _b.y;
         var _c = this.calWHtoPx(w, h), wPx = _c.wPx, hPx = _c.hPx;
-        return (React.createElement(Dragger, { style: __assign({}, style, { width: wPx, height: hPx, position: 'absolute', transition: this.props.isUserMove ? '' : 'all .2s ease-out', zIndex: this.props.isUserMove ? (this.props.dragType === 'drag' ? 10 : 2) : 2 }), onDragStart: this.onDragStart, onMove: this.onDrag, onDragEnd: this.onDragEnd, onResizeStart: this.onResizeStart, onResizing: this.onResizing, onResizeEnd: this.onResizeEnd, x: x, y: y, w: wPx, h: hPx, isUserMove: this.props.isUserMove, bounds: bounds, handle: handle, canDrag: canDrag, canResize: canResize }, function (provided, draggerProps, resizerProps) { return _this.props.children(provided, draggerProps, resizerProps); }));
+        return (React.createElement(index_1.Dragger, { style: __assign({}, style, { width: wPx, height: hPx, position: 'absolute', transition: this.props.isUserMove ? '' : 'all .2s ease-out', zIndex: this.props.isUserMove ? (this.props.dragType === 'drag' ? 10 : 2) : 2 }), onDragStart: this.onDragStart, onMove: this.onDrag, onDragEnd: this.onDragEnd, onResizeStart: this.onResizeStart, onResizing: this.onResizing, onResizeEnd: this.onResizeEnd, x: x, y: y, w: wPx, h: hPx, isUserMove: this.props.isUserMove, bounds: bounds, handle: handle, canDrag: canDrag, canResize: canResize }, function (provided, draggerProps, resizerProps) { return _this.props.children(provided, draggerProps, resizerProps); }));
     };
     GridItem.defaultProps = {
         col: 12,
@@ -161,4 +169,4 @@ var GridItem = /** @class */ (function (_super) {
     };
     return GridItem;
 }(React.Component));
-export default GridItem;
+exports.default = GridItem;

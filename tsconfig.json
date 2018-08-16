@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "module": "ES6",
+        "module": "commonjs",
         "target": "es5",
         "noImplicitAny": true,
         "sourceMap": false,
@@ -11,10 +11,8 @@
         "experimentalDecorators": true,
         "strictFunctionTypes": true,
         "strictPropertyInitialization": false,
+        "moduleResolution": "node",
         "jsx": "react"
     },
-    "include": [
-        "src/**/*",
-        "example/**/*"
-    ]
+    "include": ["src/**/*"]
 }

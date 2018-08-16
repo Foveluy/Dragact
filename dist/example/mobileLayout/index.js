@@ -1,28 +1,36 @@
+"use strict";
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    }
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-var __assign = (this && this.__assign) || Object.assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
-    }
-    return t;
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
-import * as React from 'react';
-import { Dragact } from '../../src/lib/dragact';
-import { Words } from './largedata';
-import './index.css';
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = require("react");
+var dragact_1 = require("../../src/lib/dragact");
+var largedata_1 = require("./largedata");
+require("./index.css");
 var fakeData = function () {
     var Y = 0;
-    return Words.map(function (item, index) {
+    return largedata_1.Words.map(function (item, index) {
         if (index % 4 === 0)
             Y++;
         return __assign({}, item, { GridX: index % 4 * 4, GridY: Y * 4, w: 4, h: 3, key: index + '' });
@@ -57,7 +65,7 @@ var Mobile = /** @class */ (function (_super) {
             } },
             React.createElement("div", null,
                 React.createElement("h1", { style: { textAlign: 'center' } }, "\u624B\u673A\u666E\u901A\u5E03\u5C40demo"),
-                React.createElement(Dragact, __assign({}, dragactInit, { placeholder: true, style: {
+                React.createElement(dragact_1.Dragact, __assign({}, dragactInit, { placeholder: true, style: {
                         background: '#003A8C'
                     } }), function (item, provided) {
                     return React.createElement(Card, { item: item, provided: provided });
@@ -65,4 +73,4 @@ var Mobile = /** @class */ (function (_super) {
     };
     return Mobile;
 }(React.Component));
-export { Mobile };
+exports.Mobile = Mobile;
