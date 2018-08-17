@@ -9,7 +9,7 @@ import {
 } from '../utils'
 import { DraggerProps } from './type'
 
-const doc = document
+let doc: any = null
 
 export class Dragger extends React.Component<DraggerProps, {}> {
     parent: any
@@ -306,6 +306,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
     }
 
     componentDidMount() {
+        doc = typeof document === 'undefined' ? {} : document
         this._ismounted = true
     }
     componentWillUnmount() {

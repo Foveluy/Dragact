@@ -1,6 +1,6 @@
 {
   "name": "dragact",
-  "version": "0.2.9",
+  "version": "0.2.11",
   "description": "A powerful draggable layout system",
   "main": "index.js",
   "scripts": {
@@ -68,3 +68,5 @@
     "typescript-babel-jest": "^1.0.5"
   }
 }
+
+
