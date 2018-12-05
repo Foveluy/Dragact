@@ -58,7 +58,9 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         h: this.props.h || 0,
 
         lastW: 0,
-        lastH: 0
+        lastH: 0,
+
+        originalEvent: null
     }
 
     move = (event: any) => {
@@ -160,6 +162,98 @@ export class Dragger extends React.Component<DraggerProps, {}> {
         this.setState({
             x: deltaX,
             y: deltaY
+        })
+    }
+
+    moveDebounce = (event: any) => {
+        let { lastX, lastY } = this.state
+        /*  event.client - this.state.origin 表示的是移动的距离,
+        *   elX表示的是原来已经有的位移
+        */
+
+        let deltaX, deltaY
+        if (event.type.indexOf('mouse') >= 0) {
+            deltaX = (event as MouseEvent).clientX - this.state.originX + lastX
+            deltaY = (event as MouseEvent).clientY - this.state.originY + lastY
+        } else {
+            deltaX =
+                (event as TouchEvent).touches[0].clientX -
+                this.state.originX +
+                lastX
+            deltaY =
+                (event as TouchEvent).touches[0].clientY -
+                this.state.originY +
+                lastY
+        }
+
+        /*
+         * Remove Debounce event listeners and add legitimate ones
+         * after 10 pixels motion
+         */
+        if((deltaX + deltaY) > 10) {
+            // Remove debounce event listeners
+            if (event.type.indexOf('mouse') >= 0) {
+                doc.removeEventListener('mousemove', this.moveDebounce)
+                doc.removeEventListener('mouseup', this.onDragEndDebounce)
+            } else {
+                doc.removeEventListener('touchmove', this.moveDebounce)
+                doc.removeEventListener('touchend', this.onDragEndDebounce)
+            }
+            // Initiate real dragStart with original event
+            this.onDragStart(this.state.originalEvent);
+
+            // Trigger real movement with current event");
+            this.move(event);
+        }
+    }
+
+    // Saves initial state and event, but add event listeners for debounce only
+    onDragStartDebounce = (event: any) => {
+        let originX, originY
+        if (event.type.indexOf('mouse') >= 0) {
+            originX = (event as MouseEvent).clientX
+            originY = (event as MouseEvent).clientY
+        } else {
+            originX = (event as TouchEvent).touches[0].clientX
+            originY = (event as TouchEvent).touches[0].clientY
+        }
+        event.persist();
+        this.setState({
+            originalEvent: event,
+            originX: originX,
+            originY: originY,
+            lastX: this.state.x,
+            lastY: this.state.y,
+            zIndex: 10
+        })
+        // Add event listeners at the end to prevent firing them before
+        // having the original event saved into state
+        if (event.type.indexOf('mouse') >= 0) {
+            doc.addEventListener('mousemove', this.moveDebounce)
+            doc.addEventListener('mouseup', this.onDragEndDebounce)
+        } else {
+            doc.addEventListener('touchmove', this.moveDebounce)
+            doc.addEventListener('touchend', this.onDragEndDebounce)
+        }
+    }
+
+    // Cleans debounce events
+    onDragEndDebounce = (event: any) => {
+        /** 取消用户选择限制，用户可以重新选择 */
+        doc.body.style.userSelect = ''
+        this.parent = null
+        this.self = null
+
+        if (event.type.indexOf('mouse') >= 0) {
+            // Remove debounce event listeners");
+            doc.removeEventListener('mousemove', this.moveDebounce)
+            doc.removeEventListener('mouseup', this.onDragEndDebounce)
+        } else {
+            doc.removeEventListener('touchmove', this.moveDebounce)
+            doc.removeEventListener('touchend', this.onDragEndDebounce)
+        }
+        this.setState({
+            originalEvent: null
         })
     }
 
@@ -351,10 +445,10 @@ export class Dragger extends React.Component<DraggerProps, {}> {
 
     mixin = () => {
         var dragMix = {
-            onMouseDown: this.onDragStart,
-            onTouchStart: this.onDragStart,
-            onTouchEnd: this.onDragEnd,
-            onMouseUp: this.onDragEnd
+            onMouseDown: this.onDragStartDebounce,
+            onTouchStart: this.onDragStartDebounce,
+            onTouchEnd: this.onDragEndDebounce,
+            onMouseUp: this.onDragEndDebounce
         }
 
         var resizeMix = {

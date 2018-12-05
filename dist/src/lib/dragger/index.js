@@ -44,7 +44,8 @@ var Dragger = /** @class */ (function (_super) {
             w: _this.props.w || 0,
             h: _this.props.h || 0,
             lastW: 0,
-            lastH: 0
+            lastH: 0,
+            originalEvent: null
         };
         _this.move = function (event) {
             var _a = _this.state, lastX = _a.lastX, lastY = _a.lastY;
@@ -134,6 +135,96 @@ var Dragger = /** @class */ (function (_super) {
             _this.setState({
                 x: deltaX,
                 y: deltaY
+            });
+        };
+        _this.moveDebounce = function (event) {
+            var _a = _this.state, lastX = _a.lastX, lastY = _a.lastY;
+            /*  event.client - this.state.origin 表示的是移动的距离,
+            *   elX表示的是原来已经有的位移
+            */
+            var deltaX, deltaY;
+            if (event.type.indexOf('mouse') >= 0) {
+                deltaX = event.clientX - _this.state.originX + lastX;
+                deltaY = event.clientY - _this.state.originY + lastY;
+            }
+            else {
+                deltaX =
+                    event.touches[0].clientX -
+                        _this.state.originX +
+                        lastX;
+                deltaY =
+                    event.touches[0].clientY -
+                        _this.state.originY +
+                        lastY;
+            }
+            /*
+             * Remove Debounce event listeners and add legitimate ones
+             * after 10 pixels motion
+             */
+            if ((deltaX + deltaY) > 10) {
+                // Remove debounce event listeners
+                if (event.type.indexOf('mouse') >= 0) {
+                    doc.removeEventListener('mousemove', _this.moveDebounce);
+                    doc.removeEventListener('mouseup', _this.onDragEndDebounce);
+                }
+                else {
+                    doc.removeEventListener('touchmove', _this.moveDebounce);
+                    doc.removeEventListener('touchend', _this.onDragEndDebounce);
+                }
+                // Initiate real dragStart with original event
+                _this.onDragStart(_this.state.originalEvent);
+                // Trigger real movement with current event");
+                _this.move(event);
+            }
+        };
+        // Saves initial state and event, but add event listeners for debounce only
+        _this.onDragStartDebounce = function (event) {
+            var originX, originY;
+            if (event.type.indexOf('mouse') >= 0) {
+                originX = event.clientX;
+                originY = event.clientY;
+            }
+            else {
+                originX = event.touches[0].clientX;
+                originY = event.touches[0].clientY;
+            }
+            event.persist();
+            _this.setState({
+                originalEvent: event,
+                originX: originX,
+                originY: originY,
+                lastX: _this.state.x,
+                lastY: _this.state.y,
+                zIndex: 10
+            });
+            // Add event listeners at the end to prevent firing them before
+            // having the original event saved into state
+            if (event.type.indexOf('mouse') >= 0) {
+                doc.addEventListener('mousemove', _this.moveDebounce);
+                doc.addEventListener('mouseup', _this.onDragEndDebounce);
+            }
+            else {
+                doc.addEventListener('touchmove', _this.moveDebounce);
+                doc.addEventListener('touchend', _this.onDragEndDebounce);
+            }
+        };
+        // Cleans debounce events
+        _this.onDragEndDebounce = function (event) {
+            /** 取消用户选择限制，用户可以重新选择 */
+            doc.body.style.userSelect = '';
+            _this.parent = null;
+            _this.self = null;
+            if (event.type.indexOf('mouse') >= 0) {
+                // Remove debounce event listeners");
+                doc.removeEventListener('mousemove', _this.moveDebounce);
+                doc.removeEventListener('mouseup', _this.onDragEndDebounce);
+            }
+            else {
+                doc.removeEventListener('touchmove', _this.moveDebounce);
+                doc.removeEventListener('touchend', _this.onDragEndDebounce);
+            }
+            _this.setState({
+                originalEvent: null
             });
         };
         _this.onDragStart = function (event) {
@@ -271,10 +362,10 @@ var Dragger = /** @class */ (function (_super) {
         };
         _this.mixin = function () {
             var dragMix = {
-                onMouseDown: _this.onDragStart,
-                onTouchStart: _this.onDragStart,
-                onTouchEnd: _this.onDragEnd,
-                onMouseUp: _this.onDragEnd
+                onMouseDown: _this.onDragStartDebounce,
+                onTouchStart: _this.onDragStartDebounce,
+                onTouchEnd: _this.onDragEndDebounce,
+                onMouseUp: _this.onDragEndDebounce
             };
             var resizeMix = {
                 onMouseDown: _this.onResizeStart,
