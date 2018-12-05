@@ -17,7 +17,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
-Object.defineProperty(exports, "__esModule", { value: true });
+exports.__esModule = true;
 var React = require("react");
 var utils_1 = require("../utils");
 var doc = null;
@@ -161,7 +161,7 @@ var Dragger = /** @class */ (function (_super) {
              * Remove Debounce event listeners and add legitimate ones
              * after 10 pixels motion
              */
-            if ((deltaX + deltaY) > 10) {
+            if ((Math.abs(deltaX) + Math.abs(deltaY)) > 10) {
                 // Remove debounce event listeners
                 if (event.type.indexOf('mouse') >= 0) {
                     doc.removeEventListener('mousemove', _this.moveDebounce);

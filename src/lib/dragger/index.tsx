@@ -190,7 +190,7 @@ export class Dragger extends React.Component<DraggerProps, {}> {
          * Remove Debounce event listeners and add legitimate ones
          * after 10 pixels motion
          */
-        if((deltaX + deltaY) > 10) {
+        if((Math.abs(deltaX) + Math.abs(deltaY)) > 10) {
             // Remove debounce event listeners
             if (event.type.indexOf('mouse') >= 0) {
                 doc.removeEventListener('mousemove', this.moveDebounce)
