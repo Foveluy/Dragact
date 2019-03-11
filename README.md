@@ -1,3 +1,14 @@
+# 特别声明
+
+由于本人正在忙其他的事情，dragact 已经暂停维护了。请不要使用 dragact（出了问题我实在没精力帮您解决，实在抱歉
+
+最后，我推荐的替换是：
+1、https://github.com/STRML/react-grid-layout
+2、https://github.com/atlassian/react-beautiful-dnd
+
+上述两个都是非常优秀的开源项目，请大家自行选择。
+
+
 # Dragact 👋
 
 [![npm version](https://img.shields.io/npm/v/dragact.svg)](https://www.npmjs.com/package/dragact) [![npm downloads](https://img.shields.io/npm/dm/dragact.svg)](https://www.npmjs.com/package/dragact)
